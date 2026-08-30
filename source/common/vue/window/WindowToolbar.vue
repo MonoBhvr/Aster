@@ -123,7 +123,7 @@ export type ToolbarControl = ToolbarButtonControl|RingProgressButtonControl|
 ToolbarSearchControl|ToolbarSpacerControl|ToolbarTextControl|
 ToolbarThreeWayControl|ToolbarToggleControl|IrisIndicatorControl
 
-const ipcRenderer = window.ipc
+const ipcRenderer = window.platform.ipc
 
 const props = defineProps<{ controls: ToolbarControl[], showLabels?: boolean }>()
 
@@ -164,7 +164,7 @@ onMounted(() => {
   // Make sure that (on macOS) we have the correct spacing of the toolbar.
   ipcRenderer.on('window-controls', (event, message) => {
     const { command, payload } = message
-    if (command === 'traffic-lights-rtl') {
+    if (command === 'traffic-lights-rtl' && typeof payload === 'boolean') {
       hasRTLTrafficLights.value = payload
     }
   })

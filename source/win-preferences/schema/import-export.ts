@@ -15,8 +15,8 @@
 import { trans } from '@common/i18n-renderer'
 import { type PreferencesFieldset } from '../App.vue'
 import { PreferencesGroups } from './_preferences-groups'
-import { ProgrammaticallyOpenableWindows } from '@providers/commands/open-aux-window'
-const ipcRenderer = window.ipc
+import { ProgrammaticallyOpenableWindows } from 'source/platform/open-aux-window'
+const ipcRenderer = window.platform.ipc
 
 export function getImportExportFields (): PreferencesFieldset[] {
   return [

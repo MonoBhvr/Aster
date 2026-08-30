@@ -19,9 +19,9 @@ import { configField } from './configuration'
 import { EditorView } from '@codemirror/view'
 import { tocField } from '../plugins/toc-field'
 import { isAbsolutePath, pathDirname } from '@common/util/renderer-path-polyfill'
-import type { DocumentManagerIPCAPI } from 'source/app/service-providers/documents'
+import type { DocumentManagerIPCAPI } from 'source/platform/contracts'
 
-const ipcRenderer = window.ipc
+const platformIpc = window.platform.ipc
 
 /**
  * Uses the ToC field within the editor state to determine the line descriptor
@@ -60,13 +60,13 @@ export default function (url: string, view: EditorView): void {
     }
   } else {
     const searchParams = new URLSearchParams(window.location.search)
-    const windowId = searchParams.get('window_id')
+    const windowId = searchParams.get('window_id') ?? 'main'
     const base = pathDirname(view.state.field(configField).metadata.path)
     const validURI = makeValidUri(url, base)
 
     // Create a path from the URL by stripping the protocol and decoding any
     // potential encoded characters.
-    let localPath = decodeURIComponent(validURI.replace('safe-file://', ''))
+    let localPath = decodeURIComponent(validURI.replace('file://', ''))
     // Due to the colons in the drive letters on Windows, the pathname will
     // look like this: /C:/Users/Documents/test.jpg
     // See: https://github.com/Zettlr/Zettlr/issues/5489
@@ -76,8 +76,8 @@ export default function (url: string, view: EditorView): void {
 
     // It's a valid file we can open if it's an absolute path to a Markdown or
     // code file
-    if (validURI.startsWith('safe-file://') && isAbsolutePath(localPath)) {
-      ipcRenderer.invoke('documents-provider', {
+    if (validURI.startsWith('file://') && isAbsolutePath(localPath)) {
+      platformIpc.invoke('documents-provider', {
         command: 'open-file',
         payload: { path: localPath, newTab: false, windowId }
       } as DocumentManagerIPCAPI)

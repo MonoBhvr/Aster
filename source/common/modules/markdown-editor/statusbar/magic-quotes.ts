@@ -168,13 +168,13 @@ export function magicQuotesStatus (state: EditorState, _view: EditorView): Statu
           console.error('How did you manage to click the disabled menu item?')
         } else if (clickedID === 'disabled') {
           // Disable MQ
-          window.config.set('editor.autoCorrect.magicQuotes.primary', '"…"')
-          window.config.set('editor.autoCorrect.magicQuotes.secondary', "'…'")
+          window.platform.config.set('editor.autoCorrect.magicQuotes.primary', '"…"')
+          window.platform.config.set('editor.autoCorrect.magicQuotes.secondary', "'…'")
         } else {
           // Set them to whatever the user clicked
           const { primary, secondary } = MAGIC_QUOTES_PAIRS[clickedID]
-          window.config.set('editor.autoCorrect.magicQuotes.primary', primary)
-          window.config.set('editor.autoCorrect.magicQuotes.secondary', secondary)
+          window.platform.config.set('editor.autoCorrect.magicQuotes.primary', primary)
+          window.platform.config.set('editor.autoCorrect.magicQuotes.secondary', secondary)
         }
       })
     }

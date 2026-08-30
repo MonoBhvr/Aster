@@ -40,11 +40,11 @@ export interface DefaultShortcut {
 export function getDefaultKeybinding<T extends Record<string, DefaultShortcut>> (name: keyof T, defaults: T): string|undefined {
   const candidate = defaults[name]
 
-  if (process.platform === 'darwin' && 'mac' in candidate) {
+  if (window.platform.os === 'darwin' && 'mac' in candidate) {
     return candidate.mac
-  } else if (process.platform === 'win32' && 'win' in candidate) {
+  } else if (window.platform.os === 'win32' && 'win' in candidate) {
     return candidate.win
-  } else if (process.platform === 'linux' && 'linux' in candidate) {
+  } else if (window.platform.os === 'linux' && 'linux' in candidate) {
     return candidate.linux
   } else {
     return candidate.key

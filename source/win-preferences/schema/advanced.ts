@@ -15,7 +15,7 @@
 import { trans } from '@common/i18n-renderer'
 import { type PreferencesFieldset } from '../App.vue'
 import { PreferencesGroups } from './_preferences-groups'
-import type { ConfigOptions } from 'source/app/service-providers/config/get-config-template'
+import type { ConfigOptions } from 'source/platform/config-template'
 
 /**
  * Returns all available advanced preferences settings as a two-dimensional
@@ -73,18 +73,18 @@ export function getAdvancedFields (config: ConfigOptions): PreferencesFieldset[]
           label: trans('Use native window appearance'),
           info: trans('Only available on Linux; this is the default for macOS and Windows.'),
           model: 'window.nativeAppearance',
-          disabled: process.platform !== 'linux'
+          disabled: window.platform.os !== 'linux'
         },
         {
           type: 'checkbox',
           label: trans('Enable window vibrancy'),
           info: trans('Only available on macOS; makes the window background opaque.'),
           model: 'window.vibrancy',
-          disabled: process.platform !== 'darwin'
+          disabled: window.platform.os !== 'darwin'
         },
         {
           type: 'checkbox',
-          label: process.platform === 'darwin'
+          label: window.platform.os === 'darwin'
             ? trans('Show app in the notification area')
             : trans('Leave app running in the notification area'),
           model: 'system.leaveAppRunning',

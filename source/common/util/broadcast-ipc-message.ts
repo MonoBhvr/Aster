@@ -1,32 +1,8 @@
-/**
- * @ignore
- * BEGIN HEADER
- *
- * Contains:        broadcastIPCMessage
- * CVM-Role:        Utility Function
- * Maintainer:      Hendrik Erz
- * License:         GNU GPL v3
- *
- * Description:     This file enables anything in the main process to broadcast
- *                  an IPC message to every single browser window that is
- *                  currently open.
- *
- * END HEADER
- */
+import { emit } from '@tauri-apps/api/event'
 
-import { BrowserWindow } from 'electron'
-
-/**
- * Broadcasts an IPC message to all open windows
- *
- * @param   {string}  channel  The channel to broadcast on
- * @param   {any[]}   args     Any amount of arguments to be passed to the call
- */
-export default function broadcastIPCMessage (channel: string, ...args: any[]): void {
-  const allWindows = BrowserWindow.getAllWindows()
-
-  for (const window of allWindows) {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-    window.webContents.send(channel, ...args)
-  }
+/** Broadcast a typed platform event to the current Tauri application. */
+export default function broadcastPlatformMessage (channel: string, ...args: unknown[]): void {
+  void emit(channel, args.length === 1 ? args[0] : args).catch(error => {
+    console.error(`[Platform] Could not emit ${channel}`, error)
+  })
 }

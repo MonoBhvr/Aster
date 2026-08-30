@@ -37,6 +37,9 @@ export type PushUpdateCallback = (filePath: string, version: number, updates: Up
  */
 export const reloadStateEffect = StateEffect.define<boolean>()
 
+/** Requests that the active synchronization plugin flush its pending updates. */
+export const flushDocumentEffect = StateEffect.define<(error?: unknown) => void>()
+
 /**
  * Call this function to retrieve an Extension that can be used to synchronize
  * an editor with a central document authority.
@@ -58,11 +61,11 @@ export function hookDocumentAuthority (
   pushUpdates: PushUpdateCallback
 ): Extension {
   const plugin = ViewPlugin.fromClass(class {
-    private isCurrentlyPushing: boolean
+    private pushPromise: Promise<void>|undefined
     private pluginDestroyed: boolean
 
     constructor (private readonly view: EditorView) {
-      this.isCurrentlyPushing = false
+      this.pushPromise = undefined
       this.pluginDestroyed = false
 
       // Immediately enter a loop to pull updates to the document. The pull
@@ -77,11 +80,21 @@ export function hookDocumentAuthority (
       if (update.docChanged) {
         this.push().catch(err => { console.error(`Pushing updates failed: ${String(err.message)}`, err) })
       }
+
+      for (const transaction of update.transactions) {
+        for (const effect of transaction.effects) {
+          if (effect.is(flushDocumentEffect)) {
+            this.push().then(() => effect.value()).catch(error => effect.value(error))
+          }
+        }
+      }
     }
 
     async push (): Promise<void> {
-      if (this.isCurrentlyPushing) {
-        return // There's another push going on atm
+      if (this.pushPromise !== undefined) {
+        // Explicit Save must wait for an auto-save already in flight.
+        await this.pushPromise
+        return
       }
 
       const updates = sendableUpdates(this.view.state)
@@ -89,17 +102,24 @@ export function hookDocumentAuthority (
         return // No updates available
       }
 
-      this.isCurrentlyPushing = true
       const version = getSyncedVersion(this.view.state)
       const serializedUpdates: Update[] = updates.map(u => {
         return { clientID: u.clientID, changes: u.changes.toJSON() }
       })
+      const operation = (async (): Promise<void> => {
+        const success = await pushUpdates(filePath, version, serializedUpdates)
+        if (!success) {
+          throw new Error('Document authority rejected the update')
+        }
+      })()
+      this.pushPromise = operation
 
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const success = await pushUpdates(filePath, version, serializedUpdates)
+      try {
+        await operation
+      } finally {
+        this.pushPromise = undefined
+      }
 
-      // Allow another push, if new updates have amassed during the push
-      this.isCurrentlyPushing = false
       setTimeout(() => {
         this.push().catch(err => { console.error(`Pushing updates failed: ${String(err.message)}`, err) })
       }, 100)

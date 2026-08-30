@@ -23,7 +23,7 @@ import assert from 'assert'
 import os from 'os'
 import { promises as fs } from 'fs'
 import path from 'path'
-import type { DatabaseRecord } from '../source/app/service-providers/citeproc'
+import type { DatabaseRecord } from '../source/platform/contracts'
 import { loadDatabase } from '../source/app/service-providers/citeproc/util/database-loader'
 
 interface Test {

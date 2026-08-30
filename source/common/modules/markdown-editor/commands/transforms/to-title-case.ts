@@ -11,7 +11,7 @@
  *
  * END HEADER
  */
-import type { ConfigOptions } from 'source/app/service-providers/config/get-config-template'
+import type { ConfigOptions } from 'source/platform/config-template'
 import { transformSelectedText } from './transform-selected-text'
 
 /**

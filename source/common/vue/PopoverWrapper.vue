@@ -155,7 +155,7 @@ function place (): void {
 
   // Windows doesn't have arrows on their popovers, just as they call them
   // "flyouts" instead of PopOvers. So on Windows we shouldn't show them.
-  if (process.platform === 'win32') {
+  if (window.platform.os === 'win32') {
     arrow.style.display = 'none'
   }
 

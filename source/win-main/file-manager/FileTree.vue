@@ -166,16 +166,16 @@ import { useWorkspaceStore } from 'source/pinia/workspace-store'
 import { retrieveChildrenAndSort } from './util/retrieve-children-and-sort'
 import type { AnyDescriptor } from 'source/types/common/fsal'
 import { getSorter } from 'source/common/util/directory-sorter'
-import type { DocumentManagerIPCAPI } from 'source/app/service-providers/documents'
+import type { DocumentManagerIPCAPI } from 'source/platform/contracts'
 import { pathDirname } from 'source/common/util/renderer-path-polyfill'
 import { closeFile, closeWorkspace } from './util/item-composable'
 import showPopupMenu, { type AnyMenuItem } from 'source/common/modules/window-register/application-menu-helper'
-import type { CloseAllIPCAPI } from 'source/app/service-providers/windows'
+import type { CloseAllIPCAPI } from 'source/platform/contracts'
 import PopoverWrapper from 'source/common/vue/PopoverWrapper.vue'
 import ButtonControl from 'source/common/vue/form/elements/ButtonControl.vue'
 import { filterDescriptorChildren } from './util/filter-children'
 
-const ipcRenderer = window.ipc
+const ipcRenderer = window.platform.ipc
 
 const props = defineProps<{
   isVisible: boolean
@@ -205,7 +205,7 @@ const showFilesSection = computed(() => configStore.config.fileManagerShowFiles)
 const showWorkspacesSection = computed(() => configStore.config.fileManagerShowWorkspaces)
 const lastLeafId = computed(() => documentTreeStore.lastLeafId)
 
-const platform = process.platform
+const platform = window.platform.os
 const fileSectionHeading = trans('Files')
 const workspaceSectionHeading = trans('Workspaces')
 const noRootsMessage = trans('No open files or folders')

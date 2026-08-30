@@ -20,13 +20,13 @@ import { md2html } from '@common/modules/markdown-utils/markdown-to-html'
 import formatDate from '@common/util/format-date'
 import { CITEPROC_MAIN_DB } from '@dts/common/citeproc'
 import { configField } from '../util/configuration'
-import type { FindFileAndReturnMetadataResult } from 'source/app/service-providers/commands/file-find-and-return-meta-data'
+import type { FindFileAndReturnMetadataResult } from 'source/platform/contracts'
 import { pathDirname } from 'source/common/util/renderer-path-polyfill'
 import makeValidUri from 'source/common/util/make-valid-uri'
-import type { ForceOpenAPI } from 'source/app/service-providers/commands/force-open'
+import type { ForceOpenAPI } from 'source/platform/contracts'
 import { sanitizeHTML } from 'source/common/util/sanitize-html'
 
-const ipcRenderer = window.ipc
+const platformIpc = window.platform.ipc
 
 // Previews files with tooltips
 async function filePreviewTooltip (view: EditorView, pos: number, side: 1 | -1): Promise<Tooltip|null> {
@@ -45,7 +45,7 @@ async function filePreviewTooltip (view: EditorView, pos: number, side: 1 | -1):
 
   const fileToDisplay = view.state.sliceDoc(contentNode.from, contentNode.to)
 
-  const res: FindFileAndReturnMetadataResult|undefined = await ipcRenderer.invoke(
+  const res: FindFileAndReturnMetadataResult|undefined = await platformIpc.invoke(
     'application',
     { command: 'file-find-and-return-meta-data', payload: fileToDisplay }
   )
@@ -87,7 +87,7 @@ function getPreviewElement (metadata: FindFileAndReturnMetadataResult, linkConte
 
   const title = document.createElement('p')
   title.classList.add('filename')
-  title.textContent = metadata.title
+  title.textContent = metadata.title ?? ''
 
   const content = document.createElement('div')
   content.classList.add('note-content')
@@ -101,7 +101,7 @@ function getPreviewElement (metadata: FindFileAndReturnMetadataResult, linkConte
     metadata.previewMarkdown,
     {
       zknLinkFormat,
-      onCitation: window.getCitationCallback(CITEPROC_MAIN_DB),
+      onCitation: window.platform.getCitationCallback(CITEPROC_MAIN_DB),
       // Convert the image links to absolute (if necessary)
       onImageSrc (src) {
         const isDataUrl = /^data:[a-zA-Z0-9/;=]+(?:;base64){0,1},.+/.test(src)
@@ -123,13 +123,13 @@ function getPreviewElement (metadata: FindFileAndReturnMetadataResult, linkConte
   meta.classList.add('metadata')
   meta.innerHTML = `${trans('Word count')}: ${metadata.wordCount}`
   meta.innerHTML += '<br>'
-  meta.innerHTML += `${trans('Modified')}: ${formatDate(metadata.modtime, window.config.get('appLang') as string)}`
+  meta.innerHTML += `${trans('Modified')}: ${formatDate(metadata.modtime, window.platform.config.get('appLang') as string)}`
 
   const actions = document.createElement('div')
   actions.classList.add('actions')
 
   const openFunc = function (): void {
-    ipcRenderer.invoke('application', {
+    platformIpc.invoke('application', {
       command: 'force-open',
       payload: {
         linkContents,
@@ -148,9 +148,9 @@ function getPreviewElement (metadata: FindFileAndReturnMetadataResult, linkConte
   // Only if preference "Avoid New Tabs" is set,
   // offer an additional button on preview tooltip
   // to open the file in a new tab
-  if (window.config.get('system.avoidNewTabs') === true) {
+  if (window.platform.config.get('system.avoidNewTabs') === true) {
     const openFuncNewTab = function (): void {
-      ipcRenderer.invoke('application', {
+      platformIpc.invoke('application', {
         command: 'force-open',
         payload: {
           linkContents,

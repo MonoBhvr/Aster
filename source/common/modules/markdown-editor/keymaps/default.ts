@@ -255,8 +255,8 @@ export function mainEditorKeybindings (customShortcutMap: CustomEditorShortcut[]
     { key: sc('tr-single-quotes-to-double'), run: singleQuotesToDouble },
     { key: sc('tr-emdash-add-spaces'), run: addSpacesAroundEmdashes },
     { key: sc('tr-emdash-remove-spaces'), run: removeSpacesAroundEmdashes },
-    { key: sc('tr-sentence-case'), run: toSentenceCase(String(window.config.get('appLang'))) },
-    { key: sc('tr-title-case'), run: toTitleCase(String(window.config.get('appLang'))) },
+    { key: sc('tr-sentence-case'), run: toSentenceCase(String(window.platform.config.get('appLang'))) },
+    { key: sc('tr-title-case'), run: toTitleCase(String(window.platform.config.get('appLang'))) },
 
     { key: sc('autocomplete-invoke'), run: startCompletion },
     { key: sc('autocomplete-accept'), run: acceptCompletion },

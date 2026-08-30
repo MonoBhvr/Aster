@@ -15,7 +15,7 @@
 import { type Completion } from '@codemirror/autocomplete'
 import { StateEffect, StateField } from '@codemirror/state'
 import { type EditorView } from '@codemirror/view'
-import { type TagRecord } from '@providers/tags'
+import { type TagRecord } from 'source/platform/contracts'
 import { type AutocompletePlugin } from '.'
 
 /**

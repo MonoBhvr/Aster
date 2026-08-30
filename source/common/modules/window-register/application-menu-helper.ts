@@ -66,7 +66,7 @@ export interface Point {
   y: number
 }
 
-const ipcRenderer = window.ipc
+const platformIpc = window.platform.ipc
 
 /**
  * Recursively removes any actions found in the provided menu item.
@@ -171,7 +171,7 @@ export default function showPopupMenu (position: Point|Rect, items: AnyMenuItem[
     targetRect.left = position.x
   }
 
-  if (process.platform === 'darwin') {
+  if (window.platform.os === 'darwin') {
     // NOTE: On macOS, we don't want the custom styled menus, but rather we want
     // the native context menus (since the custom styled menus are only
     // necessary on those platforms where you have a menu bar we have to manage)
@@ -185,7 +185,7 @@ export default function showPopupMenu (position: Point|Rect, items: AnyMenuItem[
     // functions, we have to remove them before sending the stuff over the pipe.
     const safeItems = items.map(removeActions)
 
-    ipcRenderer.invoke('menu-provider', {
+    platformIpc.invoke('menu-provider', {
       command: 'display-native-context-menu',
       payload: {
         menu: safeItems,
@@ -293,7 +293,7 @@ export default function showPopupMenu (position: Point|Rect, items: AnyMenuItem[
     appMenu.appendChild(menuItem)
   }
 
-  if (window.config.get('debug') === true) {
+  if (window.platform.config.get('debug') === true) {
     // In debug mode, add an "inspect element" menu item to each and every
     // context menu that is being opened.
     const menuItem = renderMenuItem({
@@ -303,7 +303,7 @@ export default function showPopupMenu (position: Point|Rect, items: AnyMenuItem[
     })
 
     menuItem.addEventListener('mousedown', (event) => {
-      ipcRenderer.send('window-controls', {
+      platformIpc.send('window-controls', {
         command: 'inspect-element',
         payload: {
           // If we only have a point, width and height will be 0,
@@ -404,8 +404,8 @@ function renderMenuItem (item: AnyMenuItem, elementClass?: string): HTMLElement 
     const accel = document.createElement('span')
     let acc = item.accelerator
     // Make the accelerator system-specific
-    acc = acc.replace('CmdOrCtrl', (process.platform === 'darwin') ? 'Cmd' : 'Ctrl')
-    acc = acc.replace('CommandOrControl', (process.platform === 'darwin') ? 'Cmd' : 'Ctrl')
+    acc = acc.replace('CmdOrCtrl', (window.platform.os === 'darwin') ? 'Cmd' : 'Ctrl')
+    acc = acc.replace('CommandOrControl', (window.platform.os === 'darwin') ? 'Cmd' : 'Ctrl')
 
     // Some improvements to legibility
     acc = acc.replace('Command', 'Cmd')
@@ -416,7 +416,7 @@ function renderMenuItem (item: AnyMenuItem, elementClass?: string): HTMLElement 
     // Replace some common keycodes with their correct symbols
     acc = acc.replace('Cmd', '⌘')
     acc = acc.replace('Shift', '⇧')
-    if (process.platform === 'darwin') {
+    if (window.platform.os === 'darwin') {
       acc = acc.replace('Alt', '⎇')
       acc = acc.replace('Option', '⎇')
     }
@@ -426,7 +426,7 @@ function renderMenuItem (item: AnyMenuItem, elementClass?: string): HTMLElement 
 
     // Afterwards, remove all plus signs for macOS. Windows and Linux still
     // use Plus-signs to display accelerators
-    if (process.platform === 'darwin') {
+    if (window.platform.os === 'darwin') {
       acc = acc.replace(/\+/g, ' ') // Use a thin space (U+2009)
       acc = acc.replace('Plus', '+') // Obviously, needs to come last
     }

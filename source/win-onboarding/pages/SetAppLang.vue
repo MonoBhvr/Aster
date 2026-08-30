@@ -31,11 +31,11 @@
 import { trans } from 'source/common/i18n-renderer'
 import { ref, onMounted, watch } from 'vue'
 import { resolveLangCode } from 'source/common/util/map-lang-code'
-import type { OnboardingIPCSetAppLangMessage } from 'source/app/service-providers/config/onboarding-window'
+import type { OnboardingIPCSetAppLangMessage } from 'source/platform/contracts'
 import { loadData } from '@common/i18n-renderer'
 import LoadingSpinner from 'source/common/vue/LoadingSpinner.vue'
 
-const ipcRenderer = window.ipc
+const platformIpc = window.platform.ipc
 
 const isLoading = ref(false)
 
@@ -45,7 +45,7 @@ const emit = defineEmits<{
   (e: 'enable-navigation'): void
 }>()
 
-const originalLanguage = window.config.get('appLang')
+const originalLanguage = window.platform.config.get<string>('appLang')
 
 const pageHeading = ref(trans('Which Language do you speak?'))
 const langIntro = ref(trans('Based on your operating system settings, we have selected %s as the application language. If you wish, you can select a different language here.', originalLanguage))
@@ -68,7 +68,7 @@ watch(appLang, () => {
 
 async function getAvailableLanguages () {
   // Get a list of all available languages
-  const languages = await ipcRenderer.invoke('application', {
+  const languages = await platformIpc.invoke<string[]>('application', {
     command: 'get-available-languages'
   })
 
@@ -87,7 +87,7 @@ function changeAppLang () {
   emit('disable-navigation')
   isLoading.value = true
   const msg = { command: 'set-app-lang', language: appLang.value } as OnboardingIPCSetAppLangMessage
-  ipcRenderer.invoke('onboarding', msg)
+  platformIpc.invoke('onboarding', msg)
     .then(() => {
       loadData()
         .then(() => {

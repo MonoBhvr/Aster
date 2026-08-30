@@ -20,9 +20,10 @@ import type { Extension } from '@codemirror/state'
 import { type ExParams, vim, Vim, type CodeMirror } from '@replit/codemirror-vim'
 import { configField } from '../util/configuration'
 import { editorMetadataFacet } from './editor-metadata'
-import type { DocumentManagerIPCAPI } from 'source/app/service-providers/documents'
+import { flushDocumentEffect } from './remote-doc'
+import type { DocumentManagerIPCAPI } from 'source/platform/contracts'
 
-const ipcRenderer = window.ipc
+const platformIpc = window.platform.ipc
 
 /**
  * Sends a save-request to the main process.
@@ -40,20 +41,19 @@ function write (cm: CodeMirror, _params: ExParams): Promise<void> {
     return new Promise((resolve, reject) => reject())
   }
 
-  // Grab the required information from the editor state
-  const filePath = cm.cm6.state.field(configField).metadata.path
-
-  // Return the promise so that the chained wq command can catch it
-  return ipcRenderer.invoke('documents-provider', {
-    command: 'save-file',
-    payload: { path: filePath }
-  } as DocumentManagerIPCAPI)
-    .then(result => {
-      if (result !== true) {
-        console.error('Retrieved a falsy result from main, indicating an error with saving the file.')
-      }
+  // Route :write through the same remote-document synchronizer as Ctrl/Cmd+S.
+  // This also lets chained :wq wait for the authority write to complete.
+  return new Promise((resolve, reject) => {
+    cm.cm6.dispatch({
+      effects: flushDocumentEffect.of(error => {
+        if (error === undefined) {
+          resolve()
+        } else {
+          reject(error)
+        }
+      })
     })
-    .catch(e => console.error(e))
+  })
 }
 
 /**
@@ -74,7 +74,7 @@ function quit (cm: CodeMirror, _params: ExParams): Promise<void> {
   }
 
   // Request closing of the editor with main
-  return ipcRenderer.invoke('documents-provider', {
+  return platformIpc.invoke('documents-provider', {
     command: 'close-file',
     payload: {
       path: filePath,

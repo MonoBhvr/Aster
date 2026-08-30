@@ -166,10 +166,10 @@ import showPopupMenu, { type AnyMenuItem } from '@common/modules/window-register
 import { useConfigStore, useWindowStateStore, useWorkspaceStore } from 'source/pinia'
 import { pathBasename, pathDirname, relativePath } from 'source/common/util/renderer-path-polyfill'
 import { sanitizeHTML } from 'source/common/util/sanitize-html'
-import type { SearchProviderIPCAPI, SearchResult, FileContentSearchResult } from 'source/app/service-providers/search'
+import type { SearchProviderIPCAPI, SearchResult, FileContentSearchResult } from 'source/platform/contracts'
 import CheckboxControl from 'source/common/vue/form/elements/CheckboxControl.vue'
 import { DynamicScroller, DynamicScrollerItem } from 'vue-virtual-scroller'
-import type { MetadataSearchResult } from 'source/app/service-providers/search/util/boolean-search'
+import type { MetadataSearchResult } from 'source/platform/contracts'
 import getDocumentTitle from './util/get-document-title'
 
 /**
@@ -194,7 +194,7 @@ export interface SearchResultWrapper {
   weight: number
 }
 
-const ipcRenderer = window.ipc
+const ipcRenderer = window.platform.ipc
 
 const searchTitle = trans('Search across all files')
 const queryInputLabel = trans('Enter your search terms below')

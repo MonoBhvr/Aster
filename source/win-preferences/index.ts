@@ -43,7 +43,7 @@ import { createPinia } from 'pinia'
 import App from './App.vue'
 import windowRegister from '@common/modules/window-register'
 
-const ipcRenderer = window.ipc
+const ipcRenderer = window.platform.ipc
 
 // The first thing we have to do is run the window controller
 windowRegister()

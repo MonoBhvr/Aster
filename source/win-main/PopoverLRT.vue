@@ -61,8 +61,7 @@
 
 <script setup lang="ts">
 import { DateTime } from 'luxon'
-import type { LRTIPCSyncMessage } from 'source/app/service-providers/long-running-tasks'
-import type { LRT_JSON } from 'source/app/service-providers/long-running-tasks/task'
+import type { LRTIPCSyncMessage, LRT_JSON } from 'source/platform/contracts'
 import { trans } from 'source/common/i18n-renderer'
 import LoadingSpinner from 'source/common/vue/LoadingSpinner.vue'
 import PopoverWrapper from 'source/common/vue/PopoverWrapper.vue'
@@ -71,7 +70,7 @@ import { useLRTStore } from 'source/pinia'
 import { TaskStatus } from 'source/pinia/lrt-store'
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 
-const ipcRenderer = window.ipc
+const ipcRenderer = window.platform.ipc
 
 // Time in ms when running tasks should be updating
 const REFRESH_INTERVAL = 100

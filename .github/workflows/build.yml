@@ -40,8 +40,7 @@ name: Build
 #                                                                             #
 # * Every runner will retrieve the package.json's "version" field by running  #
 #   a somewhat weird-looking command. This is necessary to make finding the   #
-#   releases easier which are being produced by electron-forge and electron-  #
-#   builder.                                                                  #
+#   releases easier which are being produced by the Tauri bundler.           #
 # * Especially the macOS runner can often produce problems, because there     #
 #   have been rumors that apparently even the macOS server operating systems  #
 #   tend to open modal windows -- even though they're running headless. This  #

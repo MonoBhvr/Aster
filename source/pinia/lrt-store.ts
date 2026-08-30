@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
-import type { LRTIPCAsyncMessage, LRTIPCSyncMessage } from 'source/app/service-providers/long-running-tasks'
-import type { LRT_JSON } from 'source/app/service-providers/long-running-tasks/task'
+import type { LRTIPCAsyncMessage, LRTIPCSyncMessage } from 'source/platform/contracts'
+import type { LRT_JSON } from 'source/platform/contracts'
 import { ref } from 'vue'
 
 /**
@@ -26,10 +26,10 @@ export enum TaskStatus {
   'aborted'
 }
 
-const ipcRenderer = window.ipc
+const platformIpc = window.platform.ipc
 
 async function fetchTasks (): Promise<LRT_JSON[]> {
-  return await ipcRenderer.invoke('lrt-provider', { command: 'get-tasks' } as LRTIPCAsyncMessage)
+  return await platformIpc.invoke('lrt-provider', { command: 'get-tasks' } as LRTIPCAsyncMessage)
 }
 
 export const useLRTStore = defineStore('lrt', () => {
@@ -41,7 +41,7 @@ export const useLRTStore = defineStore('lrt', () => {
     .catch(err => console.error('Could not fetch long running tasks', err))
 
   // Hook event listeners
-  ipcRenderer.on('lrt-provider', (event, args: LRTIPCSyncMessage) => {
+  platformIpc.on('lrt-provider', (event, args: LRTIPCSyncMessage) => {
     if (args.command === 'update-task') {
       // A single task was updated
       const { task } = args.payload
@@ -65,7 +65,7 @@ export const useLRTStore = defineStore('lrt', () => {
     }
   })
 
-  ipcRenderer.on('lrt-provider', (event, args: LRTIPCSyncMessage) => {
+  platformIpc.on('lrt-provider', (event, args: LRTIPCSyncMessage) => {
     if (args.command === 'new-task') {
       // A new task has been started
       tasks.value.push(args.payload.task)
@@ -83,7 +83,7 @@ export const useLRTStore = defineStore('lrt', () => {
       throw new Error(`Cannot abort task ${id}: Not abortable.`)
     }
 
-    ipcRenderer.send('lrt-provider', { command: 'abort-task', payload: { id } } as LRTIPCSyncMessage)
+    platformIpc.send('lrt-provider', { command: 'abort-task', payload: { id } } as LRTIPCSyncMessage)
   }
 
   function deleteTask (id: string) {
@@ -93,7 +93,7 @@ export const useLRTStore = defineStore('lrt', () => {
       throw new Error(`Could not delete task ${id}: Not found.`)
     }
 
-    ipcRenderer.invoke('lrt-provider', { command: 'delete-task', payload: { id: task.id } } as LRTIPCSyncMessage)
+    platformIpc.invoke('lrt-provider', { command: 'delete-task', payload: { id: task.id } } as LRTIPCSyncMessage)
       .catch(err => console.error('Could not delete task', err))
   }
 

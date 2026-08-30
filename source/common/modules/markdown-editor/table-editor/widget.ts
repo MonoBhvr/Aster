@@ -360,7 +360,7 @@ function updateRow (
   // Prepare the citation callback
   let { library } = view.state.field(configField).metadata
   library = library === '' ? CITEPROC_MAIN_DB : library
-  const onCitation = window.getCitationCallback(library)
+  const onCitation = window.platform.getCitationCallback(library)
 
   for (let i = 0; i < astRow.cells.length; i++) {
     const cell = astRow.cells[i]

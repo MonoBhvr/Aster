@@ -34,9 +34,9 @@ interface ExplodedShortcut {
 }
 
 // Proper key symbols based on platform
-const modKeySymbol = process.platform === 'darwin' ? '⌘' : '⊞'
-const altKeySymbol = process.platform === 'darwin' ? '⎇' : 'Alt'
-const ctrlKeySymbol = process.platform === 'darwin' ? '⌃' : 'Ctrl'
+const modKeySymbol = window.platform.os === 'darwin' ? '⌘' : '⊞'
+const altKeySymbol = window.platform.os === 'darwin' ? '⎇' : 'Alt'
+const ctrlKeySymbol = window.platform.os === 'darwin' ? '⌃' : 'Ctrl'
 
 const props = defineProps<{
   shortcut: ExplodedShortcut

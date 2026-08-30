@@ -52,8 +52,8 @@ module.exports = {
     alias: {
       source: [path.resolve(__dirname, 'source')],
       '@common': [path.resolve(__dirname, 'source/common')],
-      '@providers': [path.resolve(__dirname, 'source/app/service-providers')],
-      '@dts': [path.resolve(__dirname, 'source/types')]
+      '@dts': [path.resolve(__dirname, 'source/types')],
+      '@platform': [path.resolve(__dirname, 'source/platform')]
     },
     fallback: {
       // Don't polyfill these modules

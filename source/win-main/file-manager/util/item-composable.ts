@@ -21,9 +21,9 @@ import type { AnyDescriptor } from 'source/types/common/fsal'
 import { ref, computed, type Ref, watch, nextTick } from 'vue'
 import { hasImageExt, hasPDFExt } from 'source/common/util/file-extention-checks'
 import makeValidUri from 'source/common/util/make-valid-uri'
-import type { DocumentManagerIPCAPI } from 'source/app/service-providers/documents'
+import type { DocumentManagerIPCAPI } from 'source/platform/contracts'
 
-const ipcRenderer = window.ipc
+const ipcRenderer = window.platform.ipc
 
 /**
  * Close a file root path at `path`, including all open
@@ -66,7 +66,7 @@ export function closeWorkspace (path: string): void {
     return
   }
 
-  ipcRenderer.invoke('documents-provider', {
+  ipcRenderer.invoke<string[]>('documents-provider', {
     command: 'get-open-workspace-files',
     payload: {
       path: path,

@@ -15,7 +15,7 @@
 import { trans } from '@common/i18n-renderer'
 import { type PreferencesFieldset } from '../App.vue'
 import { PreferencesGroups } from './_preferences-groups'
-import type { ConfigOptions } from 'source/app/service-providers/config/get-config-template'
+import type { ConfigOptions } from 'source/platform/config-template'
 
 export function getFileManagerFields (config: ConfigOptions): PreferencesFieldset[] {
   return [

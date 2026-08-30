@@ -76,7 +76,7 @@ export default function makeValidUri (uri: string, base: string = ''): string {
     // the URL will start with four slashes. This is important to give the main
     // process a chance to detect that this is supposed to be a network share.
     // For more context, please see issue #5495
-    return (new URL(`safe-file://${uri}`)).toString()
+    return (new URL(`file://${uri}`)).toString()
   }
 
   // Set the isFile var to undefined
@@ -176,13 +176,21 @@ export default function makeValidUri (uri: string, base: string = ''): string {
       uri = resolvePath(base, uri)
     }
 
-    // See https://github.com/Zettlr/Zettlr/issues/5489
-    // I was very salty.
-    if (process.platform === 'win32') {
-      uri = `/${uri}`
-    }
+    protocol = 'file'
+  }
 
-    protocol = 'safe-file'
+  // Tauri's asset protocol is the safe replacement for the old custom file
+  // scheme. Keep ordinary file URLs for browser/unit-test consumers.
+  const isTauri = typeof window !== 'undefined' && '__TAURI_INTERNALS__' in window
+  if (isFile && isTauri) {
+    return window.platform.toAssetUrl(uri)
+  }
+
+  // See https://github.com/Zettlr/Zettlr/issues/5489
+  // I was very salty. The leading slash is needed for ordinary file URLs on
+  // Windows, but must not be passed to Tauri's asset protocol.
+  if (isFile && window.platform.os === 'win32' && /^[A-Za-z]:\//.test(uri)) {
+    uri = `/${uri}`
   }
 
   // Now we can return the correct uri, made absolute

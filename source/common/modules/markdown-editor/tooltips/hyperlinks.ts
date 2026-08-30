@@ -23,7 +23,7 @@ import _ from 'underscore'
 import { findReferenceForLinkLabel } from '../util/links'
 import { nodeAtPos } from '../util/node-in-selection'
 
-const ipcRenderer = window.ipc
+const platformIpc = window.platform.ipc
 
 function unescape (text: string): string {
   const value = _.unescape(text)
@@ -78,7 +78,7 @@ export function urlTooltip (view: EditorView, pos: number, side: 1 | -1): Toolti
     above: true,
     create (_view) {
       const dom = document.createElement('div')
-      let shortUrl = shortenUrlVisually(validURI.replace('safe-file://', ''))
+      let shortUrl = shortenUrlVisually(validURI.replace('file://', ''))
       // Due to the colons in the drive letters on Windows, the pathname will
       // look like this: /C:/Users/Documents/test.jpg
       // See: https://github.com/Zettlr/Zettlr/issues/5489
@@ -87,7 +87,7 @@ export function urlTooltip (view: EditorView, pos: number, side: 1 | -1): Toolti
       }
 
       dom.textContent = trans('Fetching link preview…')
-      ipcRenderer.invoke('application', { command: 'fetch-link-preview', payload: validURI })
+      platformIpc.invoke<{ title?: string, image?: string, summary?: string } | undefined>('application', { command: 'fetch-link-preview', payload: validURI })
         .then(res => {
           if (res === undefined) {
             dom.textContent = shortUrl

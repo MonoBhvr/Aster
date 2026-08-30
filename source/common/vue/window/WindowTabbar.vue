@@ -92,7 +92,7 @@ const emit = defineEmits<(e: 'tab', value: number) => void>()
 const currentTab = ref<number>(0)
 // The following are required to hide tab labels on win32 w/ narrow windows
 const currentWindowWidth = ref<number>(window.innerWidth)
-const platform = ref<typeof process.platform>(process.platform)
+const platform = ref<typeof window.platform.os>(window.platform.os)
 
 watch(currentTab, () => {
   emit('tab', currentTab.value)

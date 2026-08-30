@@ -115,7 +115,7 @@ export function languageToolStatus (state: EditorState, view: EditorView): Statu
       // Now sort the items ascending (we can't sort the final items,
       // since they'd be sorted according to the flag emoji order)
       const coll = new Intl.Collator(
-        [ window.config.get('appLang'), 'en' ],
+        [ window.platform.config.get('appLang'), 'en' ],
         { sensitivity: 'base', usage: 'sort' }
       )
 

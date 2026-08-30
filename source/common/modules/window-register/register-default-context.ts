@@ -16,7 +16,7 @@
 
 import { trans } from '@common/i18n-renderer'
 import showPopupMenu, { type AnyMenuItem, type Point } from '@common/modules/window-register/application-menu-helper'
-const ipcRenderer = window.ipc
+const platformIpc = window.platform.ipc
 
 // The following type-attributes can receive copy and paste commands
 const TEXT_INPUT_TYPES = [
@@ -104,7 +104,7 @@ function displayContextMenu (posX: number, posY: number, target: HTMLInputElemen
   const point: Point = { x: posX, y: posY }
   currentCallback = showPopupMenu(point, items, (clickedID: string) => {
     // In this easy instance, we can simply send the ID to main ...
-    ipcRenderer.send('window-controls', { command: clickedID })
+    platformIpc.send('window-controls', { command: clickedID })
     // ... and re-focus the input
     target.focus()
   })

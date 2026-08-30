@@ -83,7 +83,7 @@ import { ref, computed, watch } from 'vue'
 import type { CodeFileDescriptor, MDFileDescriptor, OtherFileDescriptor } from 'source/types/common/fsal'
 import { useConfigStore, useWritingTargetsStore, useTagsStore } from 'source/pinia'
 
-const ipcRenderer = window.ipc
+const ipcRenderer = window.platform.ipc
 
 const props = defineProps<{
   target: HTMLElement

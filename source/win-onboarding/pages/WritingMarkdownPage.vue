@@ -51,30 +51,30 @@ const autosaveIntro = trans('Some people prefer an app automatically saving your
 const manualLabel = trans('Save manually')
 const autosaveLabel = trans('Activate Autosave')
 
-const renderingMode = ref(window.config.get('display.renderingMode') as 'preview'|'raw')
-const showWhitespace = ref(Boolean(window.config.get('editor.showWhitespace')))
-const showStatusbar = ref(Boolean(window.config.get('editor.showStatusbar')))
-const autosave = ref(window.config.get('editor.autoSave') as 'off'|'immediately'|'delayed')
-const showFormattingToolbar = ref(Boolean(window.config.get('editor.showFormattingToolbar')))
+const renderingMode = ref(window.platform.config.get('display.renderingMode') as 'preview'|'raw')
+const showWhitespace = ref(Boolean(window.platform.config.get('editor.showWhitespace')))
+const showStatusbar = ref(Boolean(window.platform.config.get('editor.showStatusbar')))
+const autosave = ref(window.platform.config.get('editor.autoSave') as 'off'|'immediately'|'delayed')
+const showFormattingToolbar = ref(Boolean(window.platform.config.get('editor.showFormattingToolbar')))
 
 watch(renderingMode, () => {
-  window.config.set('display.renderingMode', renderingMode.value)
+  window.platform.config.set('display.renderingMode', renderingMode.value)
 })
 
 watch(showWhitespace, () => {
-  window.config.set('editor.showWhitespace', showWhitespace.value)
+  window.platform.config.set('editor.showWhitespace', showWhitespace.value)
 })
 
 watch(showStatusbar, () => {
-  window.config.set('editor.showStatusbar', showStatusbar.value)
+  window.platform.config.set('editor.showStatusbar', showStatusbar.value)
 })
 
 watch(autosave, () => {
-  window.config.set('editor.autoSave', autosave.value)
+  window.platform.config.set('editor.autoSave', autosave.value)
 })
 
 watch(showFormattingToolbar, () => {
-  window.config.set('editor.showFormattingToolbar', showFormattingToolbar.value)
+  window.platform.config.set('editor.showFormattingToolbar', showFormattingToolbar.value)
 })
 </script>
 

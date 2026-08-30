@@ -43,10 +43,10 @@ const darkModeLabel = trans('Zettlr supports both light and dark mode. You can t
 const darkModeControlLabel = trans('Activate dark mode')
 const darkModeScheduleLabel = trans('Do you wish to let Zettlr automatically switch to dark mode?')
 
-const autoDarkModeStart = window.config.get('autoDarkModeStart')
-const autoDarkModeEnd = window.config.get('autoDarkModeEnd')
-const dmStart = DateTime.fromFormat(String(autoDarkModeStart), 'HH:mm', { locale: window.config.get('appLang') }).toLocaleString({ timeStyle: 'short' })
-const dmEnd = DateTime.fromFormat(String(autoDarkModeEnd), 'HH:mm', { locale: window.config.get('appLang') }).toLocaleString({ timeStyle: 'short' })
+const autoDarkModeStart = window.platform.config.get('autoDarkModeStart')
+const autoDarkModeEnd = window.platform.config.get('autoDarkModeEnd')
+const dmStart = DateTime.fromFormat(String(autoDarkModeStart), 'HH:mm', { locale: window.platform.config.get('appLang') }).toLocaleString({ timeStyle: 'short' })
+const dmEnd = DateTime.fromFormat(String(autoDarkModeEnd), 'HH:mm', { locale: window.platform.config.get('appLang') }).toLocaleString({ timeStyle: 'short' })
 
 const darkModeScheduleTimesInfo = trans('Zettlr will turn on dark mode between %s and %s. You can adjust these times in the settings.', dmStart, dmEnd)
 
@@ -56,20 +56,20 @@ const darkModeScheduleOptions = {
   schedule: trans('Schedule dark mode')
 }
 
-const darkMode = ref(Boolean(window.config.get('darkMode')))
-const darkModeSchedule = ref(window.config.get('autoDarkMode') as 'off'|'system'|'schedule')
-const leaveRunningInNotificationArea = ref(Boolean(window.config.get('system.leaveAppRunning')))
+const darkMode = ref(Boolean(window.platform.config.get('darkMode')))
+const darkModeSchedule = ref(window.platform.config.get('autoDarkMode') as 'off'|'system'|'schedule')
+const leaveRunningInNotificationArea = ref(Boolean(window.platform.config.get('system.leaveAppRunning')))
 
 watch(darkMode, () => {
-  window.config.set('darkMode', darkMode.value)
+  window.platform.config.set('darkMode', darkMode.value)
 })
 
 watch(darkModeSchedule, () => {
-  window.config.set('autoDarkMode', darkModeSchedule.value)
+  window.platform.config.set('autoDarkMode', darkModeSchedule.value)
 })
 
 watch(leaveRunningInNotificationArea, () => {
-  window.config.set('system.leaveAppRunning', leaveRunningInNotificationArea.value)
+  window.platform.config.set('system.leaveAppRunning', leaveRunningInNotificationArea.value)
 })
 
 </script>

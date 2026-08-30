@@ -18,11 +18,11 @@ import { type DOMEventHandlers } from '@codemirror/view'
 import html2md from '@common/util/html-to-md'
 import { configField } from '../util/configuration'
 import { pathBasename, pathDirname, pathExtname, relativePath } from '@common/util/renderer-path-polyfill'
-import { type SaveImageFromClipboardAPI } from 'source/app/service-providers/commands/save-image-from-clipboard'
+import { type SaveImageFromClipboardAPI } from 'source/platform/contracts'
 import { hasMdOrCodeExt } from '@common/util/file-extention-checks'
-import type { DocumentManagerIPCAPI } from 'source/app/service-providers/documents'
+import type { DocumentManagerIPCAPI } from 'source/platform/contracts'
 
-const ipcRenderer = window.ipc
+const platformIpc = window.platform.ipc
 
 const imageRE = /\.(?:png|jpe?g|gif|bmp|svg|tiff?)$/i
 
@@ -67,7 +67,7 @@ async function saveImageFromClipboard (basePath: string, file: File): Promise<st
     reader.readAsDataURL(file)
   })
 
-  const pathToInsert: string|undefined = await ipcRenderer.invoke('application', {
+  const pathToInsert: string|undefined = await platformIpc.invoke('application', {
     command: 'save-image-from-clipboard',
     payload: { basePath, imageData, imageName: file.name } as SaveImageFromClipboardAPI
   })
@@ -144,7 +144,7 @@ export const mdPasteDropHandlers: DOMEventHandlers<any> = {
       // The user intends to paste an image or a series of files
       for (const file of data.files) {
         if (imageRE.test(file.name)) {
-          const filePath = window.getPathForFile(file)
+          const filePath = window.platform.getPathForFile(file)
           if (filePath === undefined) {
             // This image resides only within the clipboard, so prompt the user
             // to save it down. The command will already wrap everything into
@@ -214,7 +214,7 @@ export const mdPasteDropHandlers: DOMEventHandlers<any> = {
       const insertions: string[] = []
       // We have a list of files being dropped onto the editor --> handle them
       for (const file of dataTransfer.files) {
-        const filePath = window.getPathForFile(file)
+        const filePath = window.platform.getPathForFile(file)
         const isImage = imageRE.test(file.name)
 
         if (isImage && filePath !== undefined) {
@@ -237,7 +237,7 @@ export const mdPasteDropHandlers: DOMEventHandlers<any> = {
           // otherwise main will simply decide for us instead of us telling
           // which editor pane the user has dropped the file onto.
           // It's a Markdown or supported code file -> tell main to open them
-          ipcRenderer.invoke('documents-provider', {
+          platformIpc.invoke('documents-provider', {
             command: 'open-file',
             payload: {
               path: filePath,

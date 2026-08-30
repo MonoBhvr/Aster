@@ -135,7 +135,7 @@
 
 import type { ThemeDescriptor } from './elements/ThemeSelector.vue'
 import FormFieldControl from './FormField.vue'
-import type { FileFilter } from 'electron'
+import type { FileFilter } from 'source/platform/desktop'
 
 interface BasicInfo {
   /**

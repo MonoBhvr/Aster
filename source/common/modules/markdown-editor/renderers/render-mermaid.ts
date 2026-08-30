@@ -31,10 +31,10 @@ const DEFAULT_MERMAID_OPTIONS: MermaidConfig = {
 }
 
 // Always re-initialize mermaid as soon as the darkMode changes
-const ipcRenderer = window.ipc
-ipcRenderer.on('config-provider', (event, { command, payload }) => {
+const platformIpc = window.platform.ipc
+platformIpc.on('config-provider', (event, { command, payload }) => {
   if (command === 'update' && payload === 'darkMode') {
-    const isDarkMode = window.config.get('darkMode') as boolean
+    const isDarkMode = window.platform.config.get('darkMode') as boolean
     const theme = isDarkMode ? 'dark' : 'default'
     mermaid.initialize({ ...DEFAULT_MERMAID_OPTIONS, theme })
   }
@@ -145,7 +145,7 @@ function createWidget (state: EditorState, node: SyntaxNodeRef): MermaidWidget|u
   // NOTE: We have to pass the current value of the darkMode config value to
   // see in what mode the mermaid graph has actually been rendered to re-render
   // the graph if necessary
-  return new MermaidWidget(graph, node.node, window.config.get('darkMode') as boolean)
+  return new MermaidWidget(graph, node.node, window.platform.config.get('darkMode') as boolean)
 }
 
 export const renderMermaid = renderBlockWidgets(shouldHandleNode, createWidget)

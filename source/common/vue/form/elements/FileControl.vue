@@ -40,10 +40,9 @@
 import { trans } from '@common/i18n-renderer'
 import { ref, computed, watch, toRef } from 'vue'
 import TextControl from './TextControl.vue'
-import type { FileFilter } from 'electron'
-import type { RequestFilesIPCAPI } from 'source/app/service-providers/windows'
+import type { FileFilter } from 'source/platform/desktop'
 
-const ipcRenderer = window.ipc
+const platformIpc = window.platform.ipc
 
 const props = defineProps<{
   modelValue: string
@@ -78,12 +77,14 @@ watch(textValue, () => {
 })
 
 function requestFile (): void {
-  const payload: RequestFilesIPCAPI = {
+  const payload = {
+    title: trans('Select a file'),
     filters: props.filter ?? [{ name: trans('All Files'), extensions: ['*'] }],
-    multiSelection: false
+    multiple: false,
+    directory: false
   }
 
-  ipcRenderer.invoke('request-files', payload)
+  platformIpc.invoke<string[]>('request-files', payload)
     .then(result => {
       // Don't update to empty paths.
       if (result.length === 0 || result[0].trim() === '') {
@@ -98,7 +99,7 @@ function requestFile (): void {
 }
 
 function requestDir (): void {
-  ipcRenderer.invoke('request-dir')
+  platformIpc.invoke<string[]>('request-dir')
     .then(result => {
       // Don't update to empty paths.
       if (result.length === 0 || result[0].trim() === '') {

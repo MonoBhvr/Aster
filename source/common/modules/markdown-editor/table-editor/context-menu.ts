@@ -99,26 +99,26 @@ export function displayTableContextMenu (event: MouseEvent, mainView: EditorView
         {
           type: 'normal',
           label: trans('Insert new row above'),
-          accelerator: process.platform === 'darwin' ? 'Ctrl+Shift+Up' : 'Alt+Shift+Up',
+          accelerator: window.platform.os === 'darwin' ? 'Ctrl+Shift+Up' : 'Alt+Shift+Up',
           action () { addRowBefore(mainView) }
         },
         {
           type: 'normal',
           label: trans('Insert new row below'),
-          accelerator: process.platform === 'darwin' ? 'Ctrl+Shift+Down' : 'Alt+Shift+Down',
+          accelerator: window.platform.os === 'darwin' ? 'Ctrl+Shift+Down' : 'Alt+Shift+Down',
           action () { addRowAfter(mainView) }
         },
         { type: 'separator' },
         {
           type: 'normal',
           label: trans('Move row up'),
-          accelerator: process.platform === 'darwin' ? 'Ctrl+Up' : 'Alt+Up',
+          accelerator: window.platform.os === 'darwin' ? 'Ctrl+Up' : 'Alt+Up',
           action () { swapPrevRow(mainView) }
         },
         {
           type: 'normal',
           label: trans('Move row down'),
-          accelerator: process.platform === 'darwin' ? 'Ctrl+Down' : 'Alt+Down',
+          accelerator: window.platform.os === 'darwin' ? 'Ctrl+Down' : 'Alt+Down',
           action () { swapNextRow(mainView) }
         },
         { type: 'separator' },
@@ -141,26 +141,26 @@ export function displayTableContextMenu (event: MouseEvent, mainView: EditorView
         {
           type: 'normal',
           label: trans('Insert new column left'),
-          accelerator: process.platform === 'darwin' ? 'Ctrl+Shift+Left' : 'Alt+Shift+Left',
+          accelerator: window.platform.os === 'darwin' ? 'Ctrl+Shift+Left' : 'Alt+Shift+Left',
           action () { addColBefore(mainView) }
         },
         {
           type: 'normal',
           label: trans('Insert new column right'),
-          accelerator: process.platform === 'darwin' ? 'Ctrl+Shift+Right' : 'Alt+Shift+Right',
+          accelerator: window.platform.os === 'darwin' ? 'Ctrl+Shift+Right' : 'Alt+Shift+Right',
           action () { addColAfter(mainView) }
         },
         { type: 'separator' },
         {
           type: 'normal',
           label: trans('Move column left'),
-          accelerator: process.platform === 'darwin' ? 'Ctrl+Left' : 'Alt+Left',
+          accelerator: window.platform.os === 'darwin' ? 'Ctrl+Left' : 'Alt+Left',
           action () { swapPrevCol(mainView) }
         },
         {
           type: 'normal',
           label: trans('Move column right'),
-          accelerator: process.platform === 'darwin' ? 'Ctrl+Right' : 'Alt+Right',
+          accelerator: window.platform.os === 'darwin' ? 'Ctrl+Right' : 'Alt+Right',
           action () { swapNextCol(mainView) }
         },
         { type: 'separator' },

@@ -119,7 +119,7 @@ import { trans } from '@common/i18n-renderer'
 import type { AnyDescriptor, DirDescriptor, MDFileDescriptor } from '@dts/common/fsal'
 import { ref, computed, watch, toRef, onBeforeMount } from 'vue'
 import { useConfigStore } from 'source/pinia'
-import type { DirSettingsCommandAPI } from 'source/app/service-providers/commands/dir-settings'
+import type { DirSettingsCommandAPI } from 'source/platform/contracts'
 
 // Currently defined directory colors
 const AVAILABLE_DIRECTORY_COLORS = [
@@ -139,7 +139,7 @@ const COLOR_SWATCH_LABELS = {
   green: trans('Assign a green accent color'),
 } as const
 
-const ipcRenderer = window.ipc
+const ipcRenderer = window.platform.ipc
 
 const foldersLabel = trans('Directories')
 const modifiedLabel = trans('Modified')

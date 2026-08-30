@@ -1,85 +1,50 @@
-/**
- * @ignore
- * BEGIN HEADER
- *
- * Contains:        Application menu styles
- * CVM-Role:        CSS
- * Maintainer:      Hendrik Erz
- * License:         GNU GPL v3
- *
- * Description:     This file contains the styles for the custom application
- *                  menu which is being used on all non-macOS platforms.
- *
- * END HEADER
- */
+/* Custom context menus share the shell palette without changing menu helper behavior. */
+body div.application-menu {
+  position: fixed;
+  min-width: 190px;
+  max-width: min(360px, calc(100vw - 16px));
+  overflow-y: auto;
+  padding: 4px;
+  color: var(--ui-text-primary, #e8e8e8);
+  background: var(--ui-bg-raised, #303030);
+  border: 1px solid var(--ui-border-strong, rgba(255, 255, 255, .2));
+  border-radius: var(--ui-radius-md, 7px);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, .34);
+  font: 12px/1.3 system-ui, sans-serif;
 
-body {
-  div.application-menu {
-    background-color: rgb(230, 230, 230);
-    border: 1px solid rgb(180, 180, 180);
-    position: fixed;
-    overflow-y: auto; /* In case the menu is too small, enable scrolling */
-    font-family: system-ui, sans-serif;
-    font-size: 14px;
-    box-shadow: 5px 5px 15px 0px rgba(0, 0, 0, .3);
-    min-width: 150px;
-  
-    div.menu-item {
-      height: 25px;
-      line-height: 25px;
-      overflow: hidden;
-      margin: 5px;
-      padding: 0 5px;
-      display: grid;
-      grid-template-columns: 50px auto 100px;
-      grid-template-rows: 100%;
-      grid-template-areas: "status label after";
+  div.menu-item {
+    min-height: 28px;
+    margin: 1px 0;
+    padding: 0 8px;
+    display: grid;
+    align-items: center;
+    grid-template-columns: 22px minmax(0, 1fr) auto;
+    grid-template-areas: "status label after";
+    border-radius: var(--ui-radius-sm, 4px);
+    overflow: hidden;
+    transition: color 100ms ease, background-color 100ms ease;
 
-      &:not(.separator):not(.disabled):hover {
-        background-color: rgb(200, 200, 200);
-      }
-
-      &.disabled {
-        color: rgb(180, 180, 180);
-      }
-  
-      div.status {
-        grid-area: status;
-        text-align: center;
-      }
-      div.after-element {
-        grid-area: after;
-        text-align: right;
-      }
-      div.label {
-        grid-area: label;
-        text-align: left;
-      }
-  
-      /* Separators are obviously very small */
-      &.separator {
-        height: 1px;
-        border-bottom: 1px solid rgb(180, 180, 180);
-      }
+    &:not(.separator):not(.disabled):hover {
+      color: var(--ui-text-primary, #fff);
+      background: var(--ui-bg-hover, #383838);
     }
-  }
 
-  &.dark {
-    div.application-menu {
-      border: 1px solid #666;
-      background-color: #333;
-      color: #eee;
-    
-      div.menu-item {
-        div.after-element { color: #aaa; }
-    
-        &.disabled { color: #aaa; }
-    
-        /* Separators are obviously very small */
-        &.separator { background-color: #666; }
-    
-        &:not(.separator):not(.disabled):hover { background-color: #999; }
-      }
-    }    
+    &.disabled { color: var(--ui-icon-disabled, #777); cursor: not-allowed; }
+    div.status { grid-area: status; text-align: center; }
+    div.after-element { grid-area: after; padding-left: 16px; color: var(--ui-text-muted, #999); text-align: right; }
+    div.label { grid-area: label; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-align: left; }
+    &.separator { min-height: 1px; height: 1px; margin: 4px 6px; padding: 0; border-bottom: 1px solid var(--ui-border, rgba(255, 255, 255, .12)); }
+  }
+}
+
+body:not(.dark) div.application-menu {
+  color: #25252b;
+  background: #fff;
+  border-color: rgba(31, 31, 38, .24);
+
+  div.menu-item {
+    &:not(.separator):not(.disabled):hover { color: #25252b; background: #ececf0; }
+    &.disabled, div.after-element { color: #858590; }
+    &.separator { border-color: rgba(31, 31, 38, .14); }
   }
 }

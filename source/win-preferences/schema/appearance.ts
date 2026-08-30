@@ -15,10 +15,10 @@
 import { trans } from '@common/i18n-renderer'
 import { type PreferencesFieldset } from '../App.vue'
 import { PreferencesGroups } from './_preferences-groups'
-import { ProgrammaticallyOpenableWindows } from '@providers/commands/open-aux-window'
-import type { ConfigOptions } from 'source/app/service-providers/config/get-config-template'
+import { ProgrammaticallyOpenableWindows } from 'source/platform/open-aux-window'
+import type { ConfigOptions } from 'source/platform/config-template'
 
-const ipcRenderer = window.ipc
+const ipcRenderer = window.platform.ipc
 
 export function getAppearanceFields (config: ConfigOptions): PreferencesFieldset[] {
   return [

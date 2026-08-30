@@ -25,7 +25,7 @@ const WORD_COUNT_DELAY = 750
 
 function count (state: EditorState): { chars: number, words: number } {
   const ast = markdownToAST(state.sliceDoc(), ensureSyntaxTree(state, state.doc.length))
-  const locale: string = window.config.get('appLang')
+  const locale: string = window.platform.config.get('appLang')
   return countAll(ast, locale)
 }
 

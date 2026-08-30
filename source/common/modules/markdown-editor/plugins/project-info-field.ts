@@ -21,9 +21,9 @@ import { trans } from 'source/common/i18n-renderer'
 import type { EditorView } from '@codemirror/view'
 import { configField } from '../util/configuration'
 import showPopupMenu, { type AnyMenuItem } from '../../window-register/application-menu-helper'
-import type { DocumentManagerIPCAPI } from 'source/app/service-providers/documents'
+import type { DocumentManagerIPCAPI } from 'source/platform/contracts'
 
-const ipcRenderer = window.ipc
+const platformIpc = window.platform.ipc
 
 export interface ProjectInfo {
   name: string // Project name
@@ -100,7 +100,7 @@ export function statusbarProjectInfo (state: EditorState, _view: EditorView): St
       }
 
       showPopupMenu({ x: event.clientX, y: event.clientY }, items, clickedID => {
-        ipcRenderer.invoke('documents-provider', {
+        platformIpc.invoke('documents-provider', {
           command: 'open-file',
           payload: { path: clickedID }
         } as DocumentManagerIPCAPI)

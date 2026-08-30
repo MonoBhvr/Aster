@@ -69,7 +69,7 @@ import localiseNumber from '@common/util/localise-number'
 import { useStatisticsStore } from 'source/pinia'
 import { computed } from 'vue'
 
-const ipcRenderer = window.ipc
+const ipcRenderer = window.platform.ipc
 
 const statisticsStore = useStatisticsStore()
 

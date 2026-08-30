@@ -55,15 +55,15 @@ import RadioControl from '@common/vue/form/elements/RadioControl.vue'
 import SelectControl from '@common/vue/form/elements/SelectControl.vue'
 import CheckboxControl from '@common/vue/form/elements/CheckboxControl.vue'
 import { ref, computed, watch, onMounted } from 'vue'
-import type { AssetsProviderIPCAPI, PandocProfileMetadata } from '@providers/assets'
+import type { AssetsProviderIPCAPI, PandocProfileMetadata } from 'source/platform/contracts'
 import { SUPPORTED_READERS } from '@common/pandoc-util/pandoc-maps'
 import { trans } from '@common/i18n-renderer'
 import { pathBasename } from '@common/util/renderer-path-polyfill'
 import { useConfigStore } from 'source/pinia'
 import { parseReaderWriter } from 'source/common/pandoc-util/parse-reader-writer'
-import type { CustomExportIPCAPI, ExportIPCAPI } from 'source/app/service-providers/commands/export'
+import type { CustomExportIPCAPI, ExportIPCAPI } from 'source/platform/contracts'
 
-const ipcRenderer = window.ipc
+const ipcRenderer = window.platform.ipc
 
 const formatLabel = trans('Format')
 const autoOpenLabel = trans('Open after export')

@@ -68,7 +68,7 @@ import { ref, computed, watch } from 'vue'
 import { useDocumentTreeStore, useTagsStore, useWorkspaceStore } from 'source/pinia'
 import type { OtherFileDescriptor, CodeFileDescriptor, MDFileDescriptor } from '@dts/common/fsal'
 import { pathBasename } from '@common/util/renderer-path-polyfill'
-import type { DocumentManagerIPCAPI } from 'source/app/service-providers/documents'
+import type { DocumentManagerIPCAPI } from 'source/platform/contracts'
 import getDocumentTitle from '../util/get-document-title'
 
 export interface RelatedFile {
@@ -78,18 +78,14 @@ export interface RelatedFile {
   link: 'inbound'|'outbound'|'bidirectional'|'none'
 }
 
-const ipcRenderer = window.ipc
+const ipcRenderer = window.platform.ipc
 
 const workspaceStore = useWorkspaceStore()
 const tagStore = useTagsStore()
 const documentTreeStore = useDocumentTreeStore()
 
 const searchParams = new URLSearchParams(window.location.search)
-const windowId = searchParams.get('window_id')
-
-if (windowId === null) {
-  throw new Error('windowID was null')
-}
+const windowId = searchParams.get('window_id') ?? 'main'
 
 const relatedFiles = ref<RelatedFile[]>([])
 

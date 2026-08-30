@@ -94,7 +94,7 @@ import { nextTick, ref, computed, watch, onMounted } from 'vue'
 import { useConfigStore } from 'source/pinia'
 import { useWorkspaceStore } from 'source/pinia/workspace-store'
 
-const ipcRenderer = window.ipc
+const ipcRenderer = window.platform.ipc
 
 const props = defineProps<{ windowId: string }>()
 

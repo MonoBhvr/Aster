@@ -15,15 +15,15 @@
 import { trans } from '@common/i18n-renderer'
 import showPopupMenu, { type AnyMenuItem } from '@common/modules/window-register/application-menu-helper'
 import type { CodeFileDescriptor, MDFileDescriptor, OtherFileDescriptor } from '@dts/common/fsal'
-import type { WindowControlsIPCAPI } from 'source/app/service-providers/windows'
+import type { WindowControlsIPCAPI } from 'source/platform/contracts'
 import { useConfigStore } from 'source/pinia'
 
-const ipcRenderer = window.ipc
+const ipcRenderer = window.platform.ipc
 
 export function displayFileContext (event: MouseEvent, fileObject: MDFileDescriptor|CodeFileDescriptor|OtherFileDescriptor, el: HTMLElement, callback: (clickedID: string) => void): void {
   const configStore = useConfigStore()
-  const isMac = process.platform === 'darwin'
-  const isWin = process.platform === 'win32'
+  const isMac = window.platform.os === 'darwin'
+  const isWin = window.platform.os === 'win32'
 
   const template: AnyMenuItem[] = [
     {

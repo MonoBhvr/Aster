@@ -131,13 +131,13 @@ export function getTransformSubmenu (view: EditorView): SubmenuItem {
         label: trans('To sentence case'),
         accelerator: sc('tr-sentence-case'),
         type: 'normal',
-        action () { toSentenceCase(String(window.config.get('appLang')))(view) }
+        action () { toSentenceCase(String(window.platform.config.get('appLang')))(view) }
       },
       {
         label: trans('To title case'),
         accelerator: sc('tr-title-case'),
         type: 'normal',
-        action () { toTitleCase(String(window.config.get('appLang')))(view) }
+        action () { toTitleCase(String(window.platform.config.get('appLang')))(view) }
       }
     ]
   }

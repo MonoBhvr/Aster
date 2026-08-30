@@ -22,9 +22,9 @@ import { isAbsolutePath, pathDirname, resolvePath } from 'source/common/util/ren
 import { trans } from 'source/common/i18n-renderer'
 import { hasImageExt, hasDataExt, hasMSOfficeExt, hasOpenOfficeExt, hasPDFExt, hasExt } from 'source/common/util/file-extention-checks'
 import { isDotFile } from 'source/common/util/ignore-path'
-import type { FSALEventPayload } from 'source/app/service-providers/fsal'
+import type { FSALEventPayload } from 'source/platform/contracts'
 
-const ipcRenderer = window.ipc
+const platformIpc = window.platform.ipc
 
 /**
  * Reads in an entire (workspace) path into a 1d array of absolute file paths.
@@ -33,8 +33,14 @@ const ipcRenderer = window.ipc
  *
  * @return  {Promise<string>[]}           A list of everything recursively within the path.
  */
+function isSameOrDescendant (path: string, root: string): boolean {
+  const candidate = path.replaceAll('\\', '/')
+  const normalizedRoot = root.replaceAll('\\', '/').replace(/[\\/]+$/, '')
+  return candidate === normalizedRoot || candidate.startsWith(`${normalizedRoot}/`)
+}
+
 async function readPathRecursively (absPath: string): Promise<string[]> {
-  return await ipcRenderer.invoke('fsal', { command: 'read-path-recursively', payload: absPath })
+  return await platformIpc.invoke('fsal', { command: 'read-path-recursively', payload: absPath })
 }
 
 /**
@@ -47,7 +53,7 @@ async function readPathRecursively (absPath: string): Promise<string[]> {
 async function getDescriptorFor (absPath: string): Promise<AnyDescriptor>
 async function getDescriptorFor (absPath: string[]): Promise<AnyDescriptor[]>
 async function getDescriptorFor (absPath: string|string[]): Promise<AnyDescriptor|AnyDescriptor[]> {
-  return await ipcRenderer.invoke('fsal', {
+  return await platformIpc.invoke('fsal', {
     command: 'get-descriptor',
     // De-proxy as necessary
     payload: Array.isArray(absPath) ? absPath.map(p => p) : absPath
@@ -64,7 +70,7 @@ async function getDescriptorFor (absPath: string|string[]): Promise<AnyDescripto
  * @throws if the path is not a directory
  */
 async function readDirectory (absPath: string): Promise<AnyDescriptor[]> {
-  return await ipcRenderer.invoke('fsal', { command: 'read-directory', payload: absPath })
+  return await platformIpc.invoke('fsal', { command: 'read-directory', payload: absPath })
 }
 
 // In order to avoid frequent updates of the workspaceMap on initial load, we
@@ -112,26 +118,34 @@ export const useWorkspaceStore = defineStore('workspace', () => {
     .catch(err => console.error('[Workspace Store] Could not retrieve initial set of loaded paths', err))
     .finally(() => {
       isLoading.value = false
-      // Now we can set up the watchers. (We need to do this afterwards to not cause a hiccup)
-      // Finally, listen to FSAL events and keep the descriptor map updated.
-      ipcRenderer.on('fsal-event', (_, payload: FSALEventPayload) => {
-        // @ts-expect-error asdasd
-        console.log(`[WorkspaceStore] Received event ${payload.event}:${payload.path ?? payload.descriptor.path}`)
+      // Subscribe only after the initial scan, then synchronise Rust's recursive
+      // notify watcher with the persisted workspace roots.
+      void platformIpc.invoke('fsal', { command: 'sync-roots', payload: openWorkspaces })
+        .catch(err => console.error('[Workspace Store] Could not start workspace watcher', err))
+      platformIpc.on('fsal-event', (_, payload: FSALEventPayload) => {
+        const changedPath = 'path' in payload ? payload.path : payload.descriptor.path
+        console.log(`[WorkspaceStore] Received event ${payload.event}:${changedPath}`)
         if (payload.event === 'unlink' || payload.event === 'unlinkDir') {
-          const root = [...workspaceMap.value.keys()].find(p => payload.path.startsWith(p))
-          if (root !== undefined) {
-            const arr = workspaceMap.value.get(root)!
-            arr.splice(arr.indexOf(payload.path), 1)
-            workspaceMap.value.set(root, arr)
+          for (const [ root, paths ] of workspaceMap.value.entries()) {
+            const remaining = paths.filter(path => !isSameOrDescendant(path, payload.path))
+            if (remaining.length !== paths.length) {
+              workspaceMap.value.set(root, remaining)
+            }
           }
 
-          descriptorMap.value.delete(payload.path)
+          for (const path of descriptorMap.value.keys()) {
+            if (isSameOrDescendant(path, payload.path)) {
+              descriptorMap.value.delete(path)
+            }
+          }
         } else if (payload.event === 'change' || payload.event === 'add' || payload.event === 'addDir') {
           const root = [...workspaceMap.value.keys()].find(p => payload.descriptor.path.startsWith(p))
           if (root !== undefined && payload.event !== 'change') {
             const arr = workspaceMap.value.get(root)!
-            arr.push(payload.descriptor.path)
-            workspaceMap.value.set(root, arr)
+            if (!arr.some(path => isSameOrDescendant(path, payload.descriptor.path) && path === payload.descriptor.path)) {
+              arr.push(payload.descriptor.path)
+              workspaceMap.value.set(root, arr)
+            }
           }
 
           descriptorMap.value.set(payload.descriptor.path, payload.descriptor)
@@ -147,6 +161,10 @@ export const useWorkspaceStore = defineStore('workspace', () => {
   })
 
   watch(openPaths, async (value) => {
+    void platformIpc.invoke('fsal', {
+      command: 'sync-roots',
+      payload: configStore.config.app.openWorkspaces
+    }).catch(err => console.error('[Workspace Store] Could not synchronise workspace watcher', err))
     // Whenever openPaths changes, also update the rootDescriptors to reflect a
     // potentially changed sorting.
     rootDescriptors.value = openPaths.value
@@ -282,5 +300,23 @@ export const useWorkspaceStore = defineStore('workspace', () => {
     otherFiles.value = att
   })
 
-  return { workspaceMap, pathList, descriptorMap, rootDescriptors, otherFiles }
+  /** Reload workspace descriptors through the platform boundary. */
+  async function refresh (): Promise<void> {
+    isLoading.value = true
+    try {
+      await retrieveInitialUpdate(openPaths.value, workspaceMap, descriptorMap)
+      rootDescriptors.value = openPaths.value
+        .map(rootPath => descriptorMap.value.get(rootPath))
+        .filter((root): root is AnyDescriptor => root !== undefined)
+    } finally {
+      isLoading.value = false
+    }
+  }
+
+  /** Request the host's workspace chooser without leaking platform calls into views. */
+  async function requestOpenWorkspace (): Promise<void> {
+    await platformIpc.invoke('application', { command: 'root-open-workspaces' })
+  }
+
+  return { workspaceMap, pathList, descriptorMap, rootDescriptors, otherFiles, isLoading, refresh, requestOpenWorkspace }
 })

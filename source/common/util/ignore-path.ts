@@ -15,7 +15,7 @@
 const DOTFILE_RE = /(?:^|[\/\\])\./
 
 // A list of path names that should be ignored
-// by the chokidar watchdog process. Will be converted
+// by the native filesystem watcher.
 // to a RegExp object
 const WATCHDOG_IGNORE_PATHS: string[] = [
   '\\.DS_Store', // macOS directory files

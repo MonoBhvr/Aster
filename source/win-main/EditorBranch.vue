@@ -52,9 +52,9 @@ import EditorPane from './EditorPane.vue'
 import { type BranchNodeJSON } from '@dts/common/documents'
 import { ref, computed, watch, toRef } from 'vue'
 import { type EditorCommands } from './App.vue'
-import type { DocumentManagerIPCAPI } from 'source/app/service-providers/documents'
+import type { DocumentManagerIPCAPI } from 'source/platform/contracts'
 
-const ipcRenderer = window.ipc
+const ipcRenderer = window.platform.ipc
 
 const props = defineProps<{
   node: BranchNodeJSON

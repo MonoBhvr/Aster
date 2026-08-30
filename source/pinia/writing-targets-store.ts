@@ -13,18 +13,18 @@
  */
 
 import { defineStore } from 'pinia'
-import type { WritingTarget } from 'source/app/service-providers/targets'
+import type { WritingTarget } from 'source/platform/contracts'
 import { ref } from 'vue'
 
-const ipcRenderer = window.ipc
+const platformIpc = window.platform.ipc
 
 export const useWritingTargetsStore = defineStore('writing-targets', () => {
   const targets = ref<WritingTarget[]>([])
 
   // Listen to subsequent changes
-  ipcRenderer.on('targets-provider', (event, command) => {
+  platformIpc.on('targets-provider', (event, command) => {
     if (command === 'writing-targets-updated') {
-      ipcRenderer.invoke('targets-provider', { command: 'get-targets' })
+      platformIpc.invoke('targets-provider', { command: 'get-targets' })
         .then((t: WritingTarget[]) => {
           targets.value = t
         })
@@ -32,7 +32,7 @@ export const useWritingTargetsStore = defineStore('writing-targets', () => {
     }
   })
 
-  ipcRenderer.invoke('targets-provider', { command: 'get-targets' })
+  platformIpc.invoke('targets-provider', { command: 'get-targets' })
     .then((t: WritingTarget[]) => {
       targets.value = t
     })

@@ -397,7 +397,7 @@ async function replaceSnippetVariables (state: EditorState, text: string): Promi
     CURRENT_SECONDS_UNIX: now.toSeconds(),
     UUID: uuid(),
     CLIPBOARD: (clipboard !== '') ? clipboard : undefined,
-    ZKN_ID: generateId(String(window.config.get('zkn.idGen'))),
+    ZKN_ID: generateId(String(window.platform.config.get('zkn.idGen'))),
     CURRENT_ID: config.metadata.id,
     FILENAME: pathBasename(absPath, pathExtname(absPath)),
     DIRECTORY: pathDirname(absPath),

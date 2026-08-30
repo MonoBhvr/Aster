@@ -18,23 +18,23 @@ import { defineStore } from 'pinia'
 import type { DocumentInfo } from 'source/common/modules/markdown-editor'
 import type { ToCEntry } from 'source/common/modules/markdown-editor/plugins/toc-field'
 import { computed, ref, type Ref } from 'vue'
-import { type WritingTarget } from '@providers/targets'
-import type { AssetsProviderIPCAPI } from 'source/app/service-providers/assets'
+import { type WritingTarget } from 'source/platform/contracts'
+import type { AssetsProviderIPCAPI } from 'source/platform/contracts'
 import type { SearchResultWrapper } from 'source/win-main/GlobalSearch.vue'
 
-const ipcRenderer = window.ipc
+const platformIpc = window.platform.ipc
 
 async function updateSnippets (snippets: Ref<Array<{ name: string, content: string }>>): Promise<void> {
   // Now we have to pair two types of calls to the assets provider to get all
   // snippets: First a call to list all snippets, and then one `get` call to
   // retrieve its file contents.
-  const snippetNames: string[] = await ipcRenderer.invoke('assets-provider', {
+  const snippetNames: string[] = await platformIpc.invoke('assets-provider', {
     command: 'list-snippets'
   } as AssetsProviderIPCAPI)
 
   const newSnippets: Array<{ name: string, content: string }> = []
   for (const snippet of snippetNames) {
-    const content: string = await ipcRenderer.invoke('assets-provider', {
+    const content: string = await platformIpc.invoke('assets-provider', {
       command: 'get-snippet',
       payload: { name: snippet }
     } as AssetsProviderIPCAPI)
@@ -69,7 +69,7 @@ export const useWindowStateStore = defineStore('window-state', () => {
   }
 
   // Snippets
-  ipcRenderer.on('assets-provider', (event, what: string) => {
+  platformIpc.on('assets-provider', (event, what: string) => {
     if (what === 'snippets-updated') {
       updateSnippets(snippets).catch(e => console.error(e))
     }
@@ -78,19 +78,19 @@ export const useWindowStateStore = defineStore('window-state', () => {
   updateSnippets(snippets).catch(e => console.error(e))
 
   // Writing targets
-  ipcRenderer.on('targets-provider', (event, what: string) => {
+  platformIpc.on('targets-provider', (event, what: string) => {
     if (what === 'writing-targets-updated') {
-      ipcRenderer.invoke('targets-provider', { command: 'get-targets' })
+      platformIpc.invoke('targets-provider', { command: 'get-targets' })
         .then((targets: WritingTarget[]) => { writingTargets.value = targets })
         .catch(e => console.error(e))
     }
   })
 
-  ipcRenderer.invoke('targets-provider', { command: 'get-targets' })
+  platformIpc.invoke('targets-provider', { command: 'get-targets' })
     .then((targets: WritingTarget[]) => { writingTargets.value = targets })
     .catch(e => console.error(e))
   
-  ipcRenderer.on('window-controls', (event, { command, payload }) => {
+  platformIpc.on('window-controls', (event, { command, payload }) => {
     if (command === 'fullscreen' && typeof payload === 'boolean') {
       isFullscreen.value = payload
     }

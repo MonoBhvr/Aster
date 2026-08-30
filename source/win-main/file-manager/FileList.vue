@@ -100,7 +100,7 @@ import matchQuery from './util/match-query'
 import { nextTick, ref, computed, watch, onUpdated } from 'vue'
 import { useConfigStore, useDocumentTreeStore } from 'source/pinia'
 import type { AnyDescriptor } from '@dts/common/fsal'
-import type { DocumentManagerIPCAPI } from 'source/app/service-providers/documents'
+import type { DocumentManagerIPCAPI } from 'source/platform/contracts'
 import { useWorkspaceStore } from 'source/pinia/workspace-store'
 import { getSorter } from 'source/common/util/directory-sorter'
 import { retrieveChildrenAndSort } from './util/retrieve-children-and-sort'
@@ -111,7 +111,7 @@ interface RecycleScrollerData {
   props: AnyDescriptor
 }
 
-const ipcRenderer = window.ipc
+const ipcRenderer = window.platform.ipc
 
 const props = defineProps<{
   isVisible: boolean
@@ -284,8 +284,8 @@ function navigate (evt: KeyboardEvent): void {
   evt.preventDefault()
 
   const shift = evt.shiftKey
-  const cmd = evt.metaKey && process.platform === 'darwin'
-  const ctrl = evt.ctrlKey && process.platform !== 'darwin'
+  const cmd = evt.metaKey && window.platform.os === 'darwin'
+  const ctrl = evt.ctrlKey && window.platform.os !== 'darwin'
   const cmdOrCtrl = cmd || ctrl
 
   // On pressing enter, that's the same as clicking

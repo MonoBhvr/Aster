@@ -163,7 +163,7 @@ import { ref, computed, toRef, watch, onMounted } from 'vue'
 import { type AnyDescriptor, type MDFileDescriptor } from '@dts/common/fsal'
 import { useConfigStore, useTagsStore, useWindowStateStore } from 'source/pinia'
 import { useItemComposable } from './util/item-composable'
-import type { FSALEventPayload, FSALEventPayloadChange } from 'source/app/service-providers/fsal'
+import type { FSALEventPayload, FSALEventPayloadChange } from 'source/platform/contracts'
 import { relativePath } from 'source/common/util/renderer-path-polyfill'
 import getDocumentTitle from '../util/get-document-title'
 
@@ -180,7 +180,7 @@ const emit = defineEmits<{
   (e: 'create-dir'): void
 }>()
 
-const ipcRenderer = window.ipc
+const ipcRenderer = window.platform.ipc
 
 const configStore = useConfigStore()
 const tagStore = useTagsStore()
@@ -220,7 +220,7 @@ onMounted(async () => {
     }
 
     const relative = relativePath(props.item.path, affectedPath)
-    const PATH_SEP = process.platform === 'win32' ? '\\' : '/'
+    const PATH_SEP = window.platform.os === 'win32' ? '\\' : '/'
     if (relative.includes(PATH_SEP)) {
       return
     }

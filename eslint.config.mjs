@@ -13,7 +13,27 @@ export default [
       '*.js',
       'scripts/**/*.js',
       'resources/**/*.js',
-      '.webpack/**/*.js'
+      '.webpack/**/*.js',
+      'dist-tauri',
+      'dist-tauri/**',
+      '**/dist-tauri/**',
+      'src-tauri/target/**',
+      'src-tauri/gen/**',
+      // These entrypoints are no longer part of the Tauri runtime. Their
+      // contracts are being retired in favour of source/platform and Rust.
+      'source/app/**',
+      'source/win-about/**',
+      'source/win-assets/**',
+      'source/win-error/**',
+      'source/win-log-viewer/**',
+      'source/win-paste-image/**',
+      'source/win-preferences/**',
+      'source/win-print/**',
+      'source/win-project-properties/**',
+      'source/win-splash-screen/**',
+      'source/win-stats/**',
+      'source/win-tag-manager/**',
+      'source/win-update/**'
     ]
   },
   // This extends the following configs:

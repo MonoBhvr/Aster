@@ -141,7 +141,7 @@ export function renderingModeToggle (state: EditorState, _view: EditorView): Sta
     ),
     title: trans('Enable or disable the preview mode for Markdown files by clicking'),
     onClick () {
-      window.config.set('display.renderingMode', config.renderingMode === 'preview' ? 'raw' : 'preview')
+      window.platform.config.set('display.renderingMode', config.renderingMode === 'preview' ? 'raw' : 'preview')
     }
   }
 }

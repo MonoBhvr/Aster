@@ -18,12 +18,12 @@ import { type EditorView, hoverTooltip, type Tooltip } from '@codemirror/view'
 import { NODES, nodeToCiteItem } from '../parser/citation-parser'
 import { configField } from '../util/configuration'
 import { CITEPROC_MAIN_DB } from 'source/types/common/citeproc'
-import type { CiteprocProviderIPCAPI } from 'source/app/service-providers/citeproc'
+import type { CiteprocProviderIPCAPI } from 'source/platform/contracts'
 import { trans } from 'source/common/i18n-renderer'
 import type { SyntaxNode } from '@lezer/common'
 import { sanitizeHTML } from 'source/common/util/sanitize-html'
 
-const ipcRenderer = window.ipc
+const platformIpc = window.platform.ipc
 
 /**
  * Fetches a bibliography for the provided citekeys from main
@@ -34,7 +34,7 @@ const ipcRenderer = window.ipc
  * @return  {any}                 The bibliography
  */
 async function fetchBibliography (citekeys: string[], database: string): Promise<[BibliographyOptions, string[]]> {
-  return await ipcRenderer.invoke('citeproc-provider', {
+  return await platformIpc.invoke('citeproc-provider', {
     command: 'get-bibliography',
     payload: {
       database,

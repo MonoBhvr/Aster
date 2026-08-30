@@ -58,14 +58,10 @@ import { hasImageExt } from 'source/common/util/file-extention-checks'
 import { useWorkspaceStore } from 'source/pinia/workspace-store'
 import { sanitizeHTML } from 'source/common/util/sanitize-html'
 
-const ipcRenderer = window.ipc
+const ipcRenderer = window.platform.ipc
 
 const searchParams = new URLSearchParams(window.location.search)
-const windowId = searchParams.get('window_id')
-
-if (windowId === null) {
-  throw new Error('windowID was null')
-}
+const windowId = searchParams.get('window_id') ?? 'main'
 
 const configStore = useConfigStore()
 const documentTreeStore = useDocumentTreeStore()

@@ -139,10 +139,10 @@ import { useDocumentTreeStore, useWindowStateStore } from 'source/pinia'
 import ImageViewer from './file-viewers/ImageViewer.vue'
 import { hasImageExt, hasPDFExt } from '@common/util/file-extention-checks'
 import PDFViewer from './file-viewers/PDFViewer.vue'
-import type { DocumentManagerIPCAPI } from 'source/app/service-providers/documents'
+import type { DocumentManagerIPCAPI } from 'source/platform/contracts'
 import { type EditorViewPersistentState } from 'source/common/modules/markdown-editor'
 
-const ipcRenderer = window.ipc
+const platformIpc = window.platform.ipc
 
 const windowStateStore = useWindowStateStore()
 const documentTreeStore = useDocumentTreeStore()
@@ -204,7 +204,7 @@ onBeforeUnmount(() => {
 })
 
 function handleDrop (event: DragEvent, where: 'editor'|'top'|'left'|'right'|'bottom'): boolean|undefined {
-  const DELIM = (process.platform === 'win32') ? ';' : ':'
+  const DELIM = (window.platform.os === 'win32') ? ';' : ':'
   const documentTab = event.dataTransfer?.getData('zettlr/document-tab')
   if (documentTab?.includes(DELIM) === true) {
     documentTabDrag.value = false
@@ -225,7 +225,7 @@ function handleDrop (event: DragEvent, where: 'editor'|'top'|'left'|'right'|'bot
 
     // Now actually perform the act
     if (where === 'editor') {
-      ipcRenderer.invoke('documents-provider', {
+      platformIpc.invoke('documents-provider', {
         command: 'move-file',
         payload: {
           originWindow,
@@ -239,7 +239,7 @@ function handleDrop (event: DragEvent, where: 'editor'|'top'|'left'|'right'|'bot
     } else {
       const dir = ([ 'left', 'right' ].includes(where)) ? 'horizontal' : 'vertical'
       const ins = ([ 'top', 'left' ].includes(where)) ? 'before' : 'after'
-      ipcRenderer.invoke('documents-provider', {
+      platformIpc.invoke('documents-provider', {
         command: 'split-leaf',
         payload: {
           originWindow: props.windowId,

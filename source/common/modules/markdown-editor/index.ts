@@ -86,8 +86,9 @@ import { highlightRangesEffect } from './plugins/highlight-ranges'
 import safeAssign from '@common/util/safe-assign'
 import { countAll } from '@common/util/counter'
 import { DocumentType } from '@dts/common/documents'
-import { type TagRecord } from '@providers/tags'
+import { type TagRecord } from 'source/platform/contracts'
 import {
+  flushDocumentEffect,
   reloadStateEffect,
   type PullUpdateCallback,
   type PushUpdateCallback
@@ -729,7 +730,7 @@ export default class MarkdownEditor extends EventEmitter {
     const mainOffset = this._instance.state.selection.main.head
     const line = this._instance.state.doc.lineAt(mainOffset)
     const ast = markdownToAST(this._instance.state.sliceDoc(), syntaxTree(this._instance.state))
-    const locale: string = window.config.get('appLang')
+    const locale: string = window.platform.config.get('appLang')
     return {
       words: this.wordCount ?? 0,
       chars: this.charCount ?? 0,
@@ -818,6 +819,21 @@ export default class MarkdownEditor extends EventEmitter {
    */
   get value (): string {
     return [...this._instance.state.doc.iterLines()].join('\n')
+  }
+
+  /** Flushes any pending collaborative updates through the document authority. */
+  async save (): Promise<void> {
+    await new Promise<void>((resolve, reject) => {
+      this._instance.dispatch({
+        effects: flushDocumentEffect.of(error => {
+          if (error === undefined) {
+            resolve()
+          } else {
+            reject(error)
+          }
+        })
+      })
+    })
   }
 
   /**

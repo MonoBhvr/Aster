@@ -18,7 +18,7 @@
 // automatically
 import './assets/main.css'
 
-const ipcRenderer = window.ipc
+const platformIpc = window.platform.ipc
 
 /**
  * Defines a SystemColour interface as is being returned by the appearance provider
@@ -33,7 +33,7 @@ interface SystemColour {
  */
 export default function registerThemes (): void {
   // Listen for configuration changes
-  ipcRenderer.on('config-provider', (event, { command, payload }) => {
+  platformIpc.on('config-provider', (event, { command, payload }) => {
     if (command === 'update' && payload === 'darkMode') {
       // Switch to light/dark mode based on the configuration variable
       switchDarkLightTheme()
@@ -41,7 +41,7 @@ export default function registerThemes (): void {
   })
 
   // Listen for custom CSS changes
-  ipcRenderer.on('css-provider', (evt, { command, payload }: { command: 'get-custom-css-path', payload: string }) => {
+  platformIpc.on('css-provider', (evt, { command, payload }: { command: 'get-custom-css-path', payload: string }) => {
     if (command === 'get-custom-css-path') {
       setCustomCss(payload)
     }
@@ -51,7 +51,7 @@ export default function registerThemes (): void {
   switchDarkLightTheme()
 
   // Initial rendering of the Custom CSS
-  ipcRenderer.invoke('css-provider', { command: 'get-custom-css-path' })
+  platformIpc.invoke('css-provider', { command: 'get-custom-css-path' })
     .then((cssPath: string) => setCustomCss(cssPath))
     .catch(e => console.error(e))
 
@@ -64,7 +64,7 @@ export default function registerThemes (): void {
  * Performs necessary actions when switching the theme to dark/light
  */
 function switchDarkLightTheme (): void {
-  const isDarkMode: boolean = window.config.get('darkMode')
+  const isDarkMode: boolean = window.platform.config.get('darkMode')
   document.body.classList.toggle('dark', isDarkMode)
 }
 
@@ -88,9 +88,9 @@ function setCustomCss (cssPath: string): void {
   }
 
   // (Re)load the custom CSS
-  let link = document.createElement('link')
+  const link = document.createElement('link')
   link.rel = 'stylesheet'
-  link.setAttribute('href', (new URL('safe-file://' + cssPath)).toString())
+  link.setAttribute('href', window.platform.toAssetUrl(cssPath))
   link.setAttribute('type', 'text/css')
   link.setAttribute('id', 'custom-css-link')
   document.head.appendChild(link)
@@ -106,7 +106,7 @@ function setSystemCss (): void {
     formerSystemCSS.parentElement?.removeChild(formerSystemCSS)
   }
 
-  ipcRenderer.invoke('appearance-provider', { command: 'get-accent-color' })
+  platformIpc.invoke('appearance-provider', { command: 'get-accent-color' })
     .then((accentColor: SystemColour) => {
       const style = document.createElement('style')
       style.setAttribute('id', 'system-css')

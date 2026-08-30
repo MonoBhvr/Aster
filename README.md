@@ -110,8 +110,8 @@ opportunities via package managers:
 * [Chocolatey (Windows)](https://community.chocolatey.org/packages/zettlr/)
 * [Arch Linux](https://wiki.archlinux.org/title/Zettlr)
 
-All other [platforms that Electron supports](https://www.electronjs.org/docs/latest/development/build-instructions-gn#platform-prerequisites)
-are supported as well, but you will need to build the app yourself.
+Tauri supports Windows, macOS, and Linux. Build the application locally with
+the platform toolchain when a packaged binary is not available.
 
 > [!TIP]
 > Zettlr is fully supported by community donations. You can donate once, or
@@ -131,9 +131,18 @@ to unlock all export profiles of the app.
 
 ## Building from Source
 
-You can compile the app for yourself, if you prefer. To do so, refer to our
-development guide below to ensure you have all required dependencies installed.
-Then, you can build the app for your computer using the command `yarn package`.
+You can compile the app for yourself using the Tauri 2 toolchain. Install Rust
+and the platform prerequisites described below, then run:
+
+```bash
+corepack yarn install --immutable
+corepack yarn tauri:dev
+corepack yarn tauri:build
+```
+
+The Tauri host loads the complete Zettlr Vue renderer. Native filesystem,
+dialog, clipboard, shell, configuration, and document-authority operations are
+implemented as typed platform commands in Rust.
 
 ## Contributing
 
@@ -145,8 +154,8 @@ setting up the Zettlr source code locally.
 
 ### Getting Started
 
-Zettlr is an [Electron](https://www.electronjs.org/)-based app. To start
-developing, you'll need to have the following installed on your computer:
+Zettlr is a Tauri 2 application with a Vue 3 frontend and Rust backend. To
+start developing, you'll need to have the following installed on your computer:
 
 1. [NodeJS](https://nodejs.org/). Make sure it's at least Node 22 (`lts/jod`).
    To test what version you have, run `node -v`.
@@ -190,36 +199,34 @@ yarn install --immutable
 > to update them. This can prevent supply-chain attacks that could infect your
 > computer.
 
-During development, hot module reloading (HMR) is active so that you can edit
-the renderer's code easily and hit `F5` after the changes have been compiled by
-`electron-forge`. You can keep the developer tools open to see when HMR has
-finished loading your changes.
+During development, webpack serves the Vue renderer with hot reload and Tauri
+runs the native host. Frontend changes are picked up without a separate main
+process.
 
 ### Tech Stack
 
-Zettlr relies on three tech stacks: Electron, Node.js, and Vue for the frontend.
-In order to provide code, you should have basic familiarity with the following
+The application uses Tauri 2 and Rust for native integration, and Vue,
+TypeScript, Pinia, and CodeMirror 6 for the frontend. In order to provide code,
+you should have basic familiarity with the following
 topics and/or manuals (ordered by descending importance):
 
 * [JavaScript](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
   (especially asynchronous code) and
   [TypeScript](https://www.typescriptlang.org/docs/)
 * [Node.js](https://nodejs.org/api/)
-* [Electron](https://www.electronjs.org/docs)
 * [Vue.js 3.x](https://vuejs.org/guide/introduction.html) and
   [Pinia](https://pinia.vuejs.org/)
 * [CodeMirror 6.x](https://codemirror.net/docs/)
 * [ESLint](https://eslint.org/)
 * [Webpack 5.x](https://webpack.js.org/concepts/)
-* [Electron forge](https://www.electronforge.io/)
-* [Electron builder](https://www.electron.build/)
+* [Tauri 2](https://v2.tauri.app/)
+* [Rust](https://www.rust-lang.org/)
 
 ### Debugging
 
-Zettlr offers full debugging-support within VS Code, powered by configurations
-in `.vscode/launch.json`. You can start a debugging session directly from the
-debugging sidebar. You can debug either the main process or attach the debugger
-to an individual renderer process.
+Zettlr can be debugged from the Tauri development process and the browser
+frontend devtools. The native boundary is in `src-tauri`, while the renderer
+entrypoint is `source/tauri/index.ts`.
 
 > [!TIP]
 > To learn more about debugging in VS Code,
@@ -227,210 +234,26 @@ to an individual renderer process.
 
 ### Architecture Overview
 
-As an Electron-app, Zettlr inherits its distinction into one main process and
-several renderer processes, the latter of which correspond to the individual
-windows. On top of this, Zettlr implements a relatively classical
-server/single-page-application pattern. Here, the main process functions as a
-server that orchestrates the application windows (think of each as its own,
-individual, SPA) and enables a bridge between them and the operating system.
+Zettlr has one Tauri application window and one Vue renderer. The renderer is
+loaded by `source/tauri/index.ts` and communicates with native functionality
+only through the typed modules in `source/platform`. Those modules invoke Rust
+commands and subscribe to Tauri events. Filesystem parsing and document
+presentation remain in TypeScript, while OS access, dialogs, clipboard,
+watching, and subprocess work belong in `src-tauri`.
 
-All main process code resides in the `source/app` directory, which includes
-three parts:
-
-1. The `lifecycle.ts` module that performs pre-boot environment checks and
-   facilitates start and shutdown of the app.
-2. The `app-service-container.ts` file which includes the primary application
-   service container.
-3. The various service providers in the folder `service-providers`, which are
-   all classes implemented as singletons.
-
-During boot, the lifecycle module will perform an environment check and then
-continue to load the application service container, which in turn loads all the
-service provider singletons. Those will remain active and running throughout the
-lifetime of the app. They serve requests from the renderer processes
-(implemented via Electron's IPC module) and monitor the operating system, e.g.,
-for theme or file changes.
-
-The individual renderer processes, or windows, are managed by the
-`WindowManager`, which is a service provider. Upon request, it will instantiate
-a new `BrowserWindow` and load the correct entry point for the SPA that serves
-as the corresponding window.
-
-The renderers are fully functional SPAs with three notable differences compared
-to normal SPAs:
-
-1. Instead of communicating with an API using `fetch`, they communicate with the
-   main process via the IPC module. This works essentially akin to websockets,
-   except we do not have to instantiate a connection first.
-2. The IPC communication is injected into every window using the same preload
-   script (`source/common/modules/preload`).
-3. They are implemented in a more desktop-oriented way with Vue modules that are
-   ordered according to desktop design principles, rather than website layouts.
+The renderer remains a desktop-oriented SPA: Vue components are organised by
+workspace, document, editor, and settings concerns rather than website layouts.
 
 ### Development Commands
 
-This section lists all available commands that you can use during application
-development. These are defined within the `package.json` and can be run from the
-command line by prefixing them with `yarn`. Run them from within the base
-directory of the repository.
+Run these commands from the repository root:
 
-#### `start`
-
-Use this command to carefree test any changes you make to the application. This
-command will start the application, but will provide a custom configuration and
-a custom directory. Thus, it will not touch any files that a regular Zettlr
-installation will use.
-
-> [!CAUTION]
-> **The first time you start this command**, pass the `--clean`-flag to copy a
-> bunch of test-files to your `./resources`-directory, create a
-> `test-config.yml` in your project root, and start the application with this
-> clean configuration. Then, you can adapt the `test-config.yml` to your liking
-> (so that certain settings which you would otherwise *always* set will be
-> pre-set without you having to open the preferences).
-
-Whenever you want to reset the test directory to its initial state (or you
-removed the directory, or cloned the whole project anew), pass the flag
-`--clean` to the command in order to create or reset the directory.
-**This is also necessary if you changed something in `test-config.yml`**.
-
-If you want to prevent a config-file from being created (e.g., to simulate the
-first start experience), pass the flag `--no-config` to this command.
-
-You can pass additional [command-line switches](#command-line-switches) such as
-`--clear-cache` as well. They will be passed to the child process.
-
-Additionally, have a look at our
-[full development documentation](https://docs.zettlr.com/en/getting-started/get-involved/).
-
-#### `package`
-
-Packages the application, but not bundle it into an installer. Without any
-suffix, this command will package the application for your current platform and
-architecture. To create specific packages (may require running on the
-corresponding platform), the following suffixes are available:
-
-- `package:mac-x64` (Intel-based Macs)
-- `package:mac-arm` (Apple Silicon-based Macs)
-- `package:win-x64` (Intel-based Windows)
-- `package:linux-x64` (Intel-based Linux)
-- `package:linux-arm` (ARM-based Linux)
-
-The resulting application packages are stored in `./out`.
-
-> [!IMPORTANT]
-> This command will skip typechecking to speed up builds, so we recommend
-> running `lint` before packaging to ensure that there are no errors.
-
-#### `release:{platform-arch}`
-
-Packages the application and then bundles it into an installer for the
-corresponding platform and architecture. To create such a bundle (may require
-running on the corresponding platform), one of the following values for
-`{platform-arch}` is required:
-
-- `release:mac-x64` (Intel-based Macs)
-- `release:mac-arm` (Apple Silicon-based Macs)
-- `release:win-x64` (Intel-based Windows)
-- `release:linux-x64` (Intel-based Linux)
-- `release:linux-arm` (ARM-based Linux)
-
-The resulting setup bundles are stored in `./release`.
-
-> [!NOTE]
-> While you can `package` directly for your platform without any suffix, you
-> need to specify the platform and architecture when creating a release bundle,
-> since electron-builder would otherwise include the development-dependencies in
-> the `app.asar`, resulting in a bloated application.
-
-#### `csl:refresh`
-
-This downloads the [Citation Style Language](https://citationstyles.org/) (CSL)
-files with which the application is shipped, and places them in the
-`static/csl-locales`- and `static/csl-styles`-directories respectively.
-
-> [!NOTE]
-> This command is intended for an automated workflow that runs from time to time
-> on the repository to perform this action.
-> **Do not commit updated files to the repository**. Instead, the updated files
-> will be downloaded whenever you `git fetch`.
-
-#### `lint`
-
-Runs both `lint:code` and `lint:types` in one go. This ensures that any code you
-add conforms to stylistic rules and can run without obvious errors. Make sure to
-run this command prior to submitting a Pull Request.
-
-> [!NOTE]
-> This command will run automatically on each Pull Request to check your code
-> for inconsistencies.
-
-#### `lint:code`
-
-Runs [ESLint](https://eslint.org/) over the codebase. Apps such as
-[Visual Studio Code](https://code.visualstudio.com/) will automatically run
-ESLint in the background on your open files. This command runs it across the
-entire code base.
-
-> [!TIP]
-> Usually, you will want to run the `lint` command instead.
-
-#### `lint:types`
-
-Runs TypeScript's type checker via
-[`vue-tsc`](https://www.npmjs.com/package/vue-tsc) over the codebase. Apps such
-as [Visual Studio Code](https://code.visualstudio.com/) will automatically check
-types for your open files in the background. This command checks the entire code
-base.
-
-> [!TIP]
-> Usually, you will want to run the `lint` command instead.
-
-#### `lint:po`
-
-This command ensures all translation files in the directory `static/lang` can be
-parsed by the app. It does so by parsing them with the `gettext` parser that
-ships with Zettlr. This command does not require the `gettext` system itself to
-be installed on the machine, as it only uses the Node module.
-
-> [!NOTE]
-> This command will run automatically on pull requests that touch `*.po`-files.
-
-#### `shortcut:install`
-
-Creates a `.desktop`-file into your applications which enables you to quickly
-start an app that you have compiled from source. This requires Linux. To use new
-changes, simple sync the repository, run `package` again, and you're good to go.
-
-> [!WARNING]
-> We provide this command as a convenience. Unless you know what you are doing,
-> you should not run code directly compiled from the HEAD commit of the develop
-> branch. This command *can* be useful, however, in a few instances where you
-> know what may go wrong and can take appropriate precautions.
-
-#### `shortcut:uninstall`
-
-Removes the `.desktop`-file created by `shortcut:install`.
-
-> [!NOTE]
-> You don't have to uninstall and reinstall the shortcut whenever you compile
-> the binary anew. Just make sure that Zettlr is closed before you recompile it.
-> You should only have to reinstall the shortcut if the template (in
-> `scripts/assets/zettlr-dev.desktop`) has changed.
-
-#### `test`
-
-This runs the unit tests in the directory `./test`. Make sure to run this
-command prior to submitting a Pull Request, as this will be run every time you
-commit to the PR, and this way you can make sure that your changes don't break
-any tests, making the whole PR-process easier.
-
-#### `test-gui`
-
-See `start`.
-
-> [!IMPORTANT]
-> This command is deprecated and only an alias for `start`. Use `start` instead.
+- `yarn tauri:dev` — start the Tauri host and webpack development server.
+- `yarn tauri:build` — build the frontend and native application installer.
+- `yarn lint` — run ESLint and the TypeScript/Vue checker.
+- `yarn test` — run the unit test suite.
+- `yarn tauri:check` — type-check the Rust backend.
+- `yarn tauri:fmt` — verify Rust formatting.
 
 ### Build Flags
 
@@ -628,7 +451,7 @@ relative. Basis for the relative path will be either the binary's directory
 is not packaged). Remember to escape spaces or quote the path, if necessary. The
 `~` character to denote the home directory is not expanded in this case, so make
 sure to pass the entire path to your home directory if necessary. Due to a minor
-bug in Electron, an empty `Dictionaries` subdirectory is created in the default
+platform compatibility detail, an empty `Dictionaries` subdirectory is created in the default
 data directory, but it does not impact functionality.
 
 #### `--disable-hardware-acceleration`

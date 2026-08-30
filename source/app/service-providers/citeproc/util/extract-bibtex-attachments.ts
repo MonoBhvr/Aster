@@ -16,7 +16,7 @@ import path from 'path'
 import { bibtex } from 'astrocite'
 import { type BracedComment } from 'astrocite-bibtex'
 import pdfSorter from '@common/util/sort-by-pdf'
-import type LogProvider from '@providers/log'
+import type { LogProvider } from 'source/platform/contracts'
 
 const AstrociteAST = bibtex.AST
 
@@ -81,7 +81,7 @@ export default function extractBibtexAttachments (
 
         // In case the paths are not absolute, make them this way.
         if (!path.isAbsolute(f[0])) {
-          f = f.map(elem => path.join(baseDir, elem))
+          f = f.map(elem => path.join(baseDir, elem).replaceAll('\\', '/'))
         }
         // Save them to the dictionary
         files[entry.id] = f

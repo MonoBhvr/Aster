@@ -47,14 +47,14 @@ import { EditorSelection } from '@codemirror/state'
 import { documentAuthorityIPCAPI } from '@common/modules/markdown-editor/util/ipc-api'
 import { useConfigStore, useDocumentTreeStore, useTagsStore, useWindowStateStore, useWorkspaceStore } from 'source/pinia'
 import { isAbsolutePath, pathBasename, pathDirname, resolvePath } from '@common/util/renderer-path-polyfill'
-import type { DocumentManagerIPCAPI, DocumentsUpdateContext } from 'source/app/service-providers/documents'
-import type { CiteprocProviderIPCAPI } from 'source/app/service-providers/citeproc'
+import type { DocumentManagerIPCAPI, DocumentsUpdateContext } from 'source/platform/contracts'
+import type { CiteprocProviderIPCAPI } from 'source/platform/contracts'
 import type { ProjectInfo } from 'source/common/modules/markdown-editor/plugins/project-info-field'
-import type { FileContentSearchResult } from 'source/app/service-providers/search'
+import type { FileContentSearchResult } from 'source/platform/contracts'
 import type { CustomEditorShortcut } from 'source/common/modules/markdown-editor/keymaps/shortcuts'
 import getDocumentTitle from './util/get-document-title'
 
-const ipcRenderer = window.ipc
+const platformIpc = window.platform.ipc
 
 // This function overwrites the getBibliographyForDescriptor function to ensure
 // the library is always absolute. We have to do it this ridiculously since the
@@ -92,7 +92,7 @@ const tagStore = useTagsStore()
 let currentEditor: MarkdownEditor|null = null
 
 // EVENT LISTENERS
-ipcRenderer.on('citeproc-database-updated', (_event, _dbPath: string) => {
+platformIpc.on('citeproc-database-updated', (_event, _dbPath: string) => {
   const descriptor = activeFileDescriptor.value
 
   if (descriptor === undefined || descriptor.type !== 'file') {
@@ -105,14 +105,13 @@ ipcRenderer.on('citeproc-database-updated', (_event, _dbPath: string) => {
   })
 })
 
-ipcRenderer.on('shortcut', (event, command) => {
+platformIpc.on('shortcut', (_event, command) => {
   if (currentEditor?.hasFocusWithin() !== true) {
     return // None of our business
   }
 
   if (command === 'save-file') {
-    // Main is telling us to save, so tell main to save the current file.
-    ipcRenderer.invoke('documents-provider', {
+    platformIpc.invoke('documents-provider', {
       command: 'save-file',
       payload: { path: props.file.path }
     } as DocumentManagerIPCAPI)
@@ -133,7 +132,7 @@ ipcRenderer.on('shortcut', (event, command) => {
   }
 })
 
-ipcRenderer.on('documents-update', (e, payload: { event: DP_EVENTS, context: DocumentsUpdateContext }) => {
+platformIpc.on('documents-update', (e, payload: { event: DP_EVENTS, context: DocumentsUpdateContext }) => {
   const { event, context } = payload
   if (event === DP_EVENTS.FILE_REMOTELY_CHANGED && context.filePath === props.file.path) {
     // The currently loaded document has been changed remotely. This event indicates
@@ -143,7 +142,7 @@ ipcRenderer.on('documents-update', (e, payload: { event: DP_EVENTS, context: Doc
   } else if (event === DP_EVENTS.FILE_SAVED && context.filePath === props.file.path) {
     // The file has been saved to disk. This means we should probably update the
     // descriptor to know of, e.g., library changes.
-    ipcRenderer.invoke('fsal', { command: 'get-descriptor', payload: props.file.path })
+    platformIpc.invoke('fsal', { command: 'get-descriptor', payload: props.file.path })
       .then((descriptor: MDFileDescriptor|CodeFileDescriptor|undefined) => {
         if (descriptor === undefined) {
           throw new Error(`Could not swap document: Could not retrieve descriptor for path ${props.file.path}!`)
@@ -168,12 +167,12 @@ ipcRenderer.on('documents-update', (e, payload: { event: DP_EVENTS, context: Doc
   }
 })
 
-ipcRenderer.on('reload-editors', _e => {
+platformIpc.on('reload-editors', _e => {
   currentEditor?.reload().catch(err => console.error('Failed to reload editor after `reload-editors` event', err))
 })
 
 // Update the file database whenever links have been updated
-ipcRenderer.on('links', _e => {
+platformIpc.on('links', _e => {
   updateFileDatabase().catch(err => console.error('Could not update file database', err))
 })
 
@@ -355,10 +354,13 @@ workspaceStore.$subscribe(() => {
 
 // External commands/"event" system
 watch(toRef(props.editorCommands, 'jumpToLine'), () => {
-  const { filePath, lineNumber } = props.editorCommands.data
+  const data = props.editorCommands.data
+  if (typeof data !== 'object' || data === null || !('filePath' in data)) {
+    return
+  }
   // Execute a jtl-command if the current displayed file is the correct one
-  if (filePath === props.file.path && typeof lineNumber === 'number') {
-    jtl(lineNumber)
+  if (data.filePath === props.file.path && typeof data.lineNumber === 'number') {
+    jtl(data.lineNumber)
   }
 })
 
@@ -367,15 +369,25 @@ watch(toRef(props.editorCommands, 'moveSection'), () => {
     return
   }
 
-  const { from, to } = props.editorCommands.data
-  if (typeof from === 'number' && typeof to === 'number') {
-    currentEditor?.moveSection(from, to)
+  const data = props.editorCommands.data
+  if (typeof data === 'object' && data !== null && 'from' in data && typeof data.from === 'number' && typeof data.to === 'number') {
+    currentEditor?.moveSection(data.from, data.to)
   }
 })
 
 watch(toRef(props, 'distractionFree'), () => {
   if (currentEditor !== null && props.activeFile?.path === props.file.path && documentTreeStore.lastLeafId === props.leafId) {
     currentEditor.distractionFree = props.distractionFree
+  }
+})
+
+watch(toRef(props.editorCommands, 'save'), () => {
+  const data = props.editorCommands.data
+  const filePath = typeof data === 'object' && data !== null && 'filePath' in data && typeof data.filePath === 'string'
+    ? data.filePath
+    : undefined
+  if (filePath === props.file.path && props.activeFile?.path === props.file.path && currentEditor !== null) {
+    currentEditor.save().catch(error => console.error('Could not save active document', error))
   }
 })
 
@@ -390,7 +402,10 @@ watch(toRef(props.editorCommands, 'executeCommand'), () => {
     return
   }
 
-  const command: string = props.editorCommands.data
+  const command = props.editorCommands.data
+  if (typeof command !== 'string') {
+    return
+  }
   currentEditor.runCommand(command)
   currentEditor.focus()
 })
@@ -406,7 +421,10 @@ watch(toRef(props.editorCommands, 'replaceSelection'), () => {
     return
   }
 
-  const textToInsert: string = props.editorCommands.data
+  const textToInsert = props.editorCommands.data
+  if (typeof textToInsert !== 'string') {
+    return
+  }
   currentEditor?.replaceSelection(textToInsert)
 })
 
@@ -421,9 +439,10 @@ watch(toRef(props.editorCommands, 'insertPandoc'), () => {
     return
   }
 
-  const { type, attributes } = props.editorCommands.data
-  if ((type === 'div' || type === 'span') && typeof attributes === 'string') {
-    currentEditor?.insertPandocDivOrSpan(type as 'div'|'span', attributes)
+  const data = props.editorCommands.data
+  if (typeof data === 'object' && data !== null && 'type' in data && 'attributes' in data &&
+    (data.type === 'div' || data.type === 'span') && typeof data.attributes === 'string') {
+    currentEditor?.insertPandocDivOrSpan(data.type, data.attributes)
     currentEditor?.focus()
   }
 })
@@ -487,7 +506,7 @@ async function getEditorFor (doc: string): Promise<MarkdownEditor> {
   })
 
   editor.on('focus', () => {
-    ipcRenderer.invoke('documents-provider', {
+    platformIpc.invoke('documents-provider', {
       command: 'focus-leaf',
       payload: {
         leafId: props.leafId,
@@ -504,7 +523,7 @@ async function getEditorFor (doc: string): Promise<MarkdownEditor> {
   })
 
   editor.on('zettelkasten-link', (linkContents: string) => {
-    ipcRenderer.invoke('application', {
+    platformIpc.invoke('application', {
       command: 'force-open',
       payload: {
         linkContents,
@@ -543,7 +562,7 @@ async function loadDocument (): Promise<void> {
 
   maybeHighlightSearchResults()
 
-  const descriptor: MDFileDescriptor|CodeFileDescriptor|undefined = await ipcRenderer.invoke('fsal', { command: 'get-descriptor', payload: props.file.path })
+  const descriptor: MDFileDescriptor|CodeFileDescriptor|undefined = await platformIpc.invoke('fsal', { command: 'get-descriptor', payload: props.file.path })
   if (descriptor === undefined) {
     throw new Error(`Could not swap document: Could not retrieve descriptor for path ${props.file.path}!`)
   }
@@ -573,7 +592,7 @@ function jtl (lineNumber: number): void {
 }
 
 async function updateCitationKeys (library: string): Promise<void> {
-  const items: Array<{ citekey: string, displayText: string }> = (await ipcRenderer.invoke('citeproc-provider', {
+  const items: Array<{ citekey: string, displayText: string }> = (await platformIpc.invoke<CSLItem[]>('citeproc-provider', {
     command: 'get-items',
     payload: { database: library }
   } as CiteprocProviderIPCAPI))
@@ -631,7 +650,7 @@ async function updateFileDatabase (): Promise<void> {
   const fileDatabase: Array<{ filename: string, displayName: string, id: string }> = []
 
   // ... and the unique links that are part of the link database
-  const rawLinks: Record<string, string[]> = await ipcRenderer.invoke('link-provider', { command: 'get-link-database' })
+  const rawLinks: Record<string, string[]> = await platformIpc.invoke('link-provider', { command: 'get-link-database' })
   const linkDatabase = [...new Set(Object.values(rawLinks).flat())]
 
   // First, add all existing files to the database ...

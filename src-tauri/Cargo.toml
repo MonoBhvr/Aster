@@ -1,0 +1,28 @@
+[package]
+name = "zettlr-tauri"
+version = "4.7.0"
+description = "Zettlr Tauri migration host"
+authors = ["Zettlr contributors"]
+edition = "2021"
+rust-version = "1.77"
+
+[lib]
+name = "zettlr_tauri"
+crate-type = ["lib", "cdylib", "staticlib"]
+
+[[bin]]
+name = "zettlr-tauri"
+path = "src/main.rs"
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+arboard = "3"
+notify = "6.1"
+rfd = "0.15"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+tauri = { version = "2", features = ["protocol-asset"] }
+url = "2"
+webbrowser = "1"

@@ -37,7 +37,7 @@ import { md2html } from '@common/modules/markdown-utils'
 import { useConfigStore, useDocumentTreeStore, useWindowStateStore } from 'source/pinia'
 import { sanitizeHTML } from 'source/common/util/sanitize-html'
 
-const ipcRenderer = window.ipc
+const ipcRenderer = window.platform.ipc
 const windowStateStore = useWindowStateStore()
 const documentTreeStore = useDocumentTreeStore()
 const configStore = useConfigStore()
@@ -145,7 +145,7 @@ function updateToCHTML () {
   for (const entry of tableOfContents.value) {
     promises.push(
       md2html(entry.text, {
-        onCitation: window.getCitationCallback(library.value),
+        onCitation: window.platform.getCitationCallback(library.value),
         zknLinkFormat: configStore.config.zkn.linkFormat
       })
     )

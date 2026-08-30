@@ -18,52 +18,62 @@ import { createPinia } from 'pinia'
 import App from './App.vue'
 import { FocusDirective } from '@common/vue/directives/v-focus'
 
-const ipcRenderer = window.ipc
+const platformIpc = window.platform.ipc
 
-// The first thing we have to do is run the window controller
-windowRegister()
-  .then(() => {
-    afterRegister()
-  })
-  .catch(e => console.error(e))
+// Mount the editor immediately. Translation/theme/context registration is
+// auxiliary and may wait for the Tauri provider during startup; waiting for it
+// here used to produce an intermittent blank window.
+afterRegister()
+void windowRegister().catch(error => {
+  console.error('[Renderer] Optional window registration failed', error)
+})
 
 function afterRegister (): void {
-  const pinia = createPinia()
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-  const app = createApp(App).use(pinia)
+  try {
+    const pinia = createPinia()
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+    const app = createApp(App).use(pinia)
 
-  // This code adds a custom directive `v-focus`, that can be added to any
-  // element. As soon as an element with this directive is mounted into the dom,
-  // this will move focus there. Thanks to https://stackoverflow.com/a/67576157.
-  // Huh, also found the docs afterwards: https://vuejs.org/guide/reusability/custom-directives.html#when-to-use
-  app.directive('focus', FocusDirective)
+    // This code adds a custom directive `v-focus`, that can be added to any
+    // element. As soon as an element with this directive is mounted into the dom,
+    // this will move focus there. Thanks to https://stackoverflow.com/a/67576157.
+    // Huh, also found the docs afterwards: https://vuejs.org/guide/reusability/custom-directives.html#when-to-use
+    app.directive('focus', FocusDirective)
 
-  app.mount('#app')
+    app.mount('#app')
 
-  document.addEventListener('dragover', function (event) {
-    event.preventDefault()
-    return false
-  }, false)
+    document.addEventListener('dragover', function (event) {
+      event.preventDefault()
+      return false
+    }, false)
 
-  // On drop, tell the renderer to tell main that there's something to
-  // handle.
-  document.addEventListener('drop', (event) => {
-    event.preventDefault()
-    if (event.dataTransfer === null) {
-      return
-    }
-
-    // Retrieve all paths
-    const filesToOpen = []
-    for (let i = 0; i < event.dataTransfer.files.length; i++) {
-      const file = event.dataTransfer.files.item(i)
-      if (file !== null) {
-        filesToOpen.push(window.getPathForFile(file))
+    // On drop, tell the renderer to tell main that there's something to
+    // handle.
+    document.addEventListener('drop', (event) => {
+      event.preventDefault()
+      if (event.dataTransfer === null) {
+        return
       }
-    }
 
-    ipcRenderer.invoke('application', { command: 'roots-add', payload: filesToOpen.filter(x => x !== undefined) })
-      .catch(e => console.error(e))
-    return false
-  }, false)
+      // Retrieve all paths
+      const filesToOpen = []
+      for (let i = 0; i < event.dataTransfer.files.length; i++) {
+        const file = event.dataTransfer.files.item(i)
+        if (file !== null) {
+          const filePath = window.platform.getPathForFile(file)
+          if (filePath !== undefined) {filesToOpen.push(filePath)}
+        }
+      }
+
+      platformIpc.invoke('application', { command: 'roots-add', payload: filesToOpen.filter(x => x !== undefined) })
+        .catch(e => console.error(e))
+      return false
+    }, false)
+  } catch (error) {
+    console.error('[Renderer] Could not mount Zettlr renderer', error)
+    const root = document.getElementById('app')
+    if (root !== null) {
+      root.textContent = 'Zettlr could not start. Check the developer log for details.'
+    }
+  }
 }

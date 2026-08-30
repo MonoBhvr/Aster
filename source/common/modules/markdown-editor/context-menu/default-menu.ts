@@ -23,12 +23,12 @@ import { cut, copyAsPlain, copyAsHTML, paste, pasteAsPlain } from '../util/copy-
 import { getTransformSubmenu } from './transform-items'
 import { extractLTSpellcheckSuggestionsFrom, isLanguageToolMisspelling } from '../linters/language-tool'
 
-const ipcRenderer = window.ipc
+const platformIpc = window.platform.ipc
 const suggestionCache = new Map<string, string[]>()
 
 // Listen for dictionary-provider messages. NOTE: The suggestionCache is shared,
 // meaning I'd have to implement it in a scope if I need custom
-ipcRenderer.on('dictionary-provider', (event, message) => {
+platformIpc.on('dictionary-provider', (event, message) => {
   const { command } = message
 
   if (command === 'invalidate-dict') {
@@ -67,7 +67,7 @@ async function fetchSuggestions (term: string): Promise<string[]> {
 
   // If we're here, the suggestion has not yet been cached. Code is equal to
   // above's batchSuggest
-  const suggestions: string[][] = await ipcRenderer.invoke(
+  const suggestions: string[][] = await platformIpc.invoke(
     'dictionary-provider',
     { command: 'suggest', terms: [saneTerm] }
   )
@@ -160,7 +160,7 @@ export async function defaultMenu (view: EditorView, node: SyntaxNode, coords: {
       label: trans('Add to dictionary'),
       type: 'normal',
       action () {
-        ipcRenderer.invoke(
+        platformIpc.invoke(
           'dictionary-provider',
           { command: 'add', terms: [misspelledWord] }
         )

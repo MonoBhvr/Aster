@@ -12,12 +12,12 @@
  * END HEADER
  */
 
-import { type ConfigOptions } from '@providers/config/get-config-template'
+import { type ConfigOptions } from 'source/platform/config-template'
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import _ from 'underscore'
 
-const ipcRenderer = window.ipc
+const platformIpc = window.platform.ipc
 
 /**
  * Synchronously retrieves the configuration
@@ -25,7 +25,7 @@ const ipcRenderer = window.ipc
  * @return  {ConfigOptions}  The configuration
  */
 function retrieveConfig (): ConfigOptions {
-  return ipcRenderer.sendSync('config-provider', { command: 'get-config' })
+  return platformIpc.sendSync('config-provider', { command: 'get-config' })
 }
 
 export const useConfigStore = defineStore('config', () => {
@@ -39,14 +39,14 @@ export const useConfigStore = defineStore('config', () => {
   }, 50)
 
   // Listen to subsequent changes
-  ipcRenderer.on('config-provider', (event, { command }) => {
+  platformIpc.on('config-provider', (event, { command }) => {
     if (command === 'update') {
       throttledRetrieve()
     }
   })
 
   function setConfigValue (property: string, value: unknown): boolean {
-    return ipcRenderer.sendSync('config-provider', {
+    return platformIpc.sendSync('config-provider', {
       command: 'set-config-single',
       payload: { key: property, val: value }
     })

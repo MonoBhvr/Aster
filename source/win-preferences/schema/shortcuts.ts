@@ -26,12 +26,12 @@ import {
   type MenuShortcutName,
   defaultKeybindings as menuDefaults,
   getCustomShortcut as customMenuShortcut
-} from 'source/app/service-providers/menu/shortcuts'
+} from 'source/common/modules/markdown-editor/keymaps/menu-shortcuts'
 import type {
   ConfigOptions,
   ConfigurableEditorShortcuts,
   ConfigurableUIShortcuts
-} from 'source/app/service-providers/config/get-config-template.js'
+} from 'source/platform/config-template'
 
 /**
  * Utility function that checks the shortcut list for conflicts. For this,

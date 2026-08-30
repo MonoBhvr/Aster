@@ -127,6 +127,14 @@
     v-on:close="showPandocPopover = false"
     v-on:insert-pandoc="insertPandoc($event)"
   ></PopoverPandoc>
+
+  <div v-if="showPreferences" class="preferences-overlay">
+    <div class="preferences-overlay-header">
+      <span>{{ trans('Preferences') }}</span>
+      <button type="button" v-on:click="showPreferences = false">{{ trans('Close') }}</button>
+    </div>
+    <PreferencesApp></PreferencesApp>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -176,17 +184,17 @@ import alarmFile from './assets/digital_alarm.mp3'
 import chimeFile from './assets/chime.mp3'
 import { DocumentType, type LeafNodeJSON } from '@dts/common/documents'
 import { buildPipeMarkdownTable } from '@common/util/build-pipe-markdown-table'
-import { type UpdateState } from '@providers/updates'
+import { type UpdateState, type DocumentManagerIPCAPI } from 'source/platform/contracts'
 import { type ToolbarControl } from '@common/vue/window/WindowToolbar.vue'
 import getDocumentTitle from './util/get-document-title'
 import { useConfigStore, useDocumentTreeStore, useLRTStore, useWindowStateStore } from 'source/pinia'
-import type { ConfigOptions } from 'source/app/service-providers/config/get-config-template'
+import type { ConfigOptions } from 'source/platform/config-template'
 import { type AnyDescriptor } from 'source/types/common/fsal'
-import type { DocumentManagerIPCAPI } from 'source/app/service-providers/documents'
 import { TaskStatus } from 'source/pinia/lrt-store'
 import PopoverLRT from './PopoverLRT.vue'
+import PreferencesApp from '../win-preferences/App.vue'
 
-const ipcRenderer = window.ipc
+const ipcRenderer = window.platform.ipc
 
 const configStore = useConfigStore()
 const documentTreeStore = useDocumentTreeStore()
@@ -216,7 +224,7 @@ const windowId = searchParams.get('window_id')!
 const fileManagerVisible = computed<boolean>(() => configStore.config.window.fileManagerVisible)
 const mainSplitViewVisibleComponent = ref<'fileManager'|'globalSearch'>('fileManager')
 const isUpdateAvailable = ref(false)
-const hasVibrancy = computed(() => configStore.config.window.vibrancy && process.platform === 'darwin')
+const hasVibrancy = computed(() => configStore.config.window.vibrancy && window.platform.os === 'darwin')
 
 // Ensure the app remembers the previous sidebar sizes
 const fileManagerSplitComponentInitialSize = ref<[number, number]>([ 20, 80 ])
@@ -228,6 +236,7 @@ onBeforeMount(() => {
 
 // Popover targets
 const exportButton = ref<HTMLElement|null>(null)
+const showPreferences = ref(false)
 const showExportPopover = ref<boolean>(false)
 const statsButton = ref<HTMLElement|null>(null)
 const showStatsPopover = ref<boolean>(false)
@@ -316,6 +325,7 @@ export interface EditorCommands {
   replaceSelection: boolean
   insertPandoc: boolean
   executeCommand: boolean
+  save: boolean
   data: any
 }
 
@@ -327,6 +337,7 @@ const editorCommands = ref<EditorCommands>({
   replaceSelection: false,
   insertPandoc: false,
   executeCommand: false,
+  save: false,
   data: undefined
 })
 
@@ -382,9 +393,9 @@ const windowTitle = computed<string>(() => {
 */
 
 // The titlebar shall be shown on the main window in only one single instance
-const shouldShowTitlebar = computed<boolean>(() => process.platform === 'darwin' && configStore.config.display.hideToolbarInDistractionFree && distractionFree.value)
+const shouldShowTitlebar = computed<boolean>(() => window.platform.os === 'darwin' && configStore.config.display.hideToolbarInDistractionFree && distractionFree.value)
 // The menubar is independent of other values; always shown on Windows, and on Linux only if native Appearance is off.
-const shouldShowMenubar = computed<boolean>(() => process.platform === 'win32' || (process.platform !== 'darwin' && !configStore.config.window.nativeAppearance))
+const shouldShowMenubar = computed<boolean>(() => window.platform.os === 'win32' || (window.platform.os !== 'darwin' && !configStore.config.window.nativeAppearance))
 
 // Finally, the toolbar. That one is a bit more iffy. It is always shown, EXCEPT
 // Hide Toolbar is True and DistractionFree is True
@@ -768,9 +779,9 @@ onMounted(() => {
     .catch(err => console.error(err))
 
   // Also, listen for any changes in the update available state
-  ipcRenderer.on('update-provider', (event, command: string, updateState: UpdateState) => {
-    if (command === 'state-changed') {
-      isUpdateAvailable.value = updateState.updateAvailable
+  ipcRenderer.on('update-provider', (_event, message) => {
+    if (message.command === 'state-changed' && message.payload !== undefined) {
+      isUpdateAvailable.value = message.payload.updateAvailable
     }
   })
 })
@@ -891,8 +902,7 @@ function handleClick (clickedID?: string): void {
     ipcRenderer.invoke('application', { command: 'root-open-workspaces' })
       .catch(e => console.error(e))
   } else if (clickedID === 'open-preferences') {
-    ipcRenderer.invoke('application', { command: 'open-preferences' })
-      .catch(e => console.error(e))
+    showPreferences.value = true
   } else if (clickedID === 'new-file') {
     ipcRenderer.invoke('application', { command: 'file-new', payload: { type: DocumentType.Markdown } })
       .catch(e => console.error(e))
@@ -1063,4 +1073,37 @@ function getToolbarButtonDisplay (configName: keyof ConfigOptions['displayToolba
 </script>
 
 <style lang="css" scoped>
+.preferences-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  background: var(--clr-background, #fff);
+  color: var(--clr-text, #222);
+}
+
+.preferences-overlay-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 42px;
+  padding: 0 14px;
+  border-bottom: 1px solid var(--clr-border, #ccc);
+  font-weight: 600;
+}
+
+.preferences-overlay-header button {
+  padding: 4px 10px;
+  border: 1px solid var(--clr-border, #ccc);
+  border-radius: 4px;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+
+.preferences-overlay :deep(.preferences-content) {
+  flex: 1;
+  min-height: 0;
+}
 </style>

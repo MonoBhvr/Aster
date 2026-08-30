@@ -14,7 +14,7 @@
 
 import { extractASTNodes, markdownToAST } from '../modules/markdown-utils'
 import { type ZettelkastenLink } from '../modules/markdown-utils/markdown-ast'
-import path from 'path'
+import { pathBasename, pathExtname } from './renderer-path-polyfill'
 
 /**
  * Takes a Markdown document and replaces all occurrences of a link to
@@ -36,8 +36,8 @@ export default function replaceLinks (markdown: string, oldTarget: string, newTa
   // Users can link both to `Zettelkasten.md` as well as to `Zettelkasten`.
   // The "withoutExtension" vars will equal the arguments to the function if
   // there is no extension given.
-  const oldTargetNoExt = path.basename(oldTarget, path.extname(oldTarget))
-  const newTargetNoExt = path.basename(newTarget, path.extname(newTarget))
+  const oldTargetNoExt = pathBasename(oldTarget, pathExtname(oldTarget))
+  const newTargetNoExt = pathBasename(newTarget, pathExtname(newTarget))
 
   // Quick check to avoid expensive computing if the target doesn't even exist
   // in the provided Markdown

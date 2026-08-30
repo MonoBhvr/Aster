@@ -20,7 +20,7 @@ import { CITEPROC_MAIN_DB } from 'source/types/common/citeproc'
 import { nodeToCiteItem } from '../parser/citation-parser'
 import type { SyntaxNode } from '@lezer/common'
 
-const ipcRenderer = window.ipc
+const platformIpc = window.platform.ipc
 
 /**
  * Displays a context menu appropriate for citations
@@ -33,7 +33,7 @@ const ipcRenderer = window.ipc
 export function citationMenu (view: EditorView, coords: { x: number, y: number }, citationNode: SyntaxNode): void {
   // Calculate the relevant state
   const config = view.state.field(configField).metadata.library
-  const callback = window.getCitationCallback(config === '' ? CITEPROC_MAIN_DB : config)
+  const callback = window.platform.getCitationCallback(config === '' ? CITEPROC_MAIN_DB : config)
   const citation = nodeToCiteItem(citationNode.node, view.state.sliceDoc())
   const items = Object.fromEntries(citation.items.map(({ id }) => {
     return [ id, callback([{ id }], true) ?? id ]
@@ -57,10 +57,10 @@ export function citationMenu (view: EditorView, coords: { x: number, y: number }
   for (const [ key, label ] of Object.entries(items)) {
     tpl.push({
       label,
-      sublabel: process.platform === 'darwin' ? trans('Open PDF for %s', label) : undefined,
+      sublabel: window.platform.os === 'darwin' ? trans('Open PDF for %s', label) : undefined,
       type: 'normal',
       action () {
-        ipcRenderer.invoke('application', {
+        platformIpc.invoke('application', {
           command: 'open-attachment',
           payload: { citekey: key, filePath }
         })

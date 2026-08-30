@@ -1,4 +1,8 @@
-import type { TabManagerJSON } from 'source/app/service-providers/documents/document-tree/tab-manager'
+export interface TabManagerJSON {
+  openFiles: OpenDocument[]
+  activeFile: OpenDocument | null
+}
+
 
 /**
  * A descriptor for some metadata that is associated to opened documents, such

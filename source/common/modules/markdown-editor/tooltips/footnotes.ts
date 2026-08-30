@@ -97,7 +97,7 @@ function footnotesTooltip (view: EditorView, pos: number, side: 1 | -1): Tooltip
           ? trans('No footnote text found.')
           : fnBody.text,
         {
-          onCitation: window.getCitationCallback(library),
+          onCitation: window.platform.getCitationCallback(library),
           zknLinkFormat
         }
       )

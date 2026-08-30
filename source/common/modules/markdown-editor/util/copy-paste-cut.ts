@@ -20,7 +20,7 @@ import html2md from '@common/util/html-to-md'
 import { configField } from './configuration'
 import { pathBasename, pathDirname, relativePath } from '@common/util/renderer-path-polyfill'
 
-const ipcRenderer = window.ipc
+const platformIpc = window.platform.ipc
 
 /**
  * Handles a paste event (both images and text/HTML)
@@ -37,7 +37,7 @@ async function handlePaste (view: EditorView): Promise<void> {
     const hasHTML = item.types.includes('text/html')
 
     if (item.types.includes('image/png')) {
-      const pathToInsert: string|undefined = await ipcRenderer.invoke('application', {
+      const pathToInsert: string|undefined = await platformIpc.invoke('application', {
         command: 'save-image-from-clipboard',
         payload: { startPath: basePath }
       })
@@ -93,7 +93,7 @@ export function copyAsHTML (view: EditorView): void {
   const { zknLinkFormat } = view.state.field(configField)
 
   const plainText = selections.join('\n')
-  md2html(plainText, { onCitation: window.getCitationCallback(library), zknLinkFormat })
+  md2html(plainText, { onCitation: window.platform.getCitationCallback(library), zknLinkFormat })
     .then(html => {
       navigator.clipboard.write([
         new ClipboardItem({

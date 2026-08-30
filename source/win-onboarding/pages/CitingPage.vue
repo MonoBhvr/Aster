@@ -51,15 +51,15 @@ const citingOptions = {
   'in-text-suffix': '@Author2015 [p. 123] → Author (2015, 123)'
 }
 
-const referenceLibrary = ref(window.config.get('export.cslLibrary'))
-const citingStyle = ref(window.config.get('editor.citeStyle') as 'in-text'|'in-text-suffix'|'regular')
+const referenceLibrary = ref(window.platform.config.get<string>('export.cslLibrary'))
+const citingStyle = ref(window.platform.config.get('editor.citeStyle') as 'in-text'|'in-text-suffix'|'regular')
 
 watch(referenceLibrary, () => {
-  window.config.set('export.cslLibrary', referenceLibrary.value)
+  window.platform.config.set('export.cslLibrary', referenceLibrary.value)
 })
 
 watch(citingStyle, () => {
-  window.config.set('editor.citeStyle', citingStyle.value)
+  window.platform.config.set('editor.citeStyle', citingStyle.value)
 })
 
 </script>

@@ -20,14 +20,14 @@ import { CITEPROC_MAIN_DB } from '@dts/common/citeproc'
 import { DP_EVENTS } from '@dts/common/documents'
 import { type AnyDescriptor, type MDFileDescriptor } from '@dts/common/fsal'
 import { onMounted, ref, computed, watch } from 'vue'
-import { type DocumentsUpdateContext } from 'source/app/service-providers/documents'
+import { type DocumentsUpdateContext } from 'source/platform/contracts'
 import { useDocumentTreeStore } from 'source/pinia'
-import type { CiteprocProviderIPCAPI } from 'source/app/service-providers/citeproc'
+import type { CiteprocProviderIPCAPI } from 'source/platform/contracts'
 import localiseNumber from 'source/common/util/localise-number'
 import { hasMarkdownExt } from 'source/common/util/file-extention-checks'
 import { sanitizeHTML } from 'source/common/util/sanitize-html'
 
-const ipcRenderer = window.ipc
+const ipcRenderer = window.platform.ipc
 const documentTreeStore = useDocumentTreeStore()
 
 // This function overwrites the getBibliographyForDescriptor function to ensure

@@ -15,7 +15,7 @@
 
 import { type GetTextTranslations } from 'gettext-parser'
 
-const ipcRenderer = window.ipc
+const platformIpc = window.platform.ipc
 
 let i18nData: GetTextTranslations|undefined
 
@@ -25,7 +25,7 @@ let i18nData: GetTextTranslations|undefined
  * function produces a side-effect in that it sets the local module variable.
  */
 export async function loadData (): Promise<void> {
-  i18nData = await ipcRenderer.invoke('i18n')
+  i18nData = await platformIpc.invoke('i18n')
 }
 
 /**

@@ -33,16 +33,28 @@ function mockBrowser () {
   // we copy it here in order for those tests not to fail.
   window.path = path
 
-  // Mock the window.config get() and set()
-  window.config = {
-    _data: new Map(),
-    get(key) {
-      if (key === undefined) return this._data
-      return this._data.get(key)
+  // Mock the typed platform configuration API used by renderer utilities.
+  window.platform = {
+    os: process.platform === 'win32' ? 'win32' : process.platform === 'darwin' ? 'darwin' : 'linux',
+    config: {
+      _data: new Map(),
+      get(key) {
+        if (key === undefined) return this._data
+        return this._data.get(key)
+      },
+      set(key, value) {
+        this._data.set(key, value)
+      }
     },
-    set(key, value) {
-      this._data.set(key, value)
-    }
+    ipc: {
+      invoke: async () => undefined,
+      send: () => {},
+      sendSync: () => undefined,
+      on: () => () => {}
+    },
+    getCitationCallback: () => () => undefined,
+    toAssetUrl: (filePath) => `file://${filePath}`,
+    getPathForFile: () => undefined
   }
 
   // Mock the navigator.clipboard readText() and writeText()

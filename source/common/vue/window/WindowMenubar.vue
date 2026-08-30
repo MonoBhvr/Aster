@@ -29,8 +29,9 @@
 
 import showPopupMenu, { type AnyMenuItem, type SubmenuItem } from '@common/modules/window-register/application-menu-helper'
 import { ref, onBeforeMount } from 'vue'
+import { trans } from '@common/i18n-renderer'
 
-const ipcRenderer = window.ipc
+const ipcRenderer = window.platform.ipc
 
 const menu = ref<SubmenuItem[]>([])
 const currentSubmenu = ref<string|null>(null)

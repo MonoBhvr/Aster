@@ -41,15 +41,15 @@ const updatesLabel = trans('Check for Updates')
 const betasIntro = trans('From time to time, we also release beta updates. The more users test these early versions, the better the app becomes.')
 const betasLabel = trans('Test Beta Versions')
 
-const checkForUpdates = ref(Boolean(window.config.get('system.checkForUpdates')))
-const checkForBetas = ref(Boolean(window.config.get('checkForBeta')))
+const checkForUpdates = ref(Boolean(window.platform.config.get('system.checkForUpdates')))
+const checkForBetas = ref(Boolean(window.platform.config.get('checkForBeta')))
 
 watch(checkForUpdates, () => {
-  window.config.set('system.checkForUpdates', checkForUpdates.value)
+  window.platform.config.set('system.checkForUpdates', checkForUpdates.value)
 })
 
 watch(checkForBetas, () => {
-  window.config.set('checkForBeta', checkForBetas.value)
+  window.platform.config.set('checkForBeta', checkForBetas.value)
 })
 </script>
 

@@ -94,8 +94,8 @@ import { nextTick, computed, ref, watch, onMounted, onBeforeUnmount, onUpdated }
 import { useDocumentTreeStore } from 'source/pinia'
 import type { LeafNodeJSON, OpenDocument } from '@dts/common/documents'
 import { pathBasename, pathDirname } from '@common/util/renderer-path-polyfill'
-import type { DocumentManagerIPCAPI } from 'source/app/service-providers/documents'
-import type { WindowControlsIPCAPI } from 'source/app/service-providers/windows'
+import type { DocumentManagerIPCAPI, WindowControlsIPCAPI } from 'source/platform/contracts'
+
 import { useWorkspaceStore } from 'source/pinia/workspace-store'
 import type { AnyMenuItem } from 'source/common/modules/window-register/application-menu-helper'
 import { trans } from 'source/common/i18n-renderer'
@@ -103,7 +103,7 @@ import showPopupMenu from 'source/common/modules/window-register/application-men
 import { closeFile } from './file-manager/util/item-composable'
 import getDocumentTitle from './util/get-document-title'
 
-const ipcRenderer = window.ipc
+const platformIpc = window.platform.ipc
 
 const props = defineProps<{
   leafId: string
@@ -143,7 +143,7 @@ watch(activeFile, () => {
 
 onMounted(() => {
   // Listen for shortcuts so that we can switch tabs programmatically
-  ipcRenderer.on('shortcut', (event, shortcut) => {
+  platformIpc.on('shortcut', (event, shortcut) => {
     if (documentTreeStore.lastLeafId !== props.leafId) {
       return // Doesn't apply to this pane
     }
@@ -171,7 +171,7 @@ onMounted(() => {
       // this window as if the user had clicked on the close-button.
       if (currentIdx > -1) {
         // There's an active file, so request the closure
-        ipcRenderer.invoke('documents-provider', {
+        platformIpc.invoke('documents-provider', {
           command: 'close-file',
           payload: {
             path: openFiles.value[currentIdx].path,
@@ -183,7 +183,7 @@ onMounted(() => {
       } else {
         // No more open files, so request closing of the window
         // TODO: This must be managed centrally
-        // ipcRenderer.send('window-controls', { command: 'win-close' })
+        // platformIpc.send('window-controls', { command: 'win-close' })
       }
     } else if (shortcut === 'rename-file') {
       // Renaming via shortcut (= Cmd/Ctrl+R) works via a tooltip underneath
@@ -227,7 +227,7 @@ onMounted(() => {
         }
 
         if (event.key === 'Enter' && input.value.trim() !== '') {
-          ipcRenderer.invoke('application', {
+          platformIpc.invoke('application', {
             command: 'file-rename',
             payload: {
               path: openFiles.value[currentIdx].path,
@@ -382,7 +382,7 @@ function handleClickClose (event: MouseEvent, file: OpenDocument): void {
     return // We don't handle this event here.
   }
 
-  ipcRenderer.invoke('documents-provider', {
+  platformIpc.invoke('documents-provider', {
     command: 'close-file',
     payload: {
       path: file.path,
@@ -430,7 +430,7 @@ function selectFile (file: OpenDocument): void {
   // NOTE: We're handling active file setting via the open-file command. As
   // long as a given file is already open, the document manager will simply
   // set it as active. That is why we don't provide the newTab property.
-  ipcRenderer.invoke('documents-provider', {
+  platformIpc.invoke('documents-provider', {
     command: 'open-file',
     payload: { path: file.path, windowId: props.windowId, leafId: props.leafId }
   } as DocumentManagerIPCAPI)
@@ -441,7 +441,7 @@ function handleTabbarContext (event: MouseEvent): void {
   // If the person didn't click on a file, let them to close the whole leaf
   displayTabbarContext(event, (clickedID: string) => {
     if (clickedID === 'close-leaf') {
-      ipcRenderer.invoke('documents-provider', {
+      platformIpc.invoke('documents-provider', {
         command: 'close-leaf',
         payload: {
           leafId: props.leafId,
@@ -458,8 +458,8 @@ function handleContextMenu (event: MouseEvent, doc: OpenDocument): void {
     return
   }
 
-  const isMac = process.platform === 'darwin'
-  const isWin = process.platform === 'win32'
+  const isMac = window.platform.os === 'darwin'
+  const isWin = window.platform.os === 'win32'
 
   const items: AnyMenuItem[] = [
     {
@@ -467,7 +467,7 @@ function handleContextMenu (event: MouseEvent, doc: OpenDocument): void {
       type: 'normal',
       enabled: !doc.pinned,
       action () {
-        ipcRenderer.invoke('documents-provider', {
+        platformIpc.invoke('documents-provider', {
           command: 'close-file',
           payload: { path: descriptor.path, leafId: props.leafId, windowId: props.windowId }
         } satisfies DocumentManagerIPCAPI).catch(e => console.error(e))
@@ -482,7 +482,7 @@ function handleContextMenu (event: MouseEvent, doc: OpenDocument): void {
             continue
           }
 
-          ipcRenderer.invoke('documents-provider', {
+          platformIpc.invoke('documents-provider', {
             command: 'close-file',
             payload: { path: openFile.path, leafId: props.leafId, windowId: props.windowId }
           } satisfies DocumentManagerIPCAPI).catch(e => console.error(e))
@@ -495,7 +495,7 @@ function handleContextMenu (event: MouseEvent, doc: OpenDocument): void {
       enabled: !doc.pinned,
       action () {
         for (const openFile of openFiles.value) {
-          ipcRenderer.invoke('documents-provider', {
+          platformIpc.invoke('documents-provider', {
             command: 'close-file',
             payload: { path: openFile.path, leafId: props.leafId, windowId: props.windowId }
           } satisfies DocumentManagerIPCAPI).catch(e => console.error(e))
@@ -528,7 +528,7 @@ function handleContextMenu (event: MouseEvent, doc: OpenDocument): void {
       label: doc.pinned ? trans('Unpin tab') : trans('Pin tab'),
       type: 'normal',
       action () {
-        ipcRenderer.invoke('documents-provider', {
+        platformIpc.invoke('documents-provider', {
           command: 'set-pinned',
           payload: {
             path: doc.path, leafId: props.leafId, windowId: props.windowId, pinned: !doc.pinned
@@ -557,7 +557,7 @@ function handleContextMenu (event: MouseEvent, doc: OpenDocument): void {
       label: isMac ? trans('Reveal in Finder') : isWin ? trans('Reveal in Explorer') : trans('Reveal in File Browser'),
       type: 'normal',
       action () {
-        ipcRenderer.send('window-controls', {
+        platformIpc.send('window-controls', {
           command: 'show-item-in-folder',
           payload: { itemPath: descriptor.path }
         } satisfies WindowControlsIPCAPI)
@@ -598,7 +598,7 @@ function handleContextMenu (event: MouseEvent, doc: OpenDocument): void {
  * @param   {string}     filePath  The file to be dragged
  */
 function handleDragStart (event: DragEvent, filePath: string): void {
-  const DELIM = (process.platform === 'win32') ? ';' : ':'
+  const DELIM = (window.platform.os === 'win32') ? ';' : ':'
   // NOTE: When retrieving this data, destructure as an array and capture
   // any remaining parts with `...filePath` and re-join with DELIM to
   // account for the fact that Unixoid systems allow colons in paths.
@@ -741,7 +741,7 @@ function handleDragEnd (event: DragEvent): void {
     container.value.insertBefore(targetElement, container.value.children[originalIndex + 1])
   }
 
-  ipcRenderer.invoke('documents-provider', {
+  platformIpc.invoke('documents-provider', {
     command: 'sort-open-files',
     payload: {
       newOrder,
@@ -814,7 +814,7 @@ function moveFile (itemPath: string, where: 'start'|'end') {
     newOrder.push(itemPath)
   }
 
-  ipcRenderer.invoke('documents-provider', {
+  platformIpc.invoke('documents-provider', {
     command: 'sort-open-files',
     payload: {
       newOrder,
@@ -834,7 +834,7 @@ function moveFile (itemPath: string, where: 'start'|'end') {
  */
 function handleExternalDrop (event: DragEvent): void {
   documentTabDragOver.value = false
-  const DELIM = (process.platform === 'win32') ? ';' : ':'
+  const DELIM = (window.platform.os === 'win32') ? ';' : ':'
   const documentTab = event.dataTransfer?.getData('zettlr/document-tab')
   if (documentTab === undefined) {
     return
@@ -855,7 +855,7 @@ function handleExternalDrop (event: DragEvent): void {
   // delimiter -> window:leaf:absPath
   const [ originWindow, originLeaf, ...filePath ] = documentTab.split(DELIM)
   // Now actually perform the act
-  ipcRenderer.invoke('documents-provider', {
+  platformIpc.invoke('documents-provider', {
     command: 'move-file',
     payload: {
       originWindow,

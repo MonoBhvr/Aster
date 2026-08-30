@@ -16,15 +16,15 @@
 import { linter, type Diagnostic, type Action } from '@codemirror/lint'
 import { extractTextnodes, markdownToAST } from '@common/modules/markdown-utils'
 import { configField } from '../util/configuration'
-import type { LanguageToolLinterRequest, LanguageToolLinterResponse } from '@providers/commands/language-tool'
+import type { LanguageToolLinterRequest, LanguageToolLinterResponse } from 'source/platform/contracts'
 import { StateEffect, StateField, type Transaction } from '@codemirror/state'
 import extractYamlFrontmatter from 'source/common/util/extract-yaml-frontmatter'
 import { EditorView, type ViewUpdate } from '@codemirror/view'
 import { trans } from 'source/common/i18n-renderer'
-import type { LanguageToolIgnoredRuleEntry } from '@providers/config/get-config-template'
+import type { LanguageToolIgnoredRuleEntry } from 'source/platform/config-template'
 import { ensureSyntaxTree } from '@codemirror/language'
 
-const ipcRenderer = window.ipc
+const platformIpc = window.platform.ipc
 
 // store the local dictionary for later filtering
 const userDictionary: Set<string> = new Set()
@@ -32,7 +32,7 @@ const userDictionary: Set<string> = new Set()
 function refreshUserDictionary (): void {
   userDictionary.clear()
 
-  ipcRenderer.invoke(
+  platformIpc.invoke(
     'dictionary-provider',
     { command: 'get-user-dictionary' }
   ).then((dictionary: string[]) => {
@@ -43,7 +43,7 @@ function refreshUserDictionary (): void {
 }
 
 // watch the dictionary-provider to update the user dictionary
-ipcRenderer.on('dictionary-provider', (event, message) => {
+platformIpc.on('dictionary-provider', (event, message) => {
   const { command } = message
 
   if (command === 'invalidate-dict') {
@@ -183,7 +183,7 @@ const ltLinter = linter(async view => {
   // Extract TextNodes to later filter diagnostics that only cover these nodes.
   const textNodes = extractTextnodes(ast)
 
-  const response: LanguageToolLinterResponse = await ipcRenderer.invoke('application', {
+  const response: LanguageToolLinterResponse = await platformIpc.invoke('application', {
     command: 'run-language-tool',
     payload: {
       // Send the entire document to the API as `text`
@@ -285,7 +285,7 @@ const ltLinter = linter(async view => {
           category: match.rule.category.name
         }
 
-        ipcRenderer.invoke('application', {
+        platformIpc.invoke('application', {
           command: 'add-language-tool-ignore-rule',
           payload
         }).catch(err => console.error(err))

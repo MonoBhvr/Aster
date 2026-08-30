@@ -92,10 +92,10 @@ import { getShortcutFields } from './schema/shortcuts'
 
 export type PreferencesFieldset = Fieldset & { group: PreferencesGroups }
 
-const ipcRenderer = window.ipc
+const ipcRenderer = window.platform.ipc
 const configStore = useConfigStore()
 
-const hasVibrancy = computed(() => configStore.config.window.vibrancy && process.platform === 'darwin')
+const hasVibrancy = computed(() => configStore.config.window.vibrancy && window.platform.os === 'darwin')
 
 const currentGroup = ref(0)
 const query = ref('')
@@ -259,7 +259,7 @@ const groups = computed<Array<SelectableListItem & { id: PreferencesGroups }>>((
 const windowTitle = computed(() => {
   if (query.value !== '') {
     return trans('Searching: %s', query.value)
-  } else if (process.platform === 'darwin') {
+  } else if (window.platform.os === 'darwin') {
     return groups.value[currentGroup.value].displayText
   } else {
     return trans('Preferences')
@@ -351,7 +351,7 @@ function handleInput (prop: string, val: unknown): void {
  * Sets the window title corresponding to the current tab.
  */
 function setTitle (): void {
-  if (process.platform === 'darwin') {
+  if (window.platform.os === 'darwin') {
     // Apple's Human Interface Guidelines state the window title should be
     // the current tab.
     document.title = groups.value[currentGroup.value].displayText
@@ -364,7 +364,7 @@ function setTitle (): void {
  */
 function populateDynamicValues (): void {
   // Get a list of all available languages
-  ipcRenderer.invoke('application', {
+  ipcRenderer.invoke<string[]>('application', {
     command: 'get-available-languages'
   })
     .then((languages) => {
@@ -378,7 +378,7 @@ function populateDynamicValues (): void {
     .catch(err => console.error(err))
 
   // Also, get a list of all available dictionaries
-  ipcRenderer.invoke('application', {
+  ipcRenderer.invoke<string[]>('application', {
     command: 'get-available-dictionaries'
   })
     .then((dictionaries) => {
@@ -397,7 +397,7 @@ function populateDynamicValues (): void {
     .catch(err => console.error(err))
 
   // Retrieve the user dictionary
-  ipcRenderer.invoke('dictionary-provider', {
+  ipcRenderer.invoke<string[]>('dictionary-provider', {
     command: 'get-user-dictionary'
   })
     .then((dictionary) => {

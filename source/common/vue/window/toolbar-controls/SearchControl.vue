@@ -34,7 +34,7 @@
  */
 import { ref } from 'vue'
 
-const ipcRenderer = window.ipc
+const ipcRenderer = window.platform.ipc
 
 export interface ToolbarSearchControl {
   type: 'search'

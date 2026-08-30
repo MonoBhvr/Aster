@@ -35,8 +35,8 @@ export interface ClickListenerCallbacks {
 export function clickListeners<T = unknown> (callbacks?: ClickListenerCallbacks): DOMEventHandlers<T> {
   return {
     mousedown (event, view) {
-      const cmd = event.metaKey && process.platform === 'darwin'
-      const ctrl = event.ctrlKey && process.platform !== 'darwin'
+      const cmd = event.metaKey && window.platform.os === 'darwin'
+      const ctrl = event.ctrlKey && window.platform.os !== 'darwin'
       if (!cmd && !ctrl) {
         return false
       }

@@ -12,14 +12,13 @@
  * END HEADER
  */
 
-import type { DatabaseRecord } from '..'
+import type { DatabaseRecord, LogProvider } from 'source/platform/contracts'
 import extractBibTexAttachments from './extract-bibtex-attachments'
 import { parse as parseBibTex } from 'astrocite-bibtex'
 import { BibLatexParser, CSLExporter } from 'biblatex-csl-converter'
 import YAML from 'yaml'
 import { promises as fs } from 'fs'
 import path from 'path'
-import type LogProvider from '../../log'
 
 /**
  * Load the provided database into a DatabaseRecord.

@@ -22,10 +22,10 @@ import { shortenUrlVisually } from '@common/util/shorten-url-visually'
 import makeValidUri from 'source/common/util/make-valid-uri'
 import { pathDirname } from 'source/common/util/renderer-path-polyfill'
 import { configField } from '../util/configuration'
-import type { WindowControlsIPCAPI } from 'source/app/service-providers/windows'
+import type { WindowControlsIPCAPI } from 'source/platform/contracts'
 import { findReferenceForLinkLabel, removeMarkdownLink } from '../util/links'
 
-const ipcRenderer = window.ipc
+const platformIpc = window.platform.ipc
 
 /**
  * Given a node, tries to find a URL node. This function expects that node is of
@@ -127,7 +127,7 @@ export function linkImageMenu (view: EditorView, node: SyntaxNode, coords: { x: 
   ]
 
   const validAbsoluteURI = makeValidUri(url, basePath)
-  const isFileLink = validAbsoluteURI.startsWith('safe-file://') || validAbsoluteURI.startsWith('file://')
+  const isFileLink = validAbsoluteURI.startsWith('file://') || validAbsoluteURI.startsWith('file://')
   const isLink = node.type.name !== 'Image'
 
   const imgTpl: AnyMenuItem[] = [
@@ -144,11 +144,11 @@ export function linkImageMenu (view: EditorView, node: SyntaxNode, coords: { x: 
       action () { window.location.href = validAbsoluteURI }
     },
     {
-      label: process.platform === 'darwin' ? trans('Reveal in Finder') : trans('Open in File Browser'),
+      label: window.platform.os === 'darwin' ? trans('Reveal in Finder') : trans('Open in File Browser'),
       enabled: isFileLink,
       type: 'normal',
       action () {
-        ipcRenderer.send('window-controls', {
+        platformIpc.send('window-controls', {
           command: 'show-item-in-folder',
           payload: { itemPath: validAbsoluteURI }
         } as WindowControlsIPCAPI)

@@ -75,9 +75,9 @@ function getPlaceholder (source: string, hostname: string): HTMLDivElement {
     const iframe = getIframe(source)
     wrapper.innerHTML = iframe.outerHTML
 
-    const currentWhitelist: string[] = window.config.get('system.iframeWhitelist')
+    const currentWhitelist: string[] = window.platform.config.get('system.iframeWhitelist')
     currentWhitelist.push(hostname)
-    window.config.set('system.iframeWhitelist', currentWhitelist)
+    window.platform.config.set('system.iframeWhitelist', currentWhitelist)
   }
 
   return wrapper
@@ -97,7 +97,7 @@ class IFrameWidget extends WidgetType {
 
     // Check if the hostname is part of our whitelist. If so, render it directly
     // Otherwise, render a placeholder instead.
-    const whitelist: string[] = window.config.get('system.iframeWhitelist')
+    const whitelist: string[] = window.platform.config.get('system.iframeWhitelist')
 
     if (whitelist.includes(hostname)) {
       const wrapper = getIframeWrapper()

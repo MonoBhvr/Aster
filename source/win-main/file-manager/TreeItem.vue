@@ -184,13 +184,13 @@ import {
   hasExt
 } from 'source/common/util/file-extention-checks'
 import { isDotFile } from 'source/common/util/ignore-path'
-import type { FSALEventPayload, FSALEventPayloadChange } from 'source/app/service-providers/fsal'
+import type { FSALEventPayload, FSALEventPayloadChange } from 'source/platform/contracts'
 import { getSorter } from 'source/common/util/directory-sorter'
-import type { WritingTarget } from 'source/app/service-providers/targets'
+import type { WritingTarget } from 'source/platform/contracts'
 import { filterDescriptorChildren } from './util/filter-children'
 import getDocumentTitle from '../util/get-document-title'
 
-const ipcRenderer = window.ipc
+const ipcRenderer = window.platform.ipc
 
 const emit = defineEmits<(e: 'toggle-file-list') => void>()
 
@@ -526,7 +526,7 @@ onMounted(async () => {
     }
 
     const relative = relativePath(props.item.path, affectedPath)
-    const PATH_SEP = process.platform === 'win32' ? '\\' : '/'
+    const PATH_SEP = window.platform.os === 'win32' ? '\\' : '/'
     if (relative.includes(PATH_SEP)) {
       return
     }

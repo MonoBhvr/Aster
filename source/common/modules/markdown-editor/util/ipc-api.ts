@@ -16,9 +16,9 @@
 import { DP_EVENTS, type DocumentType } from '@dts/common/documents'
 import { type Update } from '@codemirror/collab'
 import { type DocumentAuthorityAPI } from '..'
-import type { DocumentAuthorityIPCAPI } from 'source/app/service-providers/documents'
+import type { DocumentAuthorityIPCAPI } from 'source/platform/contracts'
 
-const ipcRenderer = window.ipc
+const platformIpc = window.platform.ipc
 
 async function pullUpdates (filePath: string, version: number): Promise<false|Update[]> {
   // Requests new updates from the authority. It may be that the returned
@@ -28,13 +28,13 @@ async function pullUpdates (filePath: string, version: number): Promise<false|Up
   // a dozen IPC calls are hanging in the air with no resolution in sight.
   return await new Promise((resolve, reject) => {
     // Begin listening for the correct event
-    const stopListening = ipcRenderer.on('documents-update', (evt, payload) => {
+    const stopListening = platformIpc.on('documents-update', (evt, payload) => {
       const { event, context } = payload
       if (event !== DP_EVENTS.CHANGE_FILE_STATUS || context.filePath !== filePath) {
         return
       }
 
-      ipcRenderer.invoke('documents-authority', {
+      platformIpc.invoke('documents-authority', {
         command: 'pull-updates',
         payload: { filePath, version }
       } as DocumentAuthorityIPCAPI)
@@ -48,9 +48,9 @@ async function pullUpdates (filePath: string, version: number): Promise<false|Up
   })
 }
 
-async function pushUpdates (filePath: string, version: number, updates: any): Promise<boolean> {
+async function pushUpdates (filePath: string, version: number, updates: Update[]): Promise<boolean> {
   // Submits new updates to the authority, returns true if successful
-  return await ipcRenderer.invoke('documents-authority', {
+  return await platformIpc.invoke('documents-authority', {
     command: 'push-updates',
     payload: { filePath, version, updates }
   } as DocumentAuthorityIPCAPI)
@@ -58,7 +58,7 @@ async function pushUpdates (filePath: string, version: number, updates: any): Pr
 
 async function fetchDoc (filePath: string): Promise<{ content: string, type: DocumentType, startVersion: number }> {
   // Fetches a fresh document
-  return await ipcRenderer.invoke('documents-authority', {
+  return await platformIpc.invoke('documents-authority', {
     command: 'get-document',
     payload: { filePath }
   } as DocumentAuthorityIPCAPI)

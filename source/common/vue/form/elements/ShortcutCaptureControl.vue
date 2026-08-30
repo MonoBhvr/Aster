@@ -155,7 +155,7 @@ function handleKeydown (event: KeyboardEvent): void {
   // On both macOS and Linux, the key might be different from what is registered
   // as the `event.key` due to their layer-2 key associations, which allow users
   // to type, e.g., µ, ∂, or … without the use of weird tricks.
-  const isLayer3 = event.altKey && process.platform !== 'win32'
+  const isLayer3 = event.altKey && window.platform.os !== 'win32'
 
   const key = isNonTerminalKey
     ? ''
@@ -188,7 +188,7 @@ function explodeShortcut (shortcut: string): ExplodedShortcut {
   const keys = shortcut.toLowerCase().split(/-/)
   const altKey = keys.includes('alt') || keys.includes('option')
   const shiftKey = keys.includes('shift')
-  const modKey = keys.includes('mod') || process.platform === 'darwin' && keys.includes('cmd') || process.platform !== 'darwin' && keys.includes('mod')
+  const modKey = keys.includes('mod') || window.platform.os === 'darwin' && keys.includes('cmd') || window.platform.os !== 'darwin' && keys.includes('mod')
   const ctrlKey = keys.includes('ctrl')
   return {
     altKey,

@@ -46,7 +46,7 @@ const ltOutro = trans('You can choose a custom server and provide your LanguageT
 
 const configStore = useConfigStore()
 
-const ipcRenderer = window.ipc
+const platformIpc = window.platform.ipc
 const hasActivatedLT = computed(() => {
   return configStore.config.editor.lint.languageTool.active
 })
@@ -64,14 +64,14 @@ const dictionaryCandidateLanguage = computed(() => {
 })
 
 onMounted(async () => {
-  const dictionaries: string[] = await ipcRenderer.invoke('application', {
+  const dictionaries: string[] = await platformIpc.invoke('application', {
     command: 'get-available-dictionaries'
   })
 
   const candidates = dictionaries.map(dict => ({ tag: dict }))
   // Now we should have a list of all available dictionaries. Next, we need to
   // search for a best and a close match.
-  const { exact, close } = findLangCandidates(String(window.config.get('appLang')), candidates)
+  const { exact, close } = findLangCandidates(String(window.platform.config.get('appLang')), candidates)
   if (exact !== undefined) {
     dictionaryCandidate.value = exact.tag
   } else if (close !== undefined) {
@@ -83,9 +83,9 @@ onMounted(async () => {
 
 function toggleDictionary () {
   if (hasChosenDict.value) {
-    window.config.set('selectedDicts', [])
+    window.platform.config.set('selectedDicts', [])
   } else {
-    window.config.set('selectedDicts', [dictionaryCandidate.value])
+    window.platform.config.set('selectedDicts', [dictionaryCandidate.value])
   }
 }
 

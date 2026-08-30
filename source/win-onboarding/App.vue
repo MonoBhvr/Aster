@@ -130,7 +130,7 @@
 </template>
 
 <script setup lang="ts">
-import type { OnboardingIPCMessage } from 'source/app/service-providers/config/onboarding-window'
+import type { OnboardingIPCMessage } from 'source/platform/contracts'
 import { ref, computed } from 'vue'
 import WelcomePage from './pages/WelcomePage.vue'
 import SetAppLang from './pages/SetAppLang.vue'
@@ -150,9 +150,9 @@ import { useConfigStore } from 'source/pinia'
 // This is required because some elements (looking at you, RadioControl) are
 // completely namespaced to platform specific values and we don't include the
 // standard window chrome here.
-document.body.classList.add(process.platform)
+document.body.classList.add(window.platform.os)
 
-const ipcRenderer = window.ipc
+const platformIpc = window.platform.ipc
 
 const searchParams = new URLSearchParams(window.location.search)
 const mode: string|null = searchParams.get('mode')
@@ -160,7 +160,7 @@ const version = PACKAGE_JSON.version
 
 const configStore = useConfigStore()
 
-if (configStore.config.window.vibrancy && process.platform === 'darwin') {
+if (configStore.config.window.vibrancy && window.platform.os === 'darwin') {
   document.body.classList.add('has-vibrancy')
 }
 
@@ -255,7 +255,7 @@ function close () {
 }
 
 function sendMessage (payload: OnboardingIPCMessage) {
-  ipcRenderer.send('onboarding', payload)
+  platformIpc.send('onboarding', payload)
 }
 
 function loadUrl (url: string) {

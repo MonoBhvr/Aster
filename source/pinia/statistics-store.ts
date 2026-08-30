@@ -12,13 +12,13 @@
  * END HEADER
  */
 
-import { type Stats } from '@providers/stats'
+import { type Stats } from 'source/platform/contracts'
 import { defineStore } from 'pinia'
 import { last30EntriesByDate, avgAny30Days, sumAny30Days } from 'source/common/util/stats'
 import { DateTime } from 'luxon'
 import { ref, computed } from 'vue'
 
-const ipcRenderer = window.ipc
+const platformIpc = window.platform.ipc
 
 /**
  * Generates the past 30 days as ISO dates in the form YYYY-MM-DD
@@ -100,12 +100,12 @@ export const useStatisticsStore = defineStore('statistics', () => {
   })
 
   // Initial update
-  ipcRenderer.invoke('stats-provider', { command: 'get-data' })
+  platformIpc.invoke('stats-provider', { command: 'get-data' })
     .then(data => { stats.value = data })
     .catch(err => console.error(err))
 
   // Listen to subsequent updates
-  ipcRenderer.on('stats-updated', (event, data: Stats) => {
+  platformIpc.on('stats-updated', (event, data: Stats) => {
     stats.value = data
   })
 

@@ -64,8 +64,8 @@ const linkHighlight = ViewPlugin.define(view => ({
  * @param   {EditorView}  view   The editor view
  */
 function maybeOpenLink (event: MouseEvent, view: EditorView): void {
-  const cmd = process.platform === 'darwin' && event.metaKey
-  const ctrl = process.platform !== 'darwin' && event.ctrlKey
+  const cmd = window.platform.os === 'darwin' && event.metaKey
+  const ctrl = window.platform.os !== 'darwin' && event.ctrlKey
   if (!cmd && !ctrl) {
     return
   }

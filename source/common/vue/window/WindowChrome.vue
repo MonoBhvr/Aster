@@ -83,7 +83,7 @@ import { useConfigStore, useWindowStateStore } from 'source/pinia'
 const configStore = useConfigStore()
 const windowStateStore = useWindowStateStore()
 
-const ipcRenderer = window.ipc
+const ipcRenderer = window.platform.ipc
 
 const props = defineProps<{
   // Window title
@@ -126,8 +126,8 @@ const emit = defineEmits<{
 // shown on Windows. Change the value in the Vue dev tools if you want to see
 // how Zettlr looks on other platforms. Please also note that this does not
 // affect the native window chrome.
-const platform = ref<typeof process.platform>(process.platform)
-// const platform = ref<typeof process.platform>('win32')
+const platform = ref<typeof window.platform.os>(window.platform.os)
+// const platform = ref<typeof window.platform.os>('win32')
 
 const useNativeAppearance = ref(configStore.config.window.nativeAppearance)
 

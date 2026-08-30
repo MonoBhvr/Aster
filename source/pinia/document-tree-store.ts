@@ -15,12 +15,12 @@
 import { defineStore } from 'pinia'
 import { DP_EVENTS, type BranchNodeJSON, type LeafNodeJSON, type OpenDocument } from 'source/types/common/documents'
 import { ref, type Ref } from 'vue'
-import type { DocumentManagerIPCAPI, DocumentsUpdateContext } from '@providers/documents'
+import type { DocumentManagerIPCAPI, DocumentsUpdateContext } from 'source/platform/contracts'
 import { useWindowStateStore } from 'source/pinia'
 import { useWorkspaceStore } from 'source/pinia'
 import { pathDirname } from 'source/common/util/renderer-path-polyfill'
 
-const ipcRenderer = window.ipc
+const platformIpc = window.platform.ipc
 type DocumentTree = BranchNodeJSON|LeafNodeJSON
 
 /**
@@ -158,9 +158,8 @@ function maybeUncollapseDirectories (filePath: string): void {
 }
 
 export const useDocumentTreeStore = defineStore('document-tree', () => {
-  const windowStateStore = useWindowStateStore()
   const searchParams = new URLSearchParams(window.location.search)
-  const windowId = searchParams.get('window_id')
+  const windowId = searchParams.get('window_id') ?? 'main'
 
   if (windowId === null) {
     console.warn('Could not instantiate documentTreeStore properly: Required search param window_id not present. The store will not update properly. This can happen if another store requires this store.')
@@ -185,21 +184,21 @@ export const useDocumentTreeStore = defineStore('document-tree', () => {
 
   // Initial update for the pane structure ...
   if (windowId !== null) {
-    ipcRenderer.invoke('documents-provider', { command: 'retrieve-tab-config', payload: { windowId } } as DocumentManagerIPCAPI)
+    platformIpc.invoke('documents-provider', { command: 'retrieve-tab-config', payload: { windowId } } as DocumentManagerIPCAPI)
       .then((treedata: LeafNodeJSON|BranchNodeJSON) => recoverState(paneStructure, paneData, lastLeafId, treedata))
       .catch(err => console.error(err))
   }
 
-  ipcRenderer.invoke('documents-provider', { command: 'get-file-modification-status' } as DocumentManagerIPCAPI)
+  platformIpc.invoke('documents-provider', { command: 'get-file-modification-status' } as DocumentManagerIPCAPI)
     .then((modifiedFiles: string[]) => { modifiedDocuments.value = modifiedFiles })
     .catch(err => console.error(err))
 
   // ... and we listen to subsequent changes.
-  ipcRenderer.on('documents-update', (evt, payload: { event: DP_EVENTS, context: DocumentsUpdateContext }) => {
+  platformIpc.on('documents-update', (evt, payload: { event: DP_EVENTS, context: DocumentsUpdateContext }) => {
     const { event, context } = payload
     // A file has been saved or modified
     if (event === DP_EVENTS.CHANGE_FILE_STATUS && context.status === 'modification') {
-      ipcRenderer.invoke('documents-provider', { command: 'get-file-modification-status' } as DocumentManagerIPCAPI)
+      platformIpc.invoke('documents-provider', { command: 'get-file-modification-status' } as DocumentManagerIPCAPI)
         .then((modifiedFiles: string[]) => { modifiedDocuments.value = modifiedFiles })
         .catch(err => console.error(err))
     } else {
@@ -212,7 +211,7 @@ export const useDocumentTreeStore = defineStore('document-tree', () => {
       // the full config as it is in the main process, and dispatch it into
       // the worker who then has the task to apply a delta update with as few
       // changes as possible.
-      ipcRenderer.invoke('documents-provider', { command: 'retrieve-tab-config', payload: { windowId } } as DocumentManagerIPCAPI)
+      platformIpc.invoke('documents-provider', { command: 'retrieve-tab-config', payload: { windowId } } as DocumentManagerIPCAPI)
         .then((treedata: LeafNodeJSON|BranchNodeJSON) => {
           // The task for this function is to apply the minimum necessary delta update
           // for the document tree. Due to Vue's happy reactivity, we have to maintain
@@ -257,23 +256,6 @@ export const useDocumentTreeStore = defineStore('document-tree', () => {
     }
   })
 
-  ipcRenderer.on('shortcut', (event, command) => {
-    if (command === 'toggle-distraction-free') {
-      if (windowStateStore.distractionFreeMode === undefined && lastLeafId.value !== undefined) {
-        windowStateStore.distractionFreeMode = lastLeafId.value
-      } else if (windowStateStore.distractionFreeMode !== undefined && lastLeafId.value === windowStateStore.distractionFreeMode) {
-        windowStateStore.distractionFreeMode = undefined
-      } else if (windowStateStore.distractionFreeMode !== undefined && lastLeafId.value !== windowStateStore.distractionFreeMode) {
-        windowStateStore.distractionFreeMode = lastLeafId.value
-      }
-    } else if (command === 'delete-file' && lastLeafActiveFile.value !== undefined) {
-      ipcRenderer.invoke('application', {
-        command: 'file-delete',
-        payload: { path: lastLeafActiveFile.value.path }
-      })
-        .catch(err => console.error(err))
-    }
-  })
 
   return { paneStructure, paneData, modifiedDocuments, lastLeafId, lastLeafActiveFile }
 })
