@@ -5,8 +5,8 @@ body div.application-menu {
   max-width: min(360px, calc(100vw - 16px));
   overflow-y: auto;
   padding: 4px;
-  color: var(--ui-text-primary, #e8e8e8);
-  background: var(--ui-bg-raised, #303030);
+  color: var(--ui-text);
+  background: var(--ui-panel-raised);
   border: 1px solid var(--ui-border-strong, rgba(255, 255, 255, .2));
   border-radius: var(--ui-radius-md, 7px);
   box-shadow: 0 12px 32px rgba(0, 0, 0, .34);
@@ -25,26 +25,26 @@ body div.application-menu {
     transition: color 100ms ease, background-color 100ms ease;
 
     &:not(.separator):not(.disabled):hover {
-      color: var(--ui-text-primary, #fff);
-      background: var(--ui-bg-hover, #383838);
+      color: var(--ui-text);
+      background: var(--ui-hover);
     }
 
-    &.disabled { color: var(--ui-icon-disabled, #777); cursor: not-allowed; }
+    &.disabled { color: var(--ui-faint); cursor: not-allowed; }
     div.status { grid-area: status; text-align: center; }
-    div.after-element { grid-area: after; padding-left: 16px; color: var(--ui-text-muted, #999); text-align: right; }
+    div.after-element { grid-area: after; padding-left: 16px; color: var(--ui-muted); text-align: right; }
     div.label { grid-area: label; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-align: left; }
-    &.separator { min-height: 1px; height: 1px; margin: 4px 6px; padding: 0; border-bottom: 1px solid var(--ui-border, rgba(255, 255, 255, .12)); }
+    &.separator { min-height: 1px; height: 1px; margin: 4px 6px; padding: 0; border-bottom: 1px solid var(--ui-border); }
   }
 }
 
 body:not(.dark) div.application-menu {
-  color: #25252b;
-  background: #fff;
-  border-color: rgba(31, 31, 38, .24);
+  color: var(--ui-text);
+  background: var(--ui-panel-raised);
+  border-color: var(--ui-border-strong);
 
   div.menu-item {
-    &:not(.separator):not(.disabled):hover { color: #25252b; background: #ececf0; }
-    &.disabled, div.after-element { color: #858590; }
-    &.separator { border-color: rgba(31, 31, 38, .14); }
+    &:not(.separator):not(.disabled):hover { color: var(--ui-text); background: var(--ui-hover); }
+    &.disabled, div.after-element { color: var(--ui-faint); }
+    &.separator { border-color: var(--ui-border); }
   }
 }

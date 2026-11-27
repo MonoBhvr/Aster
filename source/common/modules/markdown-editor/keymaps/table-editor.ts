@@ -45,8 +45,8 @@ export function selectAllCommand (view: EditorView): boolean {
 /**
  * This is the table editor keymap that will be assigned to the subviews created
  * as soon as a user edits a cell. NOTE: This keymap already includes the
- * primary Zettlr keymap so that all keybindings remain consistent. NOTE further
- * that this keymap -- unlike the Zettlr one -- is not updated whenever the
+ * primary Aster keymap so that all keybindings remain consistent. NOTE further
+ * that this keymap -- unlike the Aster one -- is not updated whenever the
  * shortcuts change. This should not be a problem as the table cell cannot be
  * focused when the user changes a key binding, and it will take in the correct
  * keybindings as soon as the user re-focuses the cell (and the subview gets
@@ -70,7 +70,7 @@ export function tableEditorKeymap (mainView: EditorView, customShortcutMap: Cust
   const alignRight = setAlignment('right')
 
   return [
-    // This is a custom keymap that overrides some of the commands of the Zettlr
+    // This is a custom keymap that overrides some of the commands of the Aster
     // keymap to make them work within table editors.
     keymap.of([
       // Prevent programmatic insertion of newlines by disabling some

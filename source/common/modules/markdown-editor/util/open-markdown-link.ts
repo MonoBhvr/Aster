@@ -43,7 +43,7 @@ function findMatchingHeading (headingId: string, state: EditorState): Line|undef
 }
 
 /**
- * Resolves and opens a link safely (= not inside Zettlr, except it's a local MD file)
+ * Resolves and opens a link safely (= not inside Aster, except it's a local MD file)
  *
  * @param   {string}      url  The URL to open
  * @param   {CodeMirror.Editor}  cm   The instance to use if it's a heading link

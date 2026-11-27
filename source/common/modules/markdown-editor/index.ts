@@ -9,7 +9,7 @@
  *
  * Description:     This module contains the functionality to spin up a fully
  *                  functioning CodeMirror editor containing all the additional
- *                  API calls and hooks that Zettlr makes use of for its
+ *                  API calls and hooks that Aster makes use of for its
  *                  powerful internal editor. The class's API provides a
  *                  multitude of options to tweak the editor to the specific
  *                  needs of different environments.
@@ -558,17 +558,17 @@ export default class MarkdownEditor extends EventEmitter {
       }
     }
 
-    // Fourth: Switch theme, if applicable
+    // Fourth: Switch between the light and dark editor palettes, if applicable
     if (darkModeChanged || editorModeChanged || themeChanged) {
       const themes = getMainEditorThemes()
-
       const darkMode = newOptions.darkMode ?? this.config.darkMode
       const darkModeEditor = newOptions.darkModeEditor ?? this.config.darkModeEditor
+      const theme = newOptions.theme ?? this.config.theme
 
       this._instance.dispatch({
         effects: darkModeEffect.of({
           darkMode: useDarkModeEditor(darkMode, darkModeEditor),
-          ...themes[newOptions.theme ?? this.config.theme]
+          ...themes[theme]
         })
       })
     }

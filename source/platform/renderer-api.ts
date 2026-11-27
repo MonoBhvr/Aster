@@ -4,6 +4,8 @@ import { getCurrentWebview } from '@tauri-apps/api/webview'
 import { getConfigTemplate, type ConfigOptions } from 'source/platform/config-template'
 import type { GenericPlatformEvent, PlatformEventMap } from 'source/platform/contracts'
 import { pathDirname, isWin32Path } from 'source/common/util/renderer-path-polyfill'
+import { shortcutFromMenuResponse } from './menu-shortcut-bridge'
+import { getUiShortcutCommandForTarget } from './ui-shortcut-bridge'
 
 /** A serialisable request understood by the Tauri provider gateway. */
 export interface PlatformRequest {
@@ -66,7 +68,7 @@ function dispatch (channel: string, payload: unknown): void {
 }
 
 async function invokeProvider<T> (channel: string, message?: unknown): Promise<T> {
-  // Tab state is renderer state. Keeping it here lets the existing Zettlr
+  // Tab state is renderer state. Keeping it here lets the existing Aster
   // components continue to use their document-provider contract while the
   // filesystem and document bytes live in Rust.
   if (channel === 'documents-provider' && typeof message === 'object' && message !== null) {
@@ -154,7 +156,12 @@ const ipc: PlatformIpc = {
         // Tauri returns command results, so bridge this response back through
         // the same typed event channel.
         if (channel === 'menu-provider' && typeof result === 'object' && result !== null) {
-          dispatch(channel, result)
+          const shortcut = shortcutFromMenuResponse(result)
+          if (shortcut !== undefined) {
+            dispatch('shortcut', shortcut)
+          } else {
+            dispatch(channel, result)
+          }
         }
       })
       .catch(error => console.error(`[Platform] ${channel}`, error))
@@ -259,6 +266,18 @@ void refreshConfigFromBackend().catch(() => {})
 
 export function installPlatformRuntime (): void {
   window.platform = platformRuntime
+
+  window.addEventListener('keydown', event => {
+    if (event.defaultPrevented) {
+      return
+    }
+
+    const command = getUiShortcutCommandForTarget(event, event.target, cachedConfig.shortcuts.ui, detectedOs)
+    if (command !== undefined) {
+      event.preventDefault()
+      dispatch('shortcut', command)
+    }
+  })
 
   // Event registration is best-effort. A renderer must still mount if the
   // Tauri event bridge is not ready at the exact moment the page loads.

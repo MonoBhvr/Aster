@@ -178,7 +178,7 @@ const pages = [
 
 // Update labels
 const updateCompleteHeading = trans('Update complete!')
-const updateCompleteMessage = trans('Zettlr has been updated. You are now running Zettlr')
+const updateCompleteMessage = trans('Aster has been updated. You are now running Aster')
 const getStartedLabel = trans('Get started')
 const whatsChangedLabel = trans('See what\'s changed')
 const buildDate = DateTime.fromISO(__BUILD_DATE__).toLocaleString({ dateStyle: 'full' })
@@ -266,13 +266,13 @@ function loadUrl (url: string) {
 <style lang="less">
 body {
   font-family: system-ui, sans-serif;
-  color: #333;
-  background-color: white;
+  color: var(--ui-text);
+  background-color: var(--ui-bg);
   -webkit-app-region: drag;
 
   &.dark {
-    color: white;
-    background-color: #333;
+    color: var(--ui-text);
+    background-color: var(--ui-bg);
   }
 
   &.has-vibrancy, &.dark.has-vibrancy {
@@ -365,26 +365,26 @@ nav {
     display: inline-block;
     width: 10px;
     height: 10px;
-    background-color: #ddd;
+    background-color: var(--ui-control);
     border-radius: 10px;
 
     &.done {
-      background-color: #1cb27e;
+      background-color: var(--ui-accent);
     }
   }
 }
 
 p#version-string {
-  color: #1cb27e;
+  color: var(--ui-accent);
   font-size: 250%;
   font-weight: bold;
 }
 
 body.dark #onboarding-progress {
   span {
-    background-color: white;
+    background-color: var(--ui-control);
     &.done {
-      background-color: #1cb27e;
+      background-color: var(--ui-accent);
     }
   }
 }
@@ -409,43 +409,44 @@ p {
 // Helper classes
 
 .box {
-  border: 1px solid #333;
+  border: 1px solid var(--ui-border-strong);
   padding: 10px 20px;
   border-radius: 8px;
 }
 
 body.dark {
-  .box { border-color: #ddd; }
+  .box { border-color: var(--ui-border-strong); }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // Form elements
 
 button, select {
-  background-color: rgb(51, 93, 144);
-  border: 0px;
-  color: white;
-  border-radius: 8px;
+  background-color: var(--ui-control);
+  border: 1px solid var(--ui-border-strong);
+  color: var(--ui-text);
+  border-radius: var(--ui-radius);
   padding: 10px 20px;
 
   &:hover {
-    background-color: rgb(67, 116, 175);
+    background-color: var(--ui-hover);
   }
 
   &:disabled, &.inactive {
-    background-color: rgb(159, 159, 159);
-    color: rgb(100, 100, 100);
+    background-color: var(--ui-control);
+    color: var(--ui-faint);
   }
 
   &.inactive:hover {
-    background-color: rgb(180, 180, 180);
+    background-color: var(--ui-hover);
   }
 
   &.active {
-    background-color: #1cb27e;
+    background-color: var(--ui-accent);
+    color: #fff;
 
     &:hover {
-      background-color: #159266;
+      background-color: var(--ui-accent-hover, var(--ui-accent));
     }
   }
 }

@@ -1,5 +1,5 @@
 /** Portable notification helper used by the Tauri webview. */
-export function showNativeNotification (message: string, title: string = 'Zettlr', callback?: () => void): boolean {
+export function showNativeNotification (message: string, title: string = 'Aster', callback?: () => void): boolean {
   if (typeof Notification === 'undefined' || Notification.permission === 'denied') {
     return false
   }

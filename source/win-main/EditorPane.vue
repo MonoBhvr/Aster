@@ -132,13 +132,16 @@
 <script setup lang="ts">
 import { type LeafNodeJSON, type OpenDocument } from '@dts/common/documents'
 import { type EditorCommands } from './App.vue'
-import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
+import { ref, computed, onMounted, onBeforeUnmount, defineAsyncComponent } from 'vue'
 import DocumentTabs from './DocumentTabs.vue'
-import MainEditor from './MainEditor.vue'
 import { useDocumentTreeStore, useWindowStateStore } from 'source/pinia'
-import ImageViewer from './file-viewers/ImageViewer.vue'
 import { hasImageExt, hasPDFExt } from '@common/util/file-extention-checks'
-import PDFViewer from './file-viewers/PDFViewer.vue'
+
+// Keep the pane chrome independent from heavy document viewers. The editor or
+// viewer is loaded only after the pane and its tabs have rendered.
+const MainEditor = defineAsyncComponent(() => import('./MainEditor.vue'))
+const ImageViewer = defineAsyncComponent(() => import('./file-viewers/ImageViewer.vue'))
+const PDFViewer = defineAsyncComponent(() => import('./file-viewers/PDFViewer.vue'))
 import type { DocumentManagerIPCAPI } from 'source/platform/contracts'
 import { type EditorViewPersistentState } from 'source/common/modules/markdown-editor'
 

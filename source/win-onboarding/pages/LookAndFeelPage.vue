@@ -39,16 +39,16 @@ import { ref, watch } from 'vue'
 import { DateTime } from 'luxon'
 
 const pageHeading = trans('Look and Feel')
-const darkModeLabel = trans('Zettlr supports both light and dark mode. You can turn it on manually here.')
+const darkModeLabel = trans('Aster supports both light and dark mode. You can turn it on manually here.')
 const darkModeControlLabel = trans('Activate dark mode')
-const darkModeScheduleLabel = trans('Do you wish to let Zettlr automatically switch to dark mode?')
+const darkModeScheduleLabel = trans('Do you wish to let Aster automatically switch to dark mode?')
 
 const autoDarkModeStart = window.platform.config.get('autoDarkModeStart')
 const autoDarkModeEnd = window.platform.config.get('autoDarkModeEnd')
 const dmStart = DateTime.fromFormat(String(autoDarkModeStart), 'HH:mm', { locale: window.platform.config.get('appLang') }).toLocaleString({ timeStyle: 'short' })
 const dmEnd = DateTime.fromFormat(String(autoDarkModeEnd), 'HH:mm', { locale: window.platform.config.get('appLang') }).toLocaleString({ timeStyle: 'short' })
 
-const darkModeScheduleTimesInfo = trans('Zettlr will turn on dark mode between %s and %s. You can adjust these times in the settings.', dmStart, dmEnd)
+const darkModeScheduleTimesInfo = trans('Aster will turn on dark mode between %s and %s. You can adjust these times in the settings.', dmStart, dmEnd)
 
 const darkModeScheduleOptions = {
   off: trans('Do not automatically toggle light/dark mode'),

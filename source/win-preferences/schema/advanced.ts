@@ -43,7 +43,7 @@ export function getAdvancedFields (config: ConfigOptions): PreferencesFieldset[]
   return [
     {
       title: trans('Pattern for new file names'),
-      infoString: trans('Zettlr uses this pattern to generate new filenames. By default, it just uses a new Zettelkasten ID.'),
+      infoString: trans('Aster uses this pattern to generate new filenames. By default, it just uses a new Zettelkasten ID.'),
       group: PreferencesGroups.Advanced,
       help: undefined, // TODO
       fields: [
@@ -88,8 +88,11 @@ export function getAdvancedFields (config: ConfigOptions): PreferencesFieldset[]
             ? trans('Show app in the notification area')
             : trans('Leave app running in the notification area'),
           model: 'system.leaveAppRunning',
-          disabled: process.env.ZETTLR_IS_TRAY_SUPPORTED === '0',
-          info: process.env.ZETTLR_TRAY_ERROR
+          // Tauri does not expose the Electron process environment. The
+          // platform adapter owns this capability boundary; keep the field
+          // usable instead of evaluating an unavailable `process` global.
+          disabled: false,
+          info: undefined
         },
         { type: 'separator' },
         {
@@ -142,7 +145,7 @@ export function getAdvancedFields (config: ConfigOptions): PreferencesFieldset[]
               {
                 type: 'form-text',
                 display: 'plain',
-                contents: 'Zettlr'
+                contents: 'Aster'
               }
             ],
             // Image files
@@ -163,7 +166,7 @@ export function getAdvancedFields (config: ConfigOptions): PreferencesFieldset[]
               {
                 type: 'select',
                 options: {
-                  'zettlr': 'Zettlr',
+                  'zettlr': 'Aster',
                   'system': trans('System default')
                 },
                 model: 'files.images.openWith'
@@ -187,7 +190,7 @@ export function getAdvancedFields (config: ConfigOptions): PreferencesFieldset[]
               {
                 type: 'select',
                 options: {
-                  'zettlr': 'Zettlr',
+                  'zettlr': 'Aster',
                   'system': trans('System default')
                 },
                 model: 'files.pdf.openWith'
@@ -308,7 +311,7 @@ export function getAdvancedFields (config: ConfigOptions): PreferencesFieldset[]
     },
     {
       title: trans('Watchdog polling'),
-      infoString: trans('In rare instances, Zettlr may be unable to check for changes to your files. In that case, you can try activating watchdog polling. Do not use this option unless necessary: Polling is very slow and resource-heavy.'),
+      infoString: trans('In rare instances, Aster may be unable to check for changes to your files. In that case, you can try activating watchdog polling. Do not use this option unless necessary: Polling is very slow and resource-heavy.'),
       group: PreferencesGroups.Advanced,
       help: undefined, // TODO
       fields: [

@@ -1,17 +1,17 @@
 [package]
-name = "zettlr-tauri"
+name = "aster-tauri"
 version = "4.7.0"
-description = "Zettlr Tauri migration host"
-authors = ["Zettlr contributors"]
+description = "Aster desktop application"
+authors = ["Aster contributors"]
 edition = "2021"
 rust-version = "1.77"
 
 [lib]
-name = "zettlr_tauri"
+name = "aster_tauri"
 crate-type = ["lib", "cdylib", "staticlib"]
 
 [[bin]]
-name = "zettlr-tauri"
+name = "aster-tauri"
 path = "src/main.rs"
 
 [build-dependencies]

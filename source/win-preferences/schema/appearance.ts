@@ -66,8 +66,8 @@ export function getAppearanceFields (config: ConfigOptions): PreferencesFieldset
       ]
     },
     {
-      title: trans('Editor Theme'),
-      infoString: trans('Select a color and font theme for the editor.'),
+      title: trans('Editor color mode'),
+      infoString: trans('Choose whether the editor follows the application or uses a fixed light or dark mode.'),
       group: PreferencesGroups.Appearance,
       titleField: {
         type: 'select',
@@ -75,8 +75,8 @@ export function getAppearanceFields (config: ConfigOptions): PreferencesFieldset
         inline: true,
         options: {
           match: trans('Follow App'),
-          light: trans('Light Theme'),
-          dark: trans('Dark Theme')
+          light: trans('Light mode'),
+          dark: trans('Dark mode')
         }
       },
       help: undefined, // TODO
@@ -87,39 +87,24 @@ export function getAppearanceFields (config: ConfigOptions): PreferencesFieldset
           model: 'display.theme',
           options: {
             berlin: {
-              textColor: 'white',
-              backgroundColor: '#1cb27e',
-              name: 'Berlin',
-              fontFamily: 'inherit',
-              description: 'An all-time classic: This theme has been part of Zettlr since the very beginning. A modern theme featuring the signatory green color and a sans-serif font.'
+              textColor: 'white', backgroundColor: '#1cb27e', name: 'Berlin', fontFamily: 'inherit',
+              description: 'A modern green theme with a sans-serif font.'
             },
             frankfurt: {
-              textColor: 'white',
-              backgroundColor: '#1d75b3',
-              name: 'Frankfurt',
-              fontFamily: 'Crimson',
-              description: 'In line with the spirit of the time-honoured Frankfurt School, this theme features a mature serif font paired with royal blue.'
+              textColor: 'white', backgroundColor: '#1d75b3', name: 'Frankfurt', fontFamily: 'Crimson, serif',
+              description: 'A royal-blue theme with a serif writing font.'
             },
             bielefeld: {
-              textColor: 'black',
-              backgroundColor: '#ffffdc',
-              name: 'Bielefeld',
-              fontFamily: 'Liberation Mono',
-              description: 'With its mellow orange and a monospaced font, this theme gets you as reminiscent of Niklas Luhmann\'s heyday as possible.'
+              textColor: 'black', backgroundColor: '#ffffdc', name: 'Bielefeld', fontFamily: 'Liberation Mono, monospace',
+              description: 'A mellow theme with a monospaced font.'
             },
             'karl-marx-stadt': {
-              textColor: 'white',
-              backgroundColor: '#dc2d2d',
-              name: 'Karl-Marx-Stadt',
-              fontFamily: 'inherit',
-              description: 'City names change, but their spirit remains: A forceful red complements this theme\'s progressive appeal and sans-serif font.'
+              textColor: 'white', backgroundColor: '#dc2d2d', name: 'Karl-Marx-Stadt', fontFamily: 'inherit',
+              description: 'A red theme with a sans-serif font.'
             },
             bordeaux: {
-              textColor: '#dc2d2d',
-              backgroundColor: '#fffff8',
-              name: 'Bordeaux',
-              fontFamily: 'Inconsolata',
-              description: 'Design made in France: Enjoy writing with this theme\'s unagitated colors and beautiful monospaced font.'
+              textColor: '#dc2d2d', backgroundColor: '#fffff8', name: 'Bordeaux', fontFamily: 'Inconsolata, monospace',
+              description: 'A light theme with a monospaced font.'
             }
           }
         }

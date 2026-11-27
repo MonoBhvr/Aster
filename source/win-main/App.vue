@@ -14,7 +14,7 @@
       ref="fileManagerSplitComponent"
       v-bind:initial-size-percent="fileManagerSplitComponentInitialSize"
       v-bind:minimum-size-percent="[ 10, 50 ]"
-      v-bind:reset-size-percent="[ 20, 80 ]"
+      v-bind:reset-size-percent="[ 28, 72 ]"
       v-bind:split="'horizontal'"
       v-on:views-resized="fileManagerSplitComponentResized($event)"
     >
@@ -40,7 +40,7 @@
           ref="editorSidebarSplitComponent"
           v-bind:initial-size-percent="editorSidebarSplitComponentInitialSize"
           v-bind:minimum-size-percent="[ 50, 10 ]"
-          v-bind:reset-size-percent="[ 80, 20 ]"
+          v-bind:reset-size-percent="[ 70, 30 ]"
           v-bind:split="'horizontal'"
           v-on:views-resized="editorSidebarSplitComponentResized($event)"
         >
@@ -153,25 +153,14 @@
  */
 
 import WindowChrome from '@common/vue/window/WindowChrome.vue'
-import FileManager from './file-manager/FileManager.vue'
-import MainSidebar from './sidebar/MainSidebar.vue'
-import EditorPane from './EditorPane.vue'
-import EditorBranch from './EditorBranch.vue'
 import SplitView from '../common/vue/window/SplitView.vue'
-import GlobalSearch from './GlobalSearch.vue'
-import PopoverExport from './PopoverExport.vue'
-import PopoverStats from './PopoverStats.vue'
-import PopoverTags from './PopoverTags.vue'
-import PopoverPomodoro from './PopoverPomodoro.vue'
-import PopoverTable from './PopoverTable.vue'
-import PopoverDocInfo from './PopoverDocInfo.vue'
-import PopoverPandoc from './PopoverPandoc.vue'
 import { trans } from '@common/i18n-renderer'
 import localiseNumber from '@common/util/localise-number'
 import generateId from '@common/util/generate-id'
 import {
   nextTick,
   ref,
+  defineAsyncComponent,
   computed,
   watch,
   onMounted,
@@ -191,8 +180,21 @@ import { useConfigStore, useDocumentTreeStore, useLRTStore, useWindowStateStore 
 import type { ConfigOptions } from 'source/platform/config-template'
 import { type AnyDescriptor } from 'source/types/common/fsal'
 import { TaskStatus } from 'source/pinia/lrt-store'
-import PopoverLRT from './PopoverLRT.vue'
-import PreferencesApp from '../win-preferences/App.vue'
+import { dispatchActiveDocumentSave } from './active-document-save'
+const FileManager = defineAsyncComponent(() => import('./file-manager/FileManager.vue'))
+const MainSidebar = defineAsyncComponent(() => import('./sidebar/MainSidebar.vue'))
+const EditorPane = defineAsyncComponent(() => import('./EditorPane.vue'))
+const EditorBranch = defineAsyncComponent(() => import('./EditorBranch.vue'))
+const GlobalSearch = defineAsyncComponent(() => import('./GlobalSearch.vue'))
+const PopoverExport = defineAsyncComponent(() => import('./PopoverExport.vue'))
+const PopoverStats = defineAsyncComponent(() => import('./PopoverStats.vue'))
+const PopoverTags = defineAsyncComponent(() => import('./PopoverTags.vue'))
+const PopoverPomodoro = defineAsyncComponent(() => import('./PopoverPomodoro.vue'))
+const PopoverTable = defineAsyncComponent(() => import('./PopoverTable.vue'))
+const PopoverDocInfo = defineAsyncComponent(() => import('./PopoverDocInfo.vue'))
+const PopoverPandoc = defineAsyncComponent(() => import('./PopoverPandoc.vue'))
+const PopoverLRT = defineAsyncComponent(() => import('./PopoverLRT.vue'))
+const PreferencesApp = defineAsyncComponent(() => import('../win-preferences/App.vue'))
 
 const ipcRenderer = window.platform.ipc
 
@@ -227,8 +229,8 @@ const isUpdateAvailable = ref(false)
 const hasVibrancy = computed(() => configStore.config.window.vibrancy && window.platform.os === 'darwin')
 
 // Ensure the app remembers the previous sidebar sizes
-const fileManagerSplitComponentInitialSize = ref<[number, number]>([ 20, 80 ])
-const editorSidebarSplitComponentInitialSize = ref<[number, number]>([ 80, 20 ])
+const fileManagerSplitComponentInitialSize = ref<[number, number]>([ 28, 72 ])
+const editorSidebarSplitComponentInitialSize = ref<[number, number]>([ 70, 30 ])
 onBeforeMount(() => {
   fileManagerSplitComponentInitialSize.value = configStore.config.ui.fileManagerSplitSize
   editorSidebarSplitComponentInitialSize.value = configStore.config.ui.editorSidebarSplitSize
@@ -351,10 +353,10 @@ const activeFile = computed(() => documentTreeStore.lastLeafActiveFile)
 const shouldCountChars = computed<boolean>(() => configStore.config.editor.countChars)
 const windowTitle = computed<string>(() => {
   if (activeFile.value === undefined) {
-    return 'Zettlr'
+    return 'Aster'
   }
 
-  return `Zettlr - ${getDocumentTitle(activeFile.value)}`
+  return `Aster - ${getDocumentTitle(activeFile.value)}`
 })
 
 // Simple state machine to trigger which of the three shows up when. Below's the
@@ -628,7 +630,12 @@ const toolbarControls = computed<ToolbarControl[]>(() => {
 
 const editorSidebarSplitComponent = ref<typeof SplitView|null>(null)
 const fileManagerSplitComponent = ref<typeof SplitView|null>(null)
-const globalSearchComponent = ref<typeof GlobalSearch|null>(null)
+interface GlobalSearchComponent {
+  focusQueryInput: () => void
+  startSearch: (terms?: string) => void
+}
+
+const globalSearchComponent = ref<GlobalSearchComponent|null>(null)
 const paneConfiguration = computed(() => documentTreeStore.paneStructure)
 const lastLeafId = computed(() => documentTreeStore.lastLeafId)
 const distractionFree = computed<boolean>(() => windowStateStore.distractionFreeMode !== undefined)
@@ -697,7 +704,27 @@ onMounted(() => {
   pandocButton.value = document.querySelector('#toolbar-pandocDivOrSpan')
 
   ipcRenderer.on('shortcut', (event, shortcut) => {
-    if (shortcut === 'toggle-sidebar') {
+    if (shortcut === 'open-file') {
+      ipcRenderer.invoke('application', { command: 'root-open-files' })
+        .catch(err => console.error(err))
+    } else if (shortcut === 'open-workspace') {
+      handleClick('root-open-workspaces')
+    } else if (shortcut === 'preferences') {
+      showPreferences.value = true
+    } else if (shortcut === 'save-file') {
+      dispatchActiveDocumentSave(documentTreeStore.paneData, documentTreeStore.lastLeafId, ({ filePath }) => {
+        ipcRenderer.invoke('documents-provider', {
+          command: 'save-file',
+          payload: { path: filePath }
+        } as DocumentManagerIPCAPI)
+          .then(result => {
+            if (result !== true) {
+              console.error('Retrieved a falsy result from main, indicating an error with saving the file.')
+            }
+          })
+          .catch(error => console.error(error))
+      })
+    } else if (shortcut === 'toggle-sidebar') {
       configStore.setConfigValue('window.sidebarVisible', !sidebarVisible.value)
     } else if (shortcut === 'insert-id') {
       editorCommands.value.data = generateId(configStore.config.zkn.idGen)

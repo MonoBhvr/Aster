@@ -13,7 +13,7 @@ body {
 }
 
 #app:empty::before {
-  content: 'Starting Zettlr…';
+  content: 'Starting Aster…';
   display: grid;
   place-items: center;
   width: 100%;

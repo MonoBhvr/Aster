@@ -100,15 +100,15 @@
   /* Also valid for vim and everything that needs a block cursor. */
   .CodeMirror-overwrite .CodeMirror-cursor, &.cm-fat-cursor .CodeMirror-cursor {
     width: auto;
-    border-top: 2px solid #333;
-    border-bottom: 2px solid #333;
-    background-color: rgba(0, 0, 0, 0.25);
+    border-top: 2px solid var(--ui-accent);
+    border-bottom: 2px solid var(--ui-accent);
+    background-color: var(--ui-accent-soft);
   }
 
   /* These tab stops are used by the autocomplete hook to indicate next stops. */
   .tabstop {
     padding: 2px;
-    background-color: rgba(0, 217, 225, 0.7);
+    background-color: var(--ui-accent-soft);
     border-radius: 3px;
   }
 
@@ -180,32 +180,32 @@
     margin: 0 auto; /* (Re-)center */
   }
 
-  /* Style the following elements so they adopt
-   * the main ui theme, not the editor theme */
+  /* Style the following elements so they adopt the workspace UI theme. */
   .cm-panels, .cm-tooltip, .cm-statusbar {
-    color: black;
-    background-color: #f5f5f5;
+    color: var(--ui-text);
+    background-color: var(--ui-panel-raised);
   }
 
   .cm-panel.cm-panel-lint button[aria-label="close"] {
-    color: #000000;
+    color: var(--ui-text);
   }
 
   .cm-panel .cm-button {
     background-image: none;
-    background-color: inherit;
-    border-color: #aaa;
-    border-radius: 6px;
+    background-color: var(--ui-panel);
+    border-color: var(--ui-border-strong);
+    border-radius: var(--ui-radius);
+    color: var(--ui-text);
     font-size: 13px;
   }
 
   .cm-formatting-bar {
-    background-color: #f5f5f5;
-    border-color: #f5f5f5;
+    background-color: var(--ui-panel-raised);
+    border-color: var(--ui-border-strong);
 
     .cm-tooltip-arrow::before, .cm-tooltip-arrow::after {
-      border-top-color: #f5f5f5;
-      border-bottom-color: #f5f5f5;
+      border-top-color: var(--ui-panel-raised);
+      border-bottom-color: var(--ui-panel-raised);
     }
   }
   /* END */
@@ -244,64 +244,64 @@
     margin: 0 auto;
   }
 
-  /* Style the following elements so they adopt
-   * the main ui theme, not the editor theme */
+  /* Style the following elements so they adopt the workspace UI theme. */
   .cm-panels, .cm-tooltip, .cm-statusbar {
-    color: black;
-    background-color: #f5f5f5;
+    color: var(--ui-text);
+    background-color: var(--ui-panel-raised);
   }
 
   .cm-panel.cm-panel-lint button[aria-label="close"] {
-    color: #000000;
+    color: var(--ui-text);
   }
 
   .cm-panel .cm-button {
     background-image: none;
-    background-color: inherit;
-    border-color: #aaa;
-    border-radius: 6px;
+    background-color: var(--ui-panel);
+    border-color: var(--ui-border-strong);
+    border-radius: var(--ui-radius);
+    color: var(--ui-text);
     font-size: 13px;
   }
 
   .cm-formatting-bar {
-    background-color: #f5f5f5;
-    border-color: #f5f5f5;
+    background-color: var(--ui-panel-raised);
+    border-color: var(--ui-border-strong);
 
     .cm-tooltip-arrow::before, .cm-tooltip-arrow::after {
-      border-top-color: #f5f5f5;
-      border-bottom-color: #f5f5f5;
+      border-top-color: var(--ui-panel-raised);
+      border-bottom-color: var(--ui-panel-raised);
     }
   }
   /* END */
 }
 
 body.dark {
-  /* Style the following elements so they adopt
-   * the main ui theme, not the editor theme */
+  /* Style the following elements so they adopt the workspace UI theme. */
   .cm-panels, .cm-tooltip, .cm-statusbar {
-    color: white;
-    background-color: #333333;
+    color: var(--ui-text);
+    background-color: var(--ui-panel-raised);
   }
 
   .cm-panel.cm-panel-lint button[aria-label="close"] {
-    color: #d7d7d7;
+    color: var(--ui-text);
   }
 
   .cm-panel .cm-button {
-    border-color: #646464;
+    border-color: var(--ui-border-strong);
+    color: var(--ui-text);
   }
 
   .cm-formatting-bar {
-    background-color: #333333;
-    border-color: #333333;
+    background-color: var(--ui-panel-raised);
+    border-color: var(--ui-border-strong);
 
     button.formatting-toolbar-button {
-      color: #c8c8c8;
+      color: var(--ui-muted);
     }
 
     .cm-tooltip-arrow::before, .cm-tooltip-arrow::after {
-      border-top-color: #333333;
-      border-bottom-color: #333333;
+      border-top-color: var(--ui-panel-raised);
+      border-bottom-color: var(--ui-panel-raised);
     }
   }
   /* END */

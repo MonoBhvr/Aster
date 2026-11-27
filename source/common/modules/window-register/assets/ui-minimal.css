@@ -1,0 +1,306 @@
+/*
+ * Aster workspace skin
+ *
+ * Presentation-only chrome for the existing window, panes, menus and forms.
+ * Editor palettes, typography and geometry remain owned by CodeMirror and the
+ * user's editor preferences.
+ */
+
+:root {
+  --ui-bg: #1c1c1c;
+  --ui-panel: #282828;
+  --ui-panel-raised: #303030;
+  --ui-control: #383838;
+  --ui-border: rgba(255, 255, 255, .10);
+  --ui-border-strong: rgba(255, 255, 255, .18);
+  --ui-text: #dedede;
+  --ui-muted: #a9a9a9;
+  --ui-faint: #777;
+  --ui-accent: hsl(258 88% 66%);
+  --ui-accent-soft: hsl(258 88% 66% / .16);
+  --system-accent-color: var(--ui-accent);
+  --system-accent-color-contrast: var(--ui-panel-raised);
+  --ui-hover: rgba(255, 255, 255, .075);
+  --ui-radius-sm: 4px;
+  --ui-radius: 6px;
+  --ui-radius-md: 8px;
+}
+
+body:not(.dark) {
+  --ui-bg: #fcfcfd;
+  --ui-panel: #f4f3f6;
+  --ui-panel-raised: #fff;
+  --ui-control: #eceaf0;
+  --ui-border: rgba(38, 32, 48, .13);
+  --ui-border-strong: rgba(38, 32, 48, .24);
+  --ui-text: #28232e;
+  --ui-muted: #625c69;
+  --ui-faint: #8a838e;
+  --ui-accent: hsl(258 56% 48%);
+  --ui-accent-soft: hsl(258 56% 48% / .12);
+  --system-accent-color: var(--ui-accent);
+  --system-accent-color-contrast: var(--ui-panel-raised);
+  --ui-hover: rgba(55, 45, 70, .07);
+}
+
+/* Application chrome */
+body #window-frame {
+  background: var(--ui-bg);
+  color: var(--ui-text);
+}
+
+body #window-chrome,
+body #titlebar,
+body #menubar,
+body #toolbar,
+body #statusbar {
+  background-color: var(--ui-panel);
+  color: var(--ui-muted);
+  border-color: var(--ui-border);
+  box-shadow: none;
+}
+
+body #window-chrome { border-bottom: 1px solid var(--ui-border); }
+
+body #menubar {
+  background-image: none;
+  border-bottom: 1px solid var(--ui-border);
+}
+
+body #menubar .top-level-item,
+body #toolbar button,
+body #toolbar .toolbar-text {
+  border: 1px solid transparent;
+  border-radius: var(--ui-radius-sm);
+  color: inherit;
+  transition: background-color 120ms ease, border-color 120ms ease, color 120ms ease;
+}
+
+body #menubar .top-level-item:hover,
+body #menubar .top-level-item:focus-visible,
+body #toolbar button:hover,
+body #toolbar button:focus-visible,
+body #toolbar .toolbar-text:hover {
+  background: var(--ui-hover);
+  border-color: var(--ui-border);
+  color: var(--ui-text);
+  outline: none;
+}
+
+body #toolbar .toolbar-overflow { background: transparent; }
+
+/* Keep split layout ownership in SplitView; only color its existing handles. */
+body #window-content { background: var(--ui-bg); }
+body #window-content div.split-view div.horizontal-resizer { background: var(--ui-border); }
+body #window-content div.split-view div.horizontal-resizer:hover { background: var(--ui-accent); }
+body #window-content div.split-view div.view.view-border { border-color: var(--ui-border); }
+
+/* Shared compact controls */
+body #window-frame input,
+body #window-frame select,
+body #window-frame textarea,
+body #window-frame button {
+  font-family: system-ui, sans-serif;
+  font-size: 13px;
+}
+
+body #window-frame input:not(.cm-textfield),
+body #window-frame select,
+body #window-frame textarea {
+  border: 1px solid var(--ui-border-strong);
+  border-radius: var(--ui-radius-sm);
+  background: var(--ui-panel-raised);
+  color: var(--ui-text);
+}
+
+body #window-frame input:not(.cm-textfield):focus,
+body #window-frame select:focus,
+body #window-frame textarea:focus {
+  border-color: var(--ui-accent);
+  box-shadow: 0 0 0 2px var(--ui-accent-soft);
+}
+
+/* Navigator */
+body #file-manager,
+body #file-tree,
+body #file-list,
+body #global-search-pane,
+body #sidebar {
+  background-color: var(--ui-panel);
+  color: var(--ui-text);
+}
+
+body #file-manager .file-manager-filter {
+  background: var(--ui-panel);
+  border-bottom: 1px solid var(--ui-border);
+}
+
+body #file-manager .file-manager-filter-input,
+body #global-search-pane input,
+body #sidebar input {
+  background: var(--ui-bg);
+  color: var(--ui-text);
+  border-color: var(--ui-border-strong);
+}
+
+body #file-tree #directories-dirs-header,
+body #file-tree #directories-files-header {
+  border-color: var(--ui-border);
+  color: var(--ui-muted);
+  font-weight: 600;
+  letter-spacing: .035em;
+  text-transform: uppercase;
+}
+
+body #file-tree .root-settings,
+body #file-tree .close-all,
+body #file-manager #arrow-button {
+  background-color: transparent;
+  color: var(--ui-muted);
+  border-color: transparent;
+  box-shadow: none;
+}
+
+body #file-tree .root-settings:hover,
+body #file-tree .close-all:hover,
+body #file-manager #arrow-button:hover {
+  background: var(--ui-hover);
+  color: var(--ui-text);
+}
+
+body div.tree-item-container .tree-item { color: var(--ui-muted); }
+body div.tree-item-container .tree-item.directory:not(.collapsed) { background: var(--ui-panel); }
+body div.tree-item-container .tree-item:hover .display-text { background: var(--ui-hover); color: var(--ui-text); }
+body div.tree-item-container .tree-item.selected .display-text,
+body div.tree-item-container .tree-item.active .display-text {
+  background: var(--ui-accent-soft);
+  color: var(--ui-text);
+  box-shadow: inset 2px 0 var(--ui-accent);
+}
+body div.tree-item-container .tree-item .display-text.highlight {
+  background: var(--ui-accent-soft);
+  color: var(--ui-text);
+}
+
+/* Document tabs retain their native scrollers, widths and drag behavior. */
+body div.document-tablist-wrapper,
+body div.tab-container {
+  background: var(--ui-panel);
+  border-color: var(--ui-border);
+  color: var(--ui-muted);
+}
+
+body div.document-tablist-wrapper div.scroller {
+  background: var(--ui-panel);
+  border-color: var(--ui-border);
+  color: var(--ui-muted);
+}
+
+body div.document-tablist-wrapper div.scroller:hover { background: var(--ui-hover); color: var(--ui-text); }
+
+body div.tab-container div[role="tab"] {
+  background: transparent;
+  border-color: var(--ui-border);
+  color: var(--ui-muted);
+}
+
+body div.tab-container div[role="tab"]:hover { background: var(--ui-hover); color: var(--ui-text); }
+body div.tab-container div[role="tab"].active {
+  background: var(--ui-bg);
+  color: var(--ui-text);
+  box-shadow: inset 0 2px var(--ui-accent);
+}
+body div.tab-container div[role="tab"] .close { color: var(--ui-faint); }
+body div.tab-container div[role="tab"] .close:hover { background: var(--ui-hover); color: var(--ui-text); }
+
+/* CodeMirror owns its palettes, fonts, code geometry, table widget and
+ * fullscreen sizing so darkModeEditor remains independent from app chrome. */
+
+/* Search and side information */
+body #global-search-pane hr { border-color: var(--ui-border); }
+body #global-search-pane div.search-result-container { border-color: var(--ui-border); }
+body #global-search-pane div.search-result-container .filepath { color: var(--ui-faint); }
+body #global-search-pane div.search-result-container div.result-line:hover,
+body #global-search-pane div.search-result-container div.active { background: var(--ui-hover); }
+body #global-search-pane div.search-result-container .search-result-highlight,
+body #sidebar div.toc-entry-active { color: var(--ui-accent); }
+
+body #sidebar { border-left: 1px solid var(--ui-border); }
+body #sidebar div.related-files-container div.related-file:hover,
+body #sidebar div.toc-entry-container:hover { background: var(--ui-hover); }
+body #sidebar h1 { color: var(--ui-text); }
+
+/* Preferences, onboarding and popovers use the same quiet raised surface. */
+body .preferences-overlay {
+  --clr-background: var(--ui-bg);
+  --clr-text: var(--ui-text);
+  --clr-border: var(--ui-border);
+  background: var(--ui-bg);
+  color: var(--ui-text);
+}
+body .preferences-overlay-header {
+  background: var(--ui-panel);
+  border-color: var(--ui-border);
+}
+body .preferences-overlay-header button,
+body div.popover,
+body .tippy-box {
+  background: var(--ui-panel-raised);
+  border-color: var(--ui-border-strong);
+  color: var(--ui-text);
+}
+body div.popover,
+body .tippy-box {
+  border-radius: var(--ui-radius-md);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, .24);
+}
+body .preferences-overlay-header button:hover { background: var(--ui-hover); }
+
+body #window-frame .tab-list,
+body #window-frame .form-container fieldset {
+  background: var(--ui-panel);
+  border-color: var(--ui-border);
+  color: var(--ui-text);
+}
+body #window-frame .tab-list { border-bottom: 1px solid var(--ui-border); }
+body #window-frame .tab-list button {
+  background: transparent;
+  border-color: transparent;
+  color: var(--ui-muted);
+}
+body #window-frame .tab-list button:hover,
+body #window-frame .tab-list button:focus-visible,
+body #window-frame .tab-list button.active { background: var(--ui-hover); color: var(--ui-text); }
+body #window-frame .form-container .fieldset-category,
+body #window-frame .form-container .form-help { color: var(--ui-muted); }
+body #window-frame .form-container .form-help { background: var(--ui-control); border-color: var(--ui-border-strong); }
+body #window-frame .form-container hr { border-color: var(--ui-border); }
+body #window-frame .form-container button { background: var(--ui-control); border-color: var(--ui-border-strong); color: var(--ui-text); }
+body #window-frame .form-container button:hover { background: var(--ui-hover); }
+
+body #window-frame a { color: var(--ui-accent); }
+body #window-frame :focus-visible { outline: 2px solid var(--ui-accent); outline-offset: -1px; }
+body #window-frame .main-editor-wrapper:focus-visible,
+body #window-frame .cm-editor:focus-visible,
+body #window-frame .cm-scroller:focus-visible,
+body #window-frame .cm-content:focus-visible { outline: none; }
+
+/* Keep application selection accents quiet without recoloring theme previews. */
+body #window-frame .selectable-list-wrapper .selectable-list-container div.item.selected {
+  background-color: var(--ui-accent-soft);
+  color: var(--ui-text);
+  box-shadow: inset 2px 0 var(--ui-accent);
+}
+body #window-frame .selectable-list-wrapper .selectable-list-container div.item.selected .info-string { color: inherit; }
+body.win32 div#window-frame #titlebar {
+  background-color: var(--ui-panel);
+  color: var(--ui-text);
+}
+
+body #window-frame ::-webkit-scrollbar { background: var(--ui-bg); }
+body #window-frame ::-webkit-scrollbar-thumb { background: var(--ui-control); }
+body #window-frame ::-webkit-scrollbar-thumb:hover { background: var(--ui-border-strong); }
+
+@media (max-width: 800px) {
+  body #toolbar { overflow-x: auto; }
+}

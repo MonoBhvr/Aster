@@ -1,10 +1,8 @@
 {
   "name": "zettlr",
-  "productName": "Zettlr",
-  "homepage": "https://www.zettlr.com",
+  "productName": "Aster",
   "author": {
-    "name": "Hendrik Erz",
-    "email": "info@zettlr.com"
+    "name": "Aster contributors"
   },
   "repository": {
     "type": "git",
@@ -15,10 +13,10 @@
   "description": "Your One-Stop Publication Workbench",
   "type": "commonjs",
   "scripts": {
-    "dev": "tauri dev",
+    "dev": "node scripts/tauri-quick-dev.mjs",
     "build": "tauri build",
     "test": "mocha --inline-diffs",
-    "test-gui": "tauri dev",
+    "test-gui": "node scripts/tauri-quick-dev.mjs",
     "lint:code": "eslint --cache",
     "lint:types": "vue-tsc --noEmit",
     "lint:po": "node scripts/lint-po.mjs",
@@ -29,7 +27,9 @@
     "tauri": "tauri",
     "tauri:build:frontend": "cross-env NODE_ENV=production webpack --config webpack.tauri.config.js",
     "tauri:dev:frontend": "webpack serve --config webpack.tauri.config.js --mode development",
-    "tauri:dev": "tauri dev",
+    "tauri:dev": "node scripts/tauri-quick-dev.mjs",
+    "tauri:dev:quick": "node scripts/tauri-quick-dev.mjs",
+    "tauri:dev:hot": "tauri dev",
     "tauri:build": "tauri build",
     "tauri:check": "cargo check --manifest-path src-tauri/Cargo.toml",
     "tauri:test": "cargo test --manifest-path src-tauri/Cargo.toml",

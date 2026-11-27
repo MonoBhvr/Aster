@@ -379,7 +379,7 @@ body {
       cursor: pointer;
 
       &.active {
-        border-color: #1cb27e;
+        border-color: var(--ui-accent);
       }
 
       &.blue { background-color: var(--accent-blue); }

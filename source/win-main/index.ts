@@ -12,7 +12,6 @@
  * END HEADER
  */
 
-import windowRegister from '@common/modules/window-register'
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import App from './App.vue'
@@ -22,11 +21,12 @@ const platformIpc = window.platform.ipc
 
 // Mount the editor immediately. Translation/theme/context registration is
 // auxiliary and may wait for the Tauri provider during startup; waiting for it
-// here used to produce an intermittent blank window.
+// here used to produce an intermittent blank window. It is also loaded lazily
+// so its global styles and icon registry cannot delay the first paint.
+void import('@common/modules/window-register')
+  .then(({ default: windowRegister }) => windowRegister())
+  .catch(error => console.error('[Renderer] Optional window registration failed', error))
 afterRegister()
-void windowRegister().catch(error => {
-  console.error('[Renderer] Optional window registration failed', error)
-})
 
 function afterRegister (): void {
   try {
@@ -70,10 +70,10 @@ function afterRegister (): void {
       return false
     }, false)
   } catch (error) {
-    console.error('[Renderer] Could not mount Zettlr renderer', error)
+    console.error('[Renderer] Could not mount Aster renderer', error)
     const root = document.getElementById('app')
     if (root !== null) {
-      root.textContent = 'Zettlr could not start. Check the developer log for details.'
+      root.textContent = 'Aster could not start. Check the developer log for details.'
     }
   }
 }

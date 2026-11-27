@@ -1,3 +1,3 @@
 fn main() {
-    zettlr_tauri::run()
+    aster_tauri::run()
 }

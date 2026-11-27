@@ -7,12 +7,24 @@ const path = require('path')
 module.exports = {
   ...rendererConfig,
   mode: process.env.NODE_ENV === 'production' ? 'production' : 'development',
-  // Tauri enforces the renderer CSP in development too; eval-based source
-  // maps make the entire bundle fail before Vue can mount.
-  devtool: process.env.NODE_ENV === 'production' ? false : 'source-map',
+  // Tauri's CSP rejects eval-based source maps. Disable development maps as
+  // well: this keeps the Tauri dev bundle small enough to start promptly.
+  devtool: false,
   cache: {
     type: 'filesystem',
     cacheDirectory: path.resolve(__dirname, 'node_modules/.cache/webpack-tauri')
+  },
+  // Keep the bootstrap small. Heavy editor/viewer dependencies are loaded
+  // through async Vue components and should not block the first paint.
+  optimization: {
+    splitChunks: {
+      // Keep CSS and third-party modules from nested async views out of the
+      // first request. The default async-only split preserves the first
+      // paint while still caching heavy feature chunks.
+      chunks: 'async',
+      maxInitialRequests: Infinity,
+      minSize: 20000
+    }
   },
   entry: {
     tauri: './source/tauri/index.ts'

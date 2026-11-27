@@ -27,3 +27,6 @@
 
 /* Application menu */
 @import './application-menu.css';
+
+/* Minimal IDE-style workspace skin. This changes presentation only. */
+@import './ui-minimal.css';

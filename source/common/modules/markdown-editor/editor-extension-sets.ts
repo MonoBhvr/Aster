@@ -10,7 +10,7 @@
  * Description:     This file contains several sets of extensions that can be
  *                  added to Codemirror 6 instances. These are bundled into
  *                  logical units as we need to access them frequently and
- *                  Zettlr does not have the need for the granular control over
+ *                  Aster does not have the need for the granular control over
  *                  extensions that Codemirror 6 offers.
  *
  * END HEADER
@@ -129,7 +129,7 @@ export function getMainEditorThemes (): Record<EditorConfiguration['theme'], { l
 
 /**
  * This private function loads a set of core extensions that are required for
- * all Codemirror instances inside of Zettlr regardless of document type. These
+ * all Codemirror instances inside of Aster regardless of document type. These
  * include:
  *
  * - Default keymaps
@@ -244,7 +244,7 @@ function getGenericCodeExtensions (options: CoreExtensionOptions): Extension[] {
 
 /**
  * This public function returns a set of extensions required to run a default
- * Zettlr Markdown editor. These include:
+ * Aster Markdown editor. These include:
  *
  * - The core extensions
  * - The autocompletion functionality
@@ -344,7 +344,7 @@ export function getMarkdownExtensions (options: CoreExtensionOptions): Extension
 
 /**
  * This public function returns a set of extensions required to display LaTeX
- * documents in Zettlr editors. These include the core extensions, the generic
+ * documents in Aster editors. These include the core extensions, the generic
  * code extensions as well as the LaTeX syntax highlighter.
  *
  * @param   {CoreExtensionOptions}  options  The default options
@@ -360,7 +360,7 @@ export function getTexExtensions (options: CoreExtensionOptions): Extension[] {
 
 /**
  * This public function returns a set of extensions required to display YAML
- * documents in Zettlr editors. These include the core extensions, the generic
+ * documents in Aster editors. These include the core extensions, the generic
  * code extensions as well as the YAML syntax highlighter.
  *
  * @param   {CoreExtensionOptions}  options  The default options
@@ -377,7 +377,7 @@ export function getYAMLExtensions (options: CoreExtensionOptions): Extension[] {
 
 /**
  * This public function returns a set of extensions required to display JSON
- * documents in Zettlr editors. These include the core extensions, the generic
+ * documents in Aster editors. These include the core extensions, the generic
  * code extensions as well as the JSON syntax highlighter.
  *
  * @param   {CoreExtensionOptions}  options  The default options

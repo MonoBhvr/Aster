@@ -7,10 +7,10 @@
  * Maintainer:      Hendrik Erz
  * License:         GNU GPL v3
  *
- * Description:     This is the default Zettlr keymap that is valid for every
+ * Description:     This is the default Aster keymap that is valid for every
  *                  CodeMirror editor. It combines a series of factory keymaps
  *                  that ship with CodeMirror in addition to custom commands
- *                  that Zettlr defines.
+ *                  that Aster defines.
  *
  * END HEADER
  */

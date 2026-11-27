@@ -110,18 +110,7 @@ platformIpc.on('shortcut', (_event, command) => {
     return // None of our business
   }
 
-  if (command === 'save-file') {
-    platformIpc.invoke('documents-provider', {
-      command: 'save-file',
-      payload: { path: props.file.path }
-    } as DocumentManagerIPCAPI)
-      .then(result => {
-        if (result !== true) {
-          console.error('Retrieved a falsy result from main, indicating an error with saving the file.')
-        }
-      })
-      .catch(e => console.error(e))
-  } else if (command === 'search') {
+  if (command === 'search') {
     currentEditor.toggleSearchPanel()
   } else if (command === 'toggle-typewriter-mode') {
     currentEditor.hasTypewriterMode = !currentEditor.hasTypewriterMode

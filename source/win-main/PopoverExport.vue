@@ -125,7 +125,7 @@ const availableFormats = computed(() => {
   const selectOptions: Record<string, string> = {}
 
   profileMetadata.value
-    // Remove files that cannot read any of Zettlr's internal formats ...
+    // Remove files that cannot read any of Aster's internal formats ...
     .filter(e => {
       return SUPPORTED_READERS.includes(parseReaderWriter(e.reader).name)
     })

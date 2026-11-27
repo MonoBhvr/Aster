@@ -16,7 +16,7 @@ import DOMPurify from 'dompurify'
 /**
  * Sanitizes the provided HTML string and prepare it for insertion into the DOM.
  * This function uses DOMPurify, but configures it so that it works for the
- * context of Zettlr.
+ * context of Aster.
  *
  * @param   {string}  html  The dirty HTML
  *
@@ -24,7 +24,7 @@ import DOMPurify from 'dompurify'
  */
 export function sanitizeHTML (html: string) {
   return DOMPurify.sanitize(html, {
-    // Allow tags that Zettlr uses
+    // Allow tags that Aster uses
     ADD_TAGS: ['cds-icon']
   })
 }

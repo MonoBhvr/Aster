@@ -29,7 +29,6 @@
 
 import showPopupMenu, { type AnyMenuItem, type SubmenuItem } from '@common/modules/window-register/application-menu-helper'
 import { ref, onBeforeMount } from 'vue'
-import { trans } from '@common/i18n-renderer'
 
 const ipcRenderer = window.platform.ipc
 
@@ -149,7 +148,7 @@ function showSubmenu (items: AnyMenuItem[], attachTo: string): void {
   font-family: inherit;
   font-size: 12px;
   padding-left: env(titlebar-area-height, var(--fallback-title-bar-height));
-  // Use the Zettlr logo as fixed background to enable branding in the menubar
+  // Use the Aster logo as fixed background to enable branding in the menubar
   background-image: url("../../img/image-preview.png");
   background-position: left center;
   background-repeat: no-repeat;

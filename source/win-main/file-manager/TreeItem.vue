@@ -846,7 +846,7 @@ body.darwin {
     color: rgb(53, 53, 53);
 
     &.directory:not(.collapsed) {
-      background-color: #f5f5f5;
+      background-color: var(--ui-panel);
     }
 
     // On macOS, non-standard icons are normally displayed in color

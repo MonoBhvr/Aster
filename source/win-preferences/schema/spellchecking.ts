@@ -196,7 +196,7 @@ export function getSpellcheckingFields (config: ConfigOptions): PreferencesField
         {
           type: 'form-text',
           display: 'info',
-          contents: trans('Zettlr will ignore the "LanguageTool provider" settings if you enter any credentials here.')
+          contents: trans('Aster will ignore the "LanguageTool provider" settings if you enter any credentials here.')
         },
         {
           type: 'text',

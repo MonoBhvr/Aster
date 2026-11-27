@@ -7,7 +7,7 @@
  * Maintainer:      Hendrik Erz
  * License:         GNU GPL v3
  *
- * Description:     Defines and exposes an extension for the primary Zettlr keymap.
+ * Description:     Defines and exposes an extension for the primary Aster keymap.
  *
  * END HEADER
  */
@@ -37,7 +37,7 @@ const keybindingsTransactionExtender = EditorState.transactionExtender.of(tr => 
 })
 
 /**
- * Registers the Zettlr keymap including a transaction extender that keeps the
+ * Registers the Aster keymap including a transaction extender that keeps the
  * custom shortcuts updated whenever the config changes.
  *
  * @param   {CustomEditorShortcut[]}  customShortcutMap  The initial custom shortcuts

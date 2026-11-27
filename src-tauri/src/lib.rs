@@ -239,7 +239,7 @@ fn write_clipboard_text(text: String) -> Result<(), String> {
         .map_err(|err| error("Could not write clipboard text", err))
 }
 
-fn config_path() -> PathBuf {
+fn config_base() -> PathBuf {
     let base = if cfg!(target_os = "windows") {
         std::env::var_os("APPDATA").map(PathBuf::from)
     } else if cfg!(target_os = "macos") {
@@ -250,12 +250,23 @@ fn config_path() -> PathBuf {
             .or_else(|| std::env::var_os("HOME").map(|home| PathBuf::from(home).join(".config")))
     };
     base.unwrap_or_else(|| PathBuf::from("."))
-        .join("Zettlr")
-        .join("config.json")
+}
+
+fn config_path_for(app_name: &str) -> PathBuf {
+    config_base().join(app_name).join("config.json")
+}
+
+fn config_path() -> PathBuf {
+    config_path_for("Aster")
+}
+
+fn legacy_config_path() -> PathBuf {
+    config_path_for("Zettlr")
 }
 
 fn load_config_overrides() -> Map<String, Value> {
     fs::read_to_string(config_path())
+        .or_else(|_| fs::read_to_string(legacy_config_path()))
         .ok()
         .and_then(|text| serde_json::from_str(&text).ok())
         .unwrap_or_default()
@@ -701,8 +712,28 @@ fn apply_change_set(content: &str, changes: &Value) -> Result<String, String> {
     Ok(output.into_iter().collect())
 }
 
+fn menu_shortcut(id: &str) -> Option<&'static str> {
+    match id {
+        "menu.open" => Some("open-file"),
+        "menu.open_workspace" => Some("open-workspace"),
+        "menu.save" => Some("save-file"),
+        "menu.previous_file" => Some("previous-tab"),
+        "menu.next_file" => Some("next-tab"),
+        "menu.export" => Some("export"),
+        "menu.preferences" => Some("preferences"),
+        "menu.toggle_file_manager" => Some("toggle-file-manager"),
+        "menu.toggle_sidebar" => Some("toggle-sidebar"),
+        _ => None,
+    }
+}
+
 fn menu_item(id: &str, label: &str) -> Value {
-    json!({"id": id, "label": label, "type": "normal"})
+    json!({
+        "id": id,
+        "label": label,
+        "type": "normal",
+        "enabled": menu_shortcut(id).is_some()
+    })
 }
 
 fn menu_root() -> Value {
@@ -756,7 +787,7 @@ fn menu_submenu(id: &str) -> Value {
         ]),
         "help-menu" => json!([
             menu_item("menu.check_updates", "Check for updates"),
-            menu_item("menu.about", "About Zettlr")
+            menu_item("menu.about", "About Aster")
         ]),
         _ => json!([]),
     }
@@ -781,6 +812,12 @@ async fn provider_request(
                 Ok(
                     json!({"command":"application-submenu","payload":{"id":id,"submenu":menu_submenu(id)}}),
                 )
+            }
+            "click-menu-item" => {
+                let item = payload.as_str().unwrap_or_default();
+                let shortcut = menu_shortcut(item)
+                    .ok_or_else(|| format!("Unsupported or disabled menu item: {item}"))?;
+                Ok(json!({"command":"shortcut","payload":shortcut}))
             }
             _ => Ok(Value::Null),
         },
@@ -1222,7 +1259,7 @@ pub fn run() {
             provider_request
         ])
         .run(tauri::generate_context!())
-        .expect("error while running Zettlr's Tauri host");
+        .expect("error while running Aster's Tauri host");
 }
 
 #[cfg(test)]

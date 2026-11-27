@@ -16,6 +16,10 @@ out/
 # Ignore Tauri frontend build output
 dist-tauri/
 
+# Ignore local Tauri development logs and Windows null-device artifacts
+/NUL
+/tauri-*.log
+
 # Ignore Tauri/Rust generated artifacts
 src-tauri/target/
 src-tauri/gen/schemas/

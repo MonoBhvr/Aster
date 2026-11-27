@@ -369,10 +369,9 @@ function populateDynamicValues (): void {
   })
     .then((languages) => {
       const options: Record<string, string> = {}
-      languages.map((lang: string) => {
+      for (const lang of languages ?? []) {
         options[lang] = resolveLangCode(lang, 'name')
-        return null
-      })
+      }
       appLangOptions.value = options
     })
     .catch(err => console.error(err))
@@ -383,14 +382,13 @@ function populateDynamicValues (): void {
   })
     .then((dictionaries) => {
       const values: Array<{ selected: boolean, value: string, key: string }> = []
-      dictionaries.map((dict: string) => {
+      for (const dict of dictionaries ?? []) {
         values.push({
           selected: model.value.selectedDicts.includes(dict),
           value: resolveLangCode(dict, 'name'),
           key: dict
         })
-        return null
-      })
+      }
 
       availableDictionaries.value = values
     })
@@ -401,7 +399,7 @@ function populateDynamicValues (): void {
     command: 'get-user-dictionary'
   })
     .then((dictionary) => {
-      userDictionaryContents.value = dictionary
+      userDictionaryContents.value = dictionary ?? []
     })
     .catch(err => console.error(err))
 }

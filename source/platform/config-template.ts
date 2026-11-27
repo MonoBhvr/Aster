@@ -220,13 +220,13 @@ export interface ConfigOptions {
   }
   files: {
     // Built-in files cannot be shown in the sidebar, will always be shown in
-    // the file manager, and will always be opened with Zettlr.
+    // the file manager, and will always be opened with Aster.
     builtin: FileTypeSettings<true, false, 'zettlr'>
     // Images and PDFs can be entirely hidden or shown everywhere, and opened
-    // with the system default, or in Zettlr
+    // with the system default, or in Aster
     images: FileTypeSettings
     pdf: FileTypeSettings
-    // These file types can be shown anywhere, but are not open-able by Zettlr.
+    // These file types can be shown anywhere, but are not open-able by Aster.
     msoffice: FileTypeSettings<boolean, boolean, 'system'>
     openOffice: FileTypeSettings<boolean, boolean, 'system'>
     dataFiles: FileTypeSettings<boolean, boolean, 'system'>
@@ -311,7 +311,7 @@ export function getConfigTemplate (): ConfigOptions {
     },
     window: {
       // Only use native window appearance by default on macOS. If this value
-      // is false, this means that Zettlr will display the menu bar and window
+      // is false, this means that Aster will display the menu bar and window
       // controls as defined in the HTML.
       nativeAppearance: false, // Native window chrome is managed by Tauri.
       vibrancy: false,
@@ -324,15 +324,15 @@ export function getConfigTemplate (): ConfigOptions {
       recentGlobalSearches: []
     },
     ui: {
-      fileManagerSplitSize: [ 20, 80 ],
-      editorSidebarSplitSize: [ 80, 20 ]
+      fileManagerSplitSize: [ 28, 72 ],
+      editorSidebarSplitSize: [ 70, 30 ]
     },
     // Visible attachment filetypes
     attachmentExtensions: [],
     // UI related options
     darkMode: typeof window !== 'undefined' && (window.matchMedia?.('(prefers-color-scheme: dark)').matches ?? false),
     darkModeEditor: 'match', // Possible values: 'match', 'light', 'dark'
-    alwaysReloadFiles: true, // Should Zettlr automatically load remote changes?
+    alwaysReloadFiles: true, // Should Aster automatically load remote changes?
     autoDarkMode: 'system', // Possible values: 'off', 'system', 'schedule', 'auto'
     autoDarkModeStart: '21:00', // Switch into dark mode at this time
     autoDarkModeEnd: '06:00', // Switch to light mode at this time
@@ -347,7 +347,7 @@ export function getConfigTemplate (): ConfigOptions {
     fileNameDisplay: 'title+heading', // Controls what info is displayed as filenames
     fileManager: {
       twoStepCollapseWorkspaces: false,
-      sortWorkspacesManually: false // By default, let Zettlr sort workspaces
+      sortWorkspacesManually: false // By default, let Aster sort workspaces
     },
     newFileNamePattern: '%id.md',
     newFileDontPrompt: false, // If true immediately creates files
@@ -491,7 +491,7 @@ export function getConfigTemplate (): ConfigOptions {
       } // END autoCorrect options
     },
     display: {
-      theme: 'berlin', // The theme, can be berlin|frankfurt|bielefeld|karl-marx-stadt|bordeaux
+      theme: 'berlin',
       hideToolbarInDistractionFree: false,
       markdownFileExtensions: false,
       previewModeShowSyntaxWhenCursorIsAdjacent: true,

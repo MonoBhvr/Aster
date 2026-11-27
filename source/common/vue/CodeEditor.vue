@@ -207,30 +207,30 @@ defineExpose({ markClean, isClean })
 
 <style lang="less">
 // We're using this solarized theme here: https://ethanschoonover.com/solarized/
-@base03:    #002b36;
-@base02:    #073642;
-@base01:    #586e75;
-@base00:    #657b83;
-@base0:     #839496;
-@base1:     #93a1a1;
-@base2:     #eee8d5;
-@base3:     #fdf6e3;
-@yellow:    #b58900;
-@orange:    #cb4b16;
-@red:       #dc322f;
-@magenta:   #d33682;
-@violet:    #6c71c4;
-@blue:      #268bd2;
-@cyan:      #2aa198;
-@green:     #859900;
+@base03:    var(--ui-bg);
+@base02:    var(--ui-panel);
+@base01:    var(--ui-muted);
+@base00:    var(--ui-text);
+@base0:     var(--ui-text);
+@base1:     var(--ui-muted);
+@base2:     var(--ui-panel-raised);
+@base3:     var(--ui-text);
+@yellow:    #d6b85a;
+@orange:    #e09a5b;
+@red:       #e06c75;
+@magenta:   var(--ui-accent);
+@violet:    var(--ui-accent);
+@blue:      var(--ui-accent);
+@cyan:      #5ccfe6;
+@green:     var(--ui-accent);
 
 body {
   .code-editor-wrapper {
     overflow: auto;
     height: 100%;
     margin: 20px 0px;
-    background-color: white;
-    border: 1px solid rgb(173, 173, 173);
+    background-color: var(--ui-bg);
+    border: 1px solid var(--ui-border-strong);
   }
 
   .cm-editor.cm-focused {
@@ -299,11 +299,11 @@ body {
 
   &.dark {
     .code-editor-wrapper {
-      border-color: rgb(100, 100, 100);
+      border-color: var(--ui-border-strong);
     }
 
     .cm-editor {
-      background-color: rgb(65, 65, 65);
+      background-color: var(--ui-bg);
       color: @base3;
       .cm-comment    { color: @base00; }
       .cm-line-comment { color: @base00; }
@@ -311,7 +311,7 @@ body {
       .cm-gutters {
         background-color: @base03;
         color: @base00;
-        border-color: rgb(100, 100, 100);
+        border-color: var(--ui-border-strong);
       }
     }
   }

@@ -7,7 +7,7 @@
  * Maintainer:      Hendrik Erz
  * License:         GNU GPL v3
  *
- * Description:     Zettlr editor themes.
+ * Description:     Aster editor themes.
  *
  * END HEADER
  */
@@ -16,7 +16,7 @@ import { editorTheme } from './editor'
 import { codeTheme } from './code'
 
 export { darkMode, useDarkModeEditor } from './dark-mode'
-
+export { defaultLight, defaultDark } from './editor'
 export { themeBerlinLight, themeBerlinDark } from './themes/berlin'
 export { themeBielefeldLight, themeBielefeldDark } from './themes/bielefeld'
 export { themeBordeauxLight, themeBordeauxDark } from './themes/bordeaux'

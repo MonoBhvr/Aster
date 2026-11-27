@@ -12,41 +12,24 @@
           selected: props.modelValue === index
         }"
       >
-        <!-- NOTE: "index" here is not actually an index number but the theme's name -->
-        <div
+        <button
+          type="button"
           v-bind:style="{
             color: theme.textColor,
             backgroundColor: theme.backgroundColor,
             fontFamily: theme.fontFamily
           }"
-          v-bind:data-theme="index"
+          v-bind:aria-pressed="props.modelValue === index"
+          v-bind:aria-label="theme.name"
           class="theme-mockup"
           v-on:click="selectTheme(index)"
         >
-          <div class="toolbar"></div>
-          <div class="traffic-lights">
-            <div class="traffic-light-close"></div>
-            <div class="traffic-light-min"></div>
-            <div class="traffic-light-full"></div>
-          </div>
-          <div
-            class="file-list"
-            v-bind:style="{ borderColor: theme.textColor }"
-          >
-            <div class="file-list-item"></div>
-            <div class="file-list-item"></div>
-            <div class="file-list-item"></div>
-            <div class="file-list-item"></div>
-            <div class="file-list-item"></div>
-            <div class="file-list-item"></div>
-            <div class="file-list-item"></div>
-            <div class="file-list-item"></div>
-          </div>
-          <div class="editor">
-            <p>Aa</p>
-          </div>
-        </div>
-        <!-- Now, add some metadata -->
+          <span class="toolbar"></span>
+          <span class="file-list">
+            <span v-for="item in 7" v-bind:key="item" class="file-list-item"></span>
+          </span>
+          <span class="editor">Aa</span>
+        </button>
         <div class="theme-metadata">
           <p class="theme-name">
             {{ theme.name }}
@@ -58,20 +41,6 @@
 </template>
 
 <script setup lang="ts">
-/**
- * @ignore
- * BEGIN HEADER
- *
- * Contains:        Theme
- * CVM-Role:        View
- * Maintainer:      Hendrik Erz
- * License:         GNU GPL v3
- *
- * Description:     Displays a theme selector including preview.
- *
- * END HEADER
- */
-
 export interface ThemeDescriptor {
   name: string
   description: string
@@ -94,150 +63,45 @@ function selectTheme (themeName: string): void {
 </script>
 
 <style lang="less">
-/*
-* This file contains theme mockup styles, as they are rather large and need
-* their own space. It includes colouring taken from the variables of the
-* respective themes.
-*/
-
 p#theme-selection-label { font-size: 13px; }
 
-div#theme-container {
+#theme-container {
   display: flex;
-  flex-direction: row;
   flex-wrap: wrap;
-  font-size: 13px;
+  gap: 12px;
   justify-content: center;
-  align-items: center;
-  width:100%;
-
-  div.theme-container-item {
-    padding: 20px;
-    flex: 0;
-    text-align: center;
-    opacity: 0.5;
-    transition: 0.3s opacity ease;
-
-    &:hover, &.selected {
-      opacity: 1;
-    }
-
-    div.theme-mockup {
-      width: 150px;
-      height: 100px;
-      aspect-ratio: 1 / 1;
-      position: relative;
-      overflow: hidden;
-      border-radius: 5px;
-      box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, .1);
-      cursor: pointer;
-      transition: 0.5s all ease;
-
-      // On hover scale them up
-      &:hover {
-        // transform: scale(1.2);
-        box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, .4);
-      }
-
-      /* Traffic lights */
-      div.traffic-lights {
-        position: absolute;
-        top: 3px;
-        left: 3px;
-        display: flex;
-        height: 8px;
-
-        div.traffic-light-close,
-        div.traffic-light-min,
-        div.traffic-light-full {
-          width: 6px;
-          height: 6px;
-          border-radius: 100%;
-          margin: 2px;
-        }
-
-        // macOS traffic light colours
-        div.traffic-light-close { background-color: rgb(238, 107, 96); }
-        div.traffic-light-min   { background-color: rgb(246, 191, 80); }
-        div.traffic-light-full  { background-color: rgb(101, 204, 88); }
-      }
-
-      // Toolbar
-      div.toolbar {
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 14px;
-        background-color: rgba(240, 240, 240, 1);
-      }
-
-      // File list
-      div.file-list {
-        position: absolute;
-        top: 14px;
-        bottom:0px;
-        left: 0px;
-        width: 30%;
-        display: flex;
-        flex-direction: column;
-        border-right: 1px solid transparent;
-        background-color: rgba(0, 0, 0, .2);
-
-        div.file-list-item {
-          flex: 1;
-          border-bottom: 1px solid transparent;
-          border-color: inherit;
-          font-size: 5px;
-
-          /* No border on the last child */
-          &:last-child { border-bottom: none; }
-        }
-      }
-
-      // Editor
-      div.editor {
-        width: 70%;
-        height: 100%;
-        position: absolute;
-        left: 30%;
-        top: 0;
-
-        p {
-          height: 20px;
-          font-size: 18px;
-          margin-top: 50%;
-          text-align: center;
-        }
-      }
-    }
-
-    div.theme-metadata {
-      padding: 20px;
-
-      p.theme-name {
-        display: inline-block;
-        white-space: nowrap;
-        font-weight: bold;
-        margin-right: 5px;
-      }
-
-      div.selected-button, div.not-selected-button {
-        display: inline-block;
-        margin-bottom: 10px;
-        border-radius: 4px;
-        background-color: rgb(128, 228, 128);
-        font-weight: bold;
-        color: #333;
-        padding: 4px;
-      }
-
-      div.not-selected-button {
-        background-color: rgb(188, 188, 188);
-        font-weight: normal;
-        cursor: pointer;
-      }
-    }
-  }
+  width: 100%;
 }
+
+.theme-container-item {
+  flex: 0 1 150px;
+  text-align: center;
+  opacity: .62;
+  transition: opacity 120ms ease;
+
+  &:hover, &.selected { opacity: 1; }
+}
+
+.theme-mockup {
+  position: relative;
+  display: block;
+  width: 150px;
+  height: 100px;
+  overflow: hidden;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: var(--ui-radius, 6px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, .18);
+  cursor: pointer;
+
+  &:focus-visible { border-color: var(--ui-accent, #8d6bff); outline: 2px solid var(--ui-accent, #8d6bff); outline-offset: 2px; }
+}
+
+.selected .theme-mockup { border-color: var(--ui-accent, #8d6bff); }
+.theme-mockup .toolbar { position: absolute; inset: 0 0 auto; height: 14px; background: rgba(255, 255, 255, .24); }
+.theme-mockup .file-list { position: absolute; inset: 14px auto 0 0; display: flex; width: 30%; flex-direction: column; background: rgba(0, 0, 0, .18); }
+.theme-mockup .file-list-item { flex: 1; border-bottom: 1px solid currentColor; opacity: .3; }
+.theme-mockup .editor { position: absolute; inset: 14px 0 0 30%; display: grid; place-items: center; font-size: 18px; }
+.theme-metadata { padding: 8px; }
+.theme-name { font-size: 13px; font-weight: 600; }
 </style>

@@ -1,12 +1,14 @@
 <h1 align="center">
   <a href="https://github.com/Zettlr/Zettlr">
-    <img src="https://raw.githubusercontent.com/Zettlr/Zettlr/master/resources/icons/png/1024x1024.png" alt="Zettlr" width="256" height="256" />
+    <img src="https://raw.githubusercontent.com/Zettlr/Zettlr/master/resources/icons/png/1024x1024.png" alt="Aster" width="256" height="256" />
   </a>
   <br/>
-  Zettlr [<em>ˈset·lər</em>]
+  Aster [<em>ˈset·lər</em>]
 </h1>
 
 <p align="center"><strong>Your One-Stop Publication Workbench</strong>.</p>
+
+> Aster is a community fork of Zettlr.
 
 <p align="center">
   <a href="https://doi.org/10.5281/zenodo.2580173">
@@ -36,7 +38,7 @@
 
 ![screenshot](/resources/screenshots/zettlr_view.png)
 
-Zettlr brings simplicity back to your texts. Open-minded writing that adapts to
+Aster brings simplicity back to your texts. Open-minded writing that adapts to
 your style. Fast information retrieval that finds what matters to you. Versatile
 exporting that enables you to adapt to whatever publication pipeline your
 employer or school uses.
@@ -68,7 +70,7 @@ Focus on what matters to you.
 
 ## Features
 
-- Your Notes are your notes: Zettlr is **privacy-first**
+- Your Notes are your notes: Aster is **privacy-first**
 - **Citations** made easy: Tight and ever-growing integration with your
   favorite reference manager (Zotero, JabRef, and many others)
 - Available in over a **dozen languages**
@@ -82,7 +84,7 @@ Focus on what matters to you.
 - Support for state of the art knowledge management techniques (**Zettelkasten**)
 - A powerful **full text search** that helps you find anything, anywhere
 
-… and the best is: **Zettlr is [Free and Open Source Software (FOSS)](https://en.wikipedia.org/wiki/Free_and_open-source_software)!**
+… and the best is: **Aster is [Free and Open Source Software (FOSS)](https://en.wikipedia.org/wiki/Free_and_open-source_software)!**
 
 ## Getting Started
 
@@ -114,20 +116,20 @@ Tauri supports Windows, macOS, and Linux. Build the application locally with
 the platform toolchain when a packaged binary is not available.
 
 > [!TIP]
-> Zettlr is fully supported by community donations. You can donate once, or
+> Aster is fully supported by community donations. You can donate once, or
 > monthly. [Learn more on our website](https://www.zettlr.com/supporters).
 > Thank you!
 
-After you have installed Zettlr, [head over to our documentation](https://docs.zettlr.com/)
-to get to know Zettlr. The app ships with a small tutorial which covers the basics.
+After you have installed Aster, [head over to our documentation](https://docs.zettlr.com/)
+to get to know Aster. The app ships with a small tutorial which covers the basics.
 
-If you are new to Zettlr, refer to our
+If you are new to Aster, refer to our
 [first time users guide](https://docs.zettlr.com/en/first-time-users/first-steps/).
 You might also want to consider
 [installing LaTeX](https://docs.zettlr.com/en/getting-started/installing-latex/)
 to unlock all export profiles of the app.
 
-![The central window of Zettlr using the dark theme](/resources/screenshots/zettlr_view_dark.png)
+![The central window of Aster using the dark theme](/resources/screenshots/zettlr_view_dark.png)
 
 ## Building from Source
 
@@ -140,21 +142,21 @@ corepack yarn tauri:dev
 corepack yarn tauri:build
 ```
 
-The Tauri host loads the complete Zettlr Vue renderer. Native filesystem,
+The Tauri host loads the complete Aster Vue renderer. Native filesystem,
 dialog, clipboard, shell, configuration, and document-authority operations are
 implemented as typed platform commands in Rust.
 
 ## Contributing
 
-As an Open Source application, Zettlr always welcomes contributions from the
+As an Open Source application, Aster always welcomes contributions from the
 community. **You do not need to know how to write code to help!** A full
 overview over all the areas where you can help can be found in our
 [contributing guide](./CONTRIBUTING.md). In the following, we introduce you to
-setting up the Zettlr source code locally.
+setting up the Aster source code locally.
 
 ### Getting Started
 
-Zettlr is a Tauri 2 application with a Vue 3 frontend and Rust backend. To
+Aster is a Tauri 2 application with a Vue 3 frontend and Rust backend. To
 start developing, you'll need to have the following installed on your computer:
 
 1. [NodeJS](https://nodejs.org/). Make sure it's at least Node 22 (`lts/jod`).
@@ -172,7 +174,7 @@ start developing, you'll need to have the following installed on your computer:
       script)
     * `unzip` (required by the Pandoc download script)
     * [`jq`](https://jqlang.github.io/jq/) (required by the i18n script)
-5. An appropriate build toolchain for your operating system, since Zettlr
+5. An appropriate build toolchain for your operating system, since Aster
    requires a few native C++-modules that must be compiled before running the
    app:
     * **macOS**: On macOS, installing the XCode command-line tools via
@@ -189,7 +191,7 @@ computer:
 
 ```bash
 git clone https://github.com/Zettlr/Zettlr.git
-cd Zettlr
+cd Aster
 yarn install --immutable
 ```
 
@@ -224,7 +226,7 @@ topics and/or manuals (ordered by descending importance):
 
 ### Debugging
 
-Zettlr can be debugged from the Tauri development process and the browser
+Aster can be debugged from the Tauri development process and the browser
 frontend devtools. The native boundary is in `src-tauri`, while the renderer
 entrypoint is `source/tauri/index.ts`.
 
@@ -234,7 +236,7 @@ entrypoint is `source/tauri/index.ts`.
 
 ### Architecture Overview
 
-Zettlr has one Tauri application window and one Vue renderer. The renderer is
+Aster has one Tauri application window and one Vue renderer. The renderer is
 loaded by `source/tauri/index.ts` and communicates with native functionality
 only through the typed modules in `source/platform`. Those modules invoke Rust
 commands and subscribe to Tauri events. Filesystem parsing and document
@@ -257,9 +259,9 @@ Run these commands from the repository root:
 
 ### Build Flags
 
-The build process of Zettlr supports build flags that you can use to hardwire
+The build process of Aster supports build flags that you can use to hardwire
 certain behaviors into the final binary. These usually come as environment
-variables. If they are present, Zettlr will produce a different binary.
+variables. If they are present, Aster will produce a different binary.
 
 #### `ZETTLR_DISABLE_UPDATE_CHECK`
 
@@ -276,19 +278,19 @@ make sure this environment variable is *not* set, e.g., by running
 `unset ZETTLR_DISABLE_UPDATE_CHECK` before running the build script.
 
 > [!CAUTION]
-> By creating and distributing a version of Zettlr with update checks disabled,
-> you are responsible for ensuring that users will receive updates for Zettlr
+> By creating and distributing a version of Aster with update checks disabled,
+> you are responsible for ensuring that users will receive updates for Aster
 > through a different mechanism. You acknowledge that you are responsible for
 > ensuring that your update mechanism works reliably at all times. If – for any
-> reasons – your update mechanism is disrupted – even temporarily – and Zettlr
+> reasons – your update mechanism is disrupted – even temporarily – and Aster
 > users cannot receive new updates, you are **required** to immediately notify
 > us of this by opening a GitHub Issue, via Discord, or via Email.
-> **Failure to comply with these added requirements will result in our immediate termination of the implicit consent for you to distribute modified Zettlr versions.**
-> If we receive notice of a version of Zettlr being publicly distributed without
+> **Failure to comply with these added requirements will result in our immediate termination of the implicit consent for you to distribute modified Aster versions.**
+> If we receive notice of a version of Aster being publicly distributed without
 > a working update mechanism and you fail to communicate this directly to us, we
-> will immediately warn users publicly about your Zettlr package and withdraw
-> our implicit consent for you to distribute Zettlr. Thus, you will forfeit your
-> allowance to distribute Zettlr indefinitely. In short: Only use this build
+> will immediately warn users publicly about your Aster package and withdraw
+> our implicit consent for you to distribute Aster. Thus, you will forfeit your
+> allowance to distribute Aster indefinitely. In short: Only use this build
 > flag if you know *exactly* what you're doing, and, if something goes wrong,
 > communicate proactively. Then, all is good.
 
@@ -297,7 +299,7 @@ make sure this environment variable is *not* set, e.g., by running
 If this environment variable is present during build, this will cause the build
 script to **not** bundle the correct Pandoc binary into the final application
 bundle. This is useful if you are repackaging the app for distribution through a
-package manager and ensure that Pandoc gets installed as a dependency of Zettlr.
+package manager and ensure that Pandoc gets installed as a dependency of Aster.
 The build script will emit a warning that the binary will not be bundled with
 Pandoc.
 
@@ -307,23 +309,23 @@ download nor bundle Pandoc. (This also absolves your build environment from the
 specific requirements for the Pandoc download script identified above.)
 
 > [!CAUTION]
-> Zettlr users expect Pandoc to be present, since otherwise they will not be
-> able to import or export files. Every version of Zettlr that is publicly
+> Aster users expect Pandoc to be present, since otherwise they will not be
+> able to import or export files. Every version of Aster that is publicly
 > distributed must therefore either come bundled with Pandoc, or ensure through
 > another mechanism that Pandoc is installed on the computer. If you use this
 > build flag while repackaging the app and distribute it via some package
 > manager, you are **required** to ensure that Pandoc will be installed
-> alongside Zettlr via some other means (e.g., by marking Pandoc as a dependency
-> of Zettlr). We do not want users to start complaining that some Zettlr version
+> alongside Aster via some other means (e.g., by marking Pandoc as a dependency
+> of Aster). We do not want users to start complaining that some Aster version
 > has non-functioning exports or imports.
-> **Failure to comply with these added requirements will result in our immediate termination of the implicit consent for you to distribute modified Zettlr versions.**
-> Thus, you will forfeit your allowance to distribute Zettlr indefinitely. In
+> **Failure to comply with these added requirements will result in our immediate termination of the implicit consent for you to distribute modified Aster versions.**
+> Thus, you will forfeit your allowance to distribute Aster indefinitely. In
 > short: Only use this build flag if you know *exactly* what you're doing. Then,
 > all is good.
 
 ### Directory Structure
 
-Zettlr is a mature app that has amassed hundreds of directories over the course
+Aster is a mature app that has amassed hundreds of directories over the course
 of its development. Since it is hard to contribute to an application without any
 guidance, we have compiled a short description of the directories with how they
 interrelate.
@@ -408,13 +410,13 @@ interrelate.
 
 ## Command-Line Switches
 
-Both during development and for release builds, the Zettlr binary features a few
+Both during development and for release builds, the Aster binary features a few
 command line switches that you can make use of for different purposes.
 
 #### `--launch-minimized`
 
-This CLI flag will instruct Zettlr not to show the main window on start. This is
-useful to create autostart entries. In that case, launching Zettlr with this
+This CLI flag will instruct Aster not to show the main window on start. This is
+useful to create autostart entries. In that case, launching Aster with this
 flag at system boot will make sure that you will only see its icon in the tray.
 
 Since this implies the need to have the app running in the tray bar or
@@ -436,7 +438,7 @@ long as you do not explicitly set the `version`-field in your `test-config.yml`,
 the cache will always be cleared on each run when you type `yarn start`.
 
 > [!TIP]
-> By selecting the appropriate item from the "Help" menu and restarting Zettlr,
+> By selecting the appropriate item from the "Help" menu and restarting Aster,
 > it will automatically start with this flag passed, meaning that it will clean
 > the cache for non-technical users.
 
@@ -456,7 +458,7 @@ data directory, but it does not impact functionality.
 
 #### `--disable-hardware-acceleration`
 
-This switch causes Zettlr to disable hardware acceleration, which could be
+This switch causes Aster to disable hardware acceleration, which could be
 necessary in certain setups. For more information on why this flag was added,
 see issue [#2127](https://github.com/Zettlr/Zettlr/issues/2127).
 
@@ -466,7 +468,7 @@ This repository makes use of Visual Studio Code's
 [recommended extensions feature](https://go.microsoft.com/fwlink/?LinkId=827846).
 This means: If you use VS Code and open the repository for the first time, VS
 Code will tell you that the repository recommends to install a handful of
-extensions. These extensions are recommended if you work with Zettlr and will
+extensions. These extensions are recommended if you work with Aster and will
 make contributing much easier. The recommendations are specified in the file
 `.vscode/extensions.json`.
 
@@ -490,7 +492,7 @@ manually install those you'd like to have.
 This software is licensed via the
 [GNU GPL v3-License](https://www.gnu.org/licenses/gpl-3.0.en.html).
 
-The brand (including name, icons and everything Zettlr can be identified with)
-is excluded and all rights reserved. If you want to fork Zettlr to develop
+The brand (including name, icons and everything Aster can be identified with)
+is excluded and all rights reserved. If you want to fork Aster to develop
 another app, feel free but please change name and icons.
 [Read about the logo usage](https://www.zettlr.com/press#usage-rights).

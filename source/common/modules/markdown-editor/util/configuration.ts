@@ -19,8 +19,8 @@
 import { StateEffect, StateField } from '@codemirror/state'
 import safeAssign from '@common/util/safe-assign'
 import { CITEPROC_MAIN_DB } from '@dts/common/citeproc'
-import { type MarkdownTheme } from 'source/platform/config-template'
 import { type CustomEditorShortcut } from '../keymaps/shortcuts'
+import { type MarkdownTheme } from 'source/platform/config-template'
 
 export interface AutocorrectOptions {
   active: boolean

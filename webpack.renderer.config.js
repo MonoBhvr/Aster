@@ -18,7 +18,10 @@ const plugins = [
     // the string itself. Typically, this is done either with alternate quotes,
     // such as '"production"', or by using JSON.stringify('production')."
     __GIT_COMMIT_HASH__: JSON.stringify(process.env.GIT_COMMIT_HASH),
-    __BUILD_DATE__: JSON.stringify((new Date()).toISOString()),
+    // Keep the development value stable so webpack's filesystem cache can be
+    // reused between launches. Production builds still receive their actual
+    // build timestamp.
+    __BUILD_DATE__: JSON.stringify(process.env.NODE_ENV === 'production' ? (new Date()).toISOString() : 'development'),
     __UPDATES_DISABLED__: JSON.stringify(process.env.ZETTLR_DISABLE_UPDATE_CHECK !== undefined ? '1' : '0')
   })
 ]

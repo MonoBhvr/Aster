@@ -3,7 +3,7 @@
     <!-- References -->
     <h1>
       {{ referencesLabel }}
-      <small v-if="bibliography !== undefined && bibliography[1].length > 0" class="word-count">
+      <small v-if="bibliography != null && bibliography[1].length > 0" class="word-count">
         {{ wordCountLabel }}
       </small>
     </h1>
@@ -143,13 +143,17 @@ async function updateBibliography (): Promise<void> {
     keys.push(...nocite)
   }
 
-  bibliography.value = await ipcRenderer.invoke('citeproc-provider', {
+  const result = await ipcRenderer.invoke('citeproc-provider', {
     command: 'get-bibliography',
     payload: {
       database: getBibliographyForDescriptor(descriptor),
       citations: [...new Set(keys)]
     }
-  } as CiteprocProviderIPCAPI)
+  } as CiteprocProviderIPCAPI) as [BibliographyOptions, string[]]|null|undefined
+
+  // Tauri may return null when no bibliography backend is available. Keep
+  // the renderer state in the same shape as the original undefined state.
+  bibliography.value = result ?? undefined
 }
 </script>
 

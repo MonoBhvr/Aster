@@ -1,150 +1,0 @@
-     Running BeforeDevCommand (`corepack yarn tauri:dev:frontend`)
-        Warn Waiting for your frontend dev server to start on http://localhost:1420/...
-        Warn Waiting for your frontend dev server to start on http://localhost:1420/...
-        Warn Waiting for your frontend dev server to start on http://localhost:1420/...
-        Warn Waiting for your frontend dev server to start on http://localhost:1420/...
-        Warn Waiting for your frontend dev server to start on http://localhost:1420/...
-     Running DevCommand (`cargo  run --no-default-features --color always --`)
-        Info Watching D:\Aster\src-tauri for changes...
-<i> [webpack-dev-server] Project is running at:
-<i> [webpack-dev-server] Loopback: [36mhttp://localhost:1420/[39m, [36mhttp://[::1]:1420/[39m
-<i> [webpack-dev-server] On Your Network (IPv4): [36mhttp://172.16.1.160:1420/[39m
-<i> [webpack-dev-server] Content not from webpack is served from '[36mD:\Aster\dist-tauri[39m' directory
-<i> [webpack-dev-server] 404s will fallback to '[36m/index.html[39m'
-[1m[93mwarning[0m: output filename collision at D:\Aster\src-tauri\target\debug\deps\zettlr_tauri.pdb
-  [1m[96m|[0m
-  [1m[96m= [0m[1m[97mnote[0m: the bin target `zettlr-tauri` in package `zettlr-tauri v4.7.0 (D:\Aster\src-tauri)` has the same output filename as the lib target `zettlr_tauri` in package `zettlr-tauri v4.7.0 (D:\Aster\src-tauri)`
-  [1m[96m= [0m[1m[97mnote[0m: if this looks unexpected, it may be a bug in Cargo. Please file a bug report at https://github.com/rust-lang/cargo/issues/ with as much information as you can provide.
-  [1m[96m= [0m[1m[97mnote[0m: cargo 1.98.0 (797e8a9bc 2026-08-05) running on `x86_64-pc-windows-msvc` target `x86_64-pc-windows-msvc`
-  [1m[96m= [0m[1m[97mnote[0m: first unit: Unit { pkg: Package { id: PackageId { name: "zettlr-tauri", version: "4.7.0", source: "D:\\Aster\\src-tauri" }, ..: ".." }, target: TargetInner { name: "zettlr-tauri", doc: true, ..: with_path("D:\\Aster\\src-tauri\\src\\main.rs", Edition2021) }, profile: Profile { ..: default_dev() }, kind: Host, mode: Build, features: [], rustflags: [], rustdocflags: [], links_overrides: {}, artifact: false, artifact_target_for_features: None, is_std: false, dep_hash: 14282326632016367984 }
-  [1m[96m= [0m[1m[97mnote[0m: second unit: Unit { pkg: Package { id: PackageId { name: "zettlr-tauri", version: "4.7.0", source: "D:\\Aster\\src-tauri" }, ..: ".." }, target: TargetInner { ..: lib_target("zettlr_tauri", ["lib", "cdylib", "staticlib"], "D:\\Aster\\src-tauri\\src\\lib.rs", Edition2021) }, profile: Profile { ..: default_dev() }, kind: Host, mode: Build, features: [], rustflags: [], rustdocflags: [], links_overrides: {}, artifact: false, artifact_target_for_features: None, is_std: false, dep_hash: 11206807568231520430 }
-[1m[93mwarning[0m: output filename collision at D:\Aster\src-tauri\target\debug\zettlr_tauri.pdb
-  [1m[96m|[0m
-  [1m[96m= [0m[1m[97mnote[0m: the bin target `zettlr-tauri` in package `zettlr-tauri v4.7.0 (D:\Aster\src-tauri)` has the same output filename as the lib target `zettlr_tauri` in package `zettlr-tauri v4.7.0 (D:\Aster\src-tauri)`
-  [1m[96m= [0m[1m[97mnote[0m: if this looks unexpected, it may be a bug in Cargo. Please file a bug report at https://github.com/rust-lang/cargo/issues/ with as much information as you can provide.
-  [1m[96m= [0m[1m[97mnote[0m: cargo 1.98.0 (797e8a9bc 2026-08-05) running on `x86_64-pc-windows-msvc` target `x86_64-pc-windows-msvc`
-  [1m[96m= [0m[1m[97mnote[0m: first unit: Unit { pkg: Package { id: PackageId { name: "zettlr-tauri", version: "4.7.0", source: "D:\\Aster\\src-tauri" }, ..: ".." }, target: TargetInner { name: "zettlr-tauri", doc: true, ..: with_path("D:\\Aster\\src-tauri\\src\\main.rs", Edition2021) }, profile: Profile { ..: default_dev() }, kind: Host, mode: Build, features: [], rustflags: [], rustdocflags: [], links_overrides: {}, artifact: false, artifact_target_for_features: None, is_std: false, dep_hash: 14282326632016367984 }
-  [1m[96m= [0m[1m[97mnote[0m: second unit: Unit { pkg: Package { id: PackageId { name: "zettlr-tauri", version: "4.7.0", source: "D:\\Aster\\src-tauri" }, ..: ".." }, target: TargetInner { ..: lib_target("zettlr_tauri", ["lib", "cdylib", "staticlib"], "D:\\Aster\\src-tauri\\src\\lib.rs", Edition2021) }, profile: Profile { ..: default_dev() }, kind: Host, mode: Build, features: [], rustflags: [], rustdocflags: [], links_overrides: {}, artifact: false, artifact_target_for_features: None, is_std: false, dep_hash: 11206807568231520430 }
-[1m[93mwarning[0m[1m[97m: hard linking files in the incremental compilation cache failed. copying files instead. consider moving the cache directory to a file system which supports hard linking in session dir `\\?\D:\Aster\src-tauri\target\debug\incremental\zettlr_tauri-05uucggtzudnf\s-hlsnbzmq0w-1l6kc8f-working`[0m
-
-[1m[93mwarning[0m: `zettlr-tauri` (lib) generated 1 warning
-[1m[93mwarning[0m[1m[97m: hard linking files in the incremental compilation cache failed. copying files instead. consider moving the cache directory to a file system which supports hard linking in session dir `\\?\D:\Aster\src-tauri\target\debug\incremental\zettlr_tauri-3ri1jdvv37z5h\s-hlsnqvgzhl-0mi6ngv-working`[0m
-
-[1m[93mwarning[0m: `zettlr-tauri` (bin "zettlr-tauri") generated 1 warning
-[1m[92m    Finished[0m ]8;;https://doc.rust-lang.org/cargo/reference/profiles.html#default-profiles\`dev` profile [unoptimized + debuginfo]]8;;\ target(s) in 48.25s
-[1m[92m     Running[0m `target\debug\zettlr-tauri.exe`
-<i> [webpack-dev-middleware] wait until bundle finished: /
-assets by info 2.11 MiB [1m[32m[immutable][39m[22m
-  assets by path [1m[32m*.woff[39m[22m 970 KiB 26 assets
-  assets by path [1m[32m*.woff2[39m[22m 313 KiB 24 assets
-  assets by path [1m[32m*.ttf[39m[22m 502 KiB 20 assets
-  assets by path [1m[32m*.mp3[39m[22m 100 KiB 2 assets
-  + 3 assets
-assets by path [1m[32m*.js[39m[22m 23.5 MiB
-  assets by chunk 6.45 MiB (id hint: vendors)
-    asset [1m[32mvendors-node_modules_mermaid-js_parser_dist_mermaid-parser_core_mjs.js[39m[22m 1.35 MiB [1m[32m[emitted][39m[22m (id hint: vendors) 1 related asset
-    asset [1m[32mvendors-node_modules_cytoscape_dist_cytoscape_esm_mjs.js[39m[22m 1.06 MiB [1m[32m[emitted][39m[22m (id hint: vendors) 1 related asset
-    asset [1m[32mvendors-node_modules_katex_dist_katex_mjs.js[39m[22m 588 KiB [1m[32m[emitted][39m[22m (id hint: vendors) 1 related asset
-    + 36 assets
-  + 28 assets
-asset [1m[32mindex.html[39m[22m 1.03 KiB [1m[32m[emitted][39m[22m [from: static/tauri-index.htm] [1m[32m[copied][39m[22m
-orphan modules 655 KiB [1m[33m[orphan][39m[22m 543 modules
-runtime modules 8.06 KiB 13 modules
-modules by path [1m./node_modules/[39m[22m 16.2 MiB (javascript) 1.03 MiB (asset)
-  javascript modules 16.2 MiB 2351 modules
-  asset modules 1.03 MiB (asset) 2.46 KiB (javascript) 60 modules
-modules by path [1m./source/[39m[22m 2.69 MiB (javascript) 380 KiB (asset) 787 modules
-modules by path [1m./static/fonts/[39m[22m 733 KiB (asset) 7.09 KiB (javascript)
-  modules by path [1m./static/fonts/*.woff[39m[22m 674 KiB (asset) 252 bytes (javascript) 6 modules
-  modules by path [1m./static/fonts/*.woff2[39m[22m 59.3 KiB (asset) 168 bytes (javascript) 4 modules
-  ./node_modules/css-loader/dist/cjs.js![1m./static/fonts/fonts.css[39m[22m 6.68 KiB [1m[33m[built][39m[22m [1m[33m[code generated][39m[22m
-modules by mime type [1mimage/svg+xml[39m[22m 1.67 KiB
-  [1mdata:image/svg+xml;utf8,<svg xmlns=%27ht..[39m[22m 212 bytes [1m[33m[built][39m[22m [1m[33m[code generated][39m[22m
-  [1mdata:image/svg+xml;utf8,<svg xmlns=%27ht..[39m[22m 216 bytes [1m[33m[built][39m[22m [1m[33m[code generated][39m[22m
-  [1mdata:image/svg+xml;utf8,<svg xmlns=%27ht..[39m[22m 212 bytes [1m[33m[built][39m[22m [1m[33m[code generated][39m[22m
-  + 5 modules
-webpack 5.109.2 compiled [1m[32msuccessfully[39m[22m in 76118 ms
-<i> [webpack-dev-middleware] wait until bundle finished: /tauri.js
-assets by status 25.6 MiB [1m[32m[cached][39m[22m 143 assets
-cached modules 19.5 MiB (javascript) 2.11 MiB (asset) 8.06 KiB (runtime) [1m[32m[cached][39m[22m 3773 modules
-webpack 5.109.2 compiled [1m[32msuccessfully[39m[22m in 11222 ms
-<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: Unable to snapshot resolve dependencies
-assets by status 8.65 MiB [1m[32m[cached][39m[22m 142 assets
-asset [1m[32mtauri.js[39m[22m 17 MiB [1m[32m[emitted][39m[22m (name: tauri) 1 related asset
-cached modules 19.5 MiB (javascript) 2.11 MiB (asset) [1m[32m[cached][39m[22m 3756 modules
-runtime modules 8.06 KiB 13 modules
-javascript modules 11.9 KiB
-  code generated modules 6.42 KiB [1m[33m[code generated][39m[22m
-    ./node_modules/ts-loader/index.js??clonedRuleSet-5.use!./node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/dist/index.js??ruleSet[0]![1m./source/common/vue/window/WindowMenubar.vue?vue&type=template&id=6b...(truncated)[39m[22m 1.06 KiB [1m[33m[built][39m[22m [1m[33m[code generated][39m[22m
-    ./node_modules/ts-loader/index.js??clonedRuleSet-5.use!./node_modules/vue-loader/dist/index.js??ruleSet[0]![1m./source/common/vue/window/WindowMenubar.vue?vue&type=script&setup=true&lang=ts[39m[22m 5.35 KiB [1m[33m[built][39m[22m [1m[33m[code generated][39m[22m
-  [1m./source/common/vue/window/WindowMenubar.vue[39m[22m 914 bytes [1m[33m[built][39m[22m
-  ./node_modules/css-loader/dist/cjs.js!./node_modules/vue-loader/dist/stylePostLoader.js!./node_modules/less-loader/dist/cjs/index.js!./node_modules/vue-loader/dist/index.js??ruleSet[0]![1m./source/common/vue/window/WindowMenubar.vue?vue&type=style&index=0&id=6b26...(truncated)[39m[22m 4.58 KiB [1m[33m[built][39m[22m
-webpack 5.109.2 compiled [1m[32msuccessfully[39m[22m in 7018 ms
-assets by status 8.65 MiB [1m[32m[cached][39m[22m 142 assets
-asset [1m[32mtauri.js[39m[22m 17 MiB [1m[32m[emitted][39m[22m (name: tauri) 1 related asset
-cached modules 19.5 MiB (javascript) 2.11 MiB (asset) [1m[32m[cached][39m[22m 3756 modules
-runtime modules 8.06 KiB 13 modules
-javascript modules 11.3 KiB
-  code generated modules 5.83 KiB [1m[33m[code generated][39m[22m
-    ./node_modules/ts-loader/index.js??clonedRuleSet-5.use!./node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/dist/index.js??ruleSet[0]![1m./source/common/vue/window/WindowMenubar.vue?vue&type=template&id=6b...(truncated)[39m[22m 1.06 KiB [1m[33m[built][39m[22m [1m[33m[code generated][39m[22m
-    ./node_modules/ts-loader/index.js??clonedRuleSet-5.use!./node_modules/vue-loader/dist/index.js??ruleSet[0]![1m./source/common/vue/window/WindowMenubar.vue?vue&type=script&setup=true&lang=ts[39m[22m 4.77 KiB [1m[33m[built][39m[22m [1m[33m[code generated][39m[22m
-  [1m./source/common/vue/window/WindowMenubar.vue[39m[22m 914 bytes [1m[33m[built][39m[22m
-  ./node_modules/css-loader/dist/cjs.js!./node_modules/vue-loader/dist/stylePostLoader.js!./node_modules/less-loader/dist/cjs/index.js!./node_modules/vue-loader/dist/index.js??ruleSet[0]![1m./source/common/vue/window/WindowMenubar.vue?vue&type=style&index=0&id=6b26...(truncated)[39m[22m 4.58 KiB [1m[33m[built][39m[22m
-webpack 5.109.2 compiled [1m[32msuccessfully[39m[22m in 3846 ms
-assets by status 8.65 MiB [1m[32m[cached][39m[22m 142 assets
-asset [1m[32mtauri.js[39m[22m 17 MiB [1m[32m[emitted][39m[22m (name: tauri) 1 related asset
-cached modules 19.5 MiB (javascript) 2.11 MiB (asset) [1m[32m[cached][39m[22m 3759 modules
-runtime modules 8.06 KiB 13 modules
-[1m./source/platform/renderer-api.ts[39m[22m 12.9 KiB [1m[33m[built][39m[22m [1m[33m[code generated][39m[22m
-webpack 5.109.2 compiled [1m[32msuccessfully[39m[22m in 3131 ms
-        Info File src-tauri\src\lib.rs changed. Rebuilding application...
-     Running DevCommand (`cargo  run --no-default-features --color always --`)
-[1m[93mwarning[0m: output filename collision at D:\Aster\src-tauri\target\debug\deps\zettlr_tauri.pdb
-  [1m[96m|[0m
-  [1m[96m= [0m[1m[97mnote[0m: the bin target `zettlr-tauri` in package `zettlr-tauri v4.7.0 (D:\Aster\src-tauri)` has the same output filename as the lib target `zettlr_tauri` in package `zettlr-tauri v4.7.0 (D:\Aster\src-tauri)`
-  [1m[96m= [0m[1m[97mnote[0m: if this looks unexpected, it may be a bug in Cargo. Please file a bug report at https://github.com/rust-lang/cargo/issues/ with as much information as you can provide.
-  [1m[96m= [0m[1m[97mnote[0m: cargo 1.98.0 (797e8a9bc 2026-08-05) running on `x86_64-pc-windows-msvc` target `x86_64-pc-windows-msvc`
-  [1m[96m= [0m[1m[97mnote[0m: first unit: Unit { pkg: Package { id: PackageId { name: "zettlr-tauri", version: "4.7.0", source: "D:\\Aster\\src-tauri" }, ..: ".." }, target: TargetInner { name: "zettlr-tauri", doc: true, ..: with_path("D:\\Aster\\src-tauri\\src\\main.rs", Edition2021) }, profile: Profile { ..: default_dev() }, kind: Host, mode: Build, features: [], rustflags: [], rustdocflags: [], links_overrides: {}, artifact: false, artifact_target_for_features: None, is_std: false, dep_hash: 6308935489259393255 }
-  [1m[96m= [0m[1m[97mnote[0m: second unit: Unit { pkg: Package { id: PackageId { name: "zettlr-tauri", version: "4.7.0", source: "D:\\Aster\\src-tauri" }, ..: ".." }, target: TargetInner { ..: lib_target("zettlr_tauri", ["lib", "cdylib", "staticlib"], "D:\\Aster\\src-tauri\\src\\lib.rs", Edition2021) }, profile: Profile { ..: default_dev() }, kind: Host, mode: Build, features: [], rustflags: [], rustdocflags: [], links_overrides: {}, artifact: false, artifact_target_for_features: None, is_std: false, dep_hash: 8832221249917524890 }
-[1m[93mwarning[0m: output filename collision at D:\Aster\src-tauri\target\debug\zettlr_tauri.pdb
-  [1m[96m|[0m
-  [1m[96m= [0m[1m[97mnote[0m: the bin target `zettlr-tauri` in package `zettlr-tauri v4.7.0 (D:\Aster\src-tauri)` has the same output filename as the lib target `zettlr_tauri` in package `zettlr-tauri v4.7.0 (D:\Aster\src-tauri)`
-  [1m[96m= [0m[1m[97mnote[0m: if this looks unexpected, it may be a bug in Cargo. Please file a bug report at https://github.com/rust-lang/cargo/issues/ with as much information as you can provide.
-  [1m[96m= [0m[1m[97mnote[0m: cargo 1.98.0 (797e8a9bc 2026-08-05) running on `x86_64-pc-windows-msvc` target `x86_64-pc-windows-msvc`
-  [1m[96m= [0m[1m[97mnote[0m: first unit: Unit { pkg: Package { id: PackageId { name: "zettlr-tauri", version: "4.7.0", source: "D:\\Aster\\src-tauri" }, ..: ".." }, target: TargetInner { name: "zettlr-tauri", doc: true, ..: with_path("D:\\Aster\\src-tauri\\src\\main.rs", Edition2021) }, profile: Profile { ..: default_dev() }, kind: Host, mode: Build, features: [], rustflags: [], rustdocflags: [], links_overrides: {}, artifact: false, artifact_target_for_features: None, is_std: false, dep_hash: 6308935489259393255 }
-  [1m[96m= [0m[1m[97mnote[0m: second unit: Unit { pkg: Package { id: PackageId { name: "zettlr-tauri", version: "4.7.0", source: "D:\\Aster\\src-tauri" }, ..: ".." }, target: TargetInner { ..: lib_target("zettlr_tauri", ["lib", "cdylib", "staticlib"], "D:\\Aster\\src-tauri\\src\\lib.rs", Edition2021) }, profile: Profile { ..: default_dev() }, kind: Host, mode: Build, features: [], rustflags: [], rustdocflags: [], links_overrides: {}, artifact: false, artifact_target_for_features: None, is_std: false, dep_hash: 8832221249917524890 }
-[1m[92m   Compiling[0m zettlr-tauri v4.7.0 (D:\Aster\src-tauri)
-[1m[96m    Building[0m [=======================> ] 383/385: zettlr-…                                                            [1m[93mwarning[0m[1m[97m: hard linking files in the incremental compilation cache failed. copying files instead. consider moving the cache directory to a file system which supports hard linking in session dir `\\?\D:\Aster\src-tauri\target\debug\incremental\zettlr_tauri-05uucggtzudnf\s-hltj66yt7b-16ep6jc-working`[0m
-
-[1m[96m    Building[0m [=======================> ] 383/385: zettlr-…<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: Unable to snapshot resolve dependencies
-                                                            [1m[93mwarning[0m: `zettlr-tauri` (lib) generated 1 warning
-[1m[96m    Building[0m [=======================> ] 384/385: zettlr-…                                                            [1m[93mwarning[0m[1m[97m: hard linking files in the incremental compilation cache failed. copying files instead. consider moving the cache directory to a file system which supports hard linking in session dir `\\?\D:\Aster\src-tauri\target\debug\incremental\zettlr_tauri-3ri1jdvv37z5h\s-hltj7t12i8-1mgmbax-working`[0m
-
-[1m[96m    Building[0m [=======================> ] 384/385: zettlr-…                                                            [1m[93mwarning[0m: `zettlr-tauri` (bin "zettlr-tauri") generated 1 warning
-[1m[92m    Finished[0m ]8;;https://doc.rust-lang.org/cargo/reference/profiles.html#default-profiles\`dev` profile [unoptimized + debuginfo]]8;;\ target(s) in 2m 41s
-[1m[92m     Running[0m `target\debug\zettlr-tauri.exe`
-        Info File src-tauri\src\lib.rs changed. Rebuilding application...
-     Running DevCommand (`cargo  run --no-default-features --color always --`)
-[1m[93mwarning[0m: output filename collision at D:\Aster\src-tauri\target\debug\deps\zettlr_tauri.pdb
-  [1m[96m|[0m
-  [1m[96m= [0m[1m[97mnote[0m: the bin target `zettlr-tauri` in package `zettlr-tauri v4.7.0 (D:\Aster\src-tauri)` has the same output filename as the lib target `zettlr_tauri` in package `zettlr-tauri v4.7.0 (D:\Aster\src-tauri)`
-  [1m[96m= [0m[1m[97mnote[0m: if this looks unexpected, it may be a bug in Cargo. Please file a bug report at https://github.com/rust-lang/cargo/issues/ with as much information as you can provide.
-  [1m[96m= [0m[1m[97mnote[0m: cargo 1.98.0 (797e8a9bc 2026-08-05) running on `x86_64-pc-windows-msvc` target `x86_64-pc-windows-msvc`
-  [1m[96m= [0m[1m[97mnote[0m: first unit: Unit { pkg: Package { id: PackageId { name: "zettlr-tauri", version: "4.7.0", source: "D:\\Aster\\src-tauri" }, ..: ".." }, target: TargetInner { name: "zettlr-tauri", doc: true, ..: with_path("D:\\Aster\\src-tauri\\src\\main.rs", Edition2021) }, profile: Profile { ..: default_dev() }, kind: Host, mode: Build, features: [], rustflags: [], rustdocflags: [], links_overrides: {}, artifact: false, artifact_target_for_features: None, is_std: false, dep_hash: 15012487323644036906 }
-  [1m[96m= [0m[1m[97mnote[0m: second unit: Unit { pkg: Package { id: PackageId { name: "zettlr-tauri", version: "4.7.0", source: "D:\\Aster\\src-tauri" }, ..: ".." }, target: TargetInner { ..: lib_target("zettlr_tauri", ["lib", "cdylib", "staticlib"], "D:\\Aster\\src-tauri\\src\\lib.rs", Edition2021) }, profile: Profile { ..: default_dev() }, kind: Host, mode: Build, features: [], rustflags: [], rustdocflags: [], links_overrides: {}, artifact: false, artifact_target_for_features: None, is_std: false, dep_hash: 1254033591366695251 }
-[1m[93mwarning[0m: output filename collision at D:\Aster\src-tauri\target\debug\zettlr_tauri.pdb
-  [1m[96m|[0m
-  [1m[96m= [0m[1m[97mnote[0m: the bin target `zettlr-tauri` in package `zettlr-tauri v4.7.0 (D:\Aster\src-tauri)` has the same output filename as the lib target `zettlr_tauri` in package `zettlr-tauri v4.7.0 (D:\Aster\src-tauri)`
-  [1m[96m= [0m[1m[97mnote[0m: if this looks unexpected, it may be a bug in Cargo. Please file a bug report at https://github.com/rust-lang/cargo/issues/ with as much information as you can provide.
-  [1m[96m= [0m[1m[97mnote[0m: cargo 1.98.0 (797e8a9bc 2026-08-05) running on `x86_64-pc-windows-msvc` target `x86_64-pc-windows-msvc`
-  [1m[96m= [0m[1m[97mnote[0m: first unit: Unit { pkg: Package { id: PackageId { name: "zettlr-tauri", version: "4.7.0", source: "D:\\Aster\\src-tauri" }, ..: ".." }, target: TargetInner { name: "zettlr-tauri", doc: true, ..: with_path("D:\\Aster\\src-tauri\\src\\main.rs", Edition2021) }, profile: Profile { ..: default_dev() }, kind: Host, mode: Build, features: [], rustflags: [], rustdocflags: [], links_overrides: {}, artifact: false, artifact_target_for_features: None, is_std: false, dep_hash: 15012487323644036906 }
-  [1m[96m= [0m[1m[97mnote[0m: second unit: Unit { pkg: Package { id: PackageId { name: "zettlr-tauri", version: "4.7.0", source: "D:\\Aster\\src-tauri" }, ..: ".." }, target: TargetInner { ..: lib_target("zettlr_tauri", ["lib", "cdylib", "staticlib"], "D:\\Aster\\src-tauri\\src\\lib.rs", Edition2021) }, profile: Profile { ..: default_dev() }, kind: Host, mode: Build, features: [], rustflags: [], rustdocflags: [], links_overrides: {}, artifact: false, artifact_target_for_features: None, is_std: false, dep_hash: 1254033591366695251 }
-[1m[92m   Compiling[0m zettlr-tauri v4.7.0 (D:\Aster\src-tauri)
-[1m[96m    Building[0m [=======================> ] 383/385: zettlr-…                                                            [1m[93mwarning[0m[1m[97m: hard linking files in the incremental compilation cache failed. copying files instead. consider moving the cache directory to a file system which supports hard linking in session dir `\\?\D:\Aster\src-tauri\target\debug\incremental\zettlr_tauri-05uucggtzudnf\s-hltj9lg12h-0xsgr39-working`[0m
-
-[1m[96m    Building[0m [=======================> ] 383/385: zettlr-…                                                            [1m[93mwarning[0m: `zettlr-tauri` (lib) generated 1 warning
-[1m[96m    Building[0m [=======================> ] 384/385: zettlr-…                                                            [1m[93mwarning[0m[1m[97m: hard linking files in the incremental compilation cache failed. copying files instead. consider moving the cache directory to a file system which supports hard linking in session dir `\\?\D:\Aster\src-tauri\target\debug\incremental\zettlr_tauri-3ri1jdvv37z5h\s-hltjari03o-1tp6qa2-working`[0m
-
-[1m[96m    Building[0m [=======================> ] 384/385: zettlr-…                                                            [1m[93mwarning[0m: `zettlr-tauri` (bin "zettlr-tauri") generated 1 warning
-[1m[92m    Finished[0m ]8;;https://doc.rust-lang.org/cargo/reference/profiles.html#default-profiles\`dev` profile [unoptimized + debuginfo]]8;;\ target(s) in 2m 01s
-[1m[92m     Running[0m `target\debug\zettlr-tauri.exe`

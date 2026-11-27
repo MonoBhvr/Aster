@@ -38,7 +38,12 @@ module.exports = [
     exclude: /(node_modules|\.webpack)/,
     use: {
       loader: 'ts-loader',
-      options: { transpileOnly: true, appendTsSuffixTo: [/\.vue$/] }
+      options: {
+        transpileOnly: true,
+        appendTsSuffixTo: [/\.vue$/],
+        // Keep dynamic import() intact for webpack code splitting.
+        compilerOptions: { module: 'ESNext', moduleResolution: 'Node' }
+      }
     }
   }
 ]

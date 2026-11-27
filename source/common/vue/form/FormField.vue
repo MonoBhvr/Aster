@@ -159,7 +159,6 @@
     v-bind:model-value="model"
     v-bind:options="props.field.options"
     v-bind:label="props.field.label"
-    v-bind:name="props.field.model"
     v-on:update:model-value="emit('update:modelValue', $event)"
   ></ThemeInput>
   <ShortcutCaptureControl
